@@ -1,0 +1,15 @@
+{
+  "name": "Панель зон",
+  "short_name": "Панель зон",
+  "description": "Учёт занятости зон и времени присутствия — для склада, парковки, цеха или любой точки контроля.",
+  "start_url": "./Anytimer.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "lang": "ru",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
