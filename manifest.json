@@ -1,9 +1,9 @@
 {
-  "name": "Панель зон",
-  "short_name": "Панель зон",
+  "name": "AnyTimer",
+  "short_name": "AnyTimer",
   "id": "./",
-  "description": "Ручной Учёт занятости зон и времени присутствия — для склада, парковки, цеха или любой точки  контроля.",
-  "start_url": "./Anytimer.htm",
+  "description": "Ручной учёт занятости зон и времени присутствия — для склада, парковки, цеха или любой точки контроля.",
+  "start_url": "./Anytimer.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -47,14 +47,14 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Панель управления зонами"
+      "label": "Панель управления AnyTimer"
     },
     {
       "src": "screenshot-mobile.png",
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Мобильный интерфейс Панели зон"
+      "label": "Мобильный интерфейс AnyTimer"
     }
   ]
 }
