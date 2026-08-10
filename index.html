@@ -155,7 +155,6 @@
   .icon-btn { padding: 8px; }
   .icon-btn:hover, .back-btn:hover { background-color: var(--surface-hover); }
   .action-btn.small { padding: 8px 14px; width: auto; font-size: 13px; }
-  .back-btn { padding: 12px 16px; width: 100%; }
   .back-btn.small { padding: 8px 14px; width: auto; font-size: 13px; }
 
   /* Нажатие - физический эффект */
@@ -231,9 +230,21 @@
   }
   
   .tracker-btn { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; min-height: 90px; cursor: pointer; text-align: left; }
+  
   .tracker-btn.active { background: var(--active-card-bg); border-color: var(--accent); }
-  :root[data-theme="dark"] .tracker-btn.active { box-shadow: 0 0 15px rgba(79, 219, 200, 0.2); }
+  
+  :root[data-theme="dark"] .tracker-btn.active { 
+    box-shadow: 0 0 15px rgba(79, 219, 200, 0.2); 
+  }
+  
+  /* Жестко задаем градиент для активной кнопки в светлой теме и кидаем тень */
+  :root[data-theme="light"] .tracker-btn.active { 
+    background-image: var(--active-card-bg) !important;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3) !important;
+  }
+  
   :root[data-theme="light"] .tracker-btn.active * { color: #ffffff !important; }
+
   .tracker-btn:active { transform: scale(0.97); }
   
   .zone-card { padding: 16px; }
