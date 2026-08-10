@@ -473,8 +473,14 @@
       <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
     </div>
     <div style="display: flex; flex-direction: column; gap: 8px;">
-      
+
       <div class="eyebrow" style="margin: 2px 0 0;">Тема оформления</div>
+      
+      <!-- Кнопка установки PWA (изначально скрыта) -->
+      <button id="installAppBtn" class="action-btn hidden" style="justify-content: flex-start; margin-bottom: 12px;" onclick="installPWA()">
+        <i data-lucide="download-cloud"></i> Установить приложение
+      </button>
+
       <div class="mode-row" style="margin: 0 0 6px;">
         <label class="mode-option"><input type="radio" name="themeChoice" id="themeLight" value="light" onchange="setThemePref('light')"> <i data-lucide="sun" style="width:16px;"></i> Светлая</label>
         <label class="mode-option"><input type="radio" name="themeChoice" id="themeDark" value="dark" onchange="setThemePref('dark')"> <i data-lucide="moon" style="width:16px;"></i> Тёмная</label>
@@ -1031,7 +1037,43 @@ function importPresetJSON(file){
   reader.readAsText(file);
 }
 
-if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { }); }); }
+/* --- PWA Установка --- */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  
+  const installBtn = document.getElementById('installAppBtn');
+  if (installBtn) {
+    installBtn.classList.remove('hidden');
+    updateIcons(installBtn);
+  }
+});
+
+async function installPWA() {
+  if (!deferredPrompt) return;
+  
+  deferredPrompt.prompt();
+  
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    showToast('Установка пошла');
+  }
+  
+  deferredPrompt = null;
+  document.getElementById('installAppBtn').classList.add('hidden');
+  closeModals();
+}
+
+if ('serviceWorker' in navigator) { 
+  window.addEventListener('load', () => { 
+    navigator.serviceWorker.register('sw.js').then((reg) => {
+      // Принудительно проверяем, не обновился ли sw.js
+      reg.update();
+    }).catch(() => { }); 
+  }); 
+}
+
 updateShareButtonVisibility(); updateUndoButton();
 const pending = loadSessionRaw();
 if(pending && pending.zones && pending.zones.length){
