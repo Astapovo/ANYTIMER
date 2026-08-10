@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d0d19" id="themeColorMeta">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>AnyTimer</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  /* --- ТЁМНАЯ ТЕМА --- */
+  :root {
+    color-scheme: dark;
+    --bg: #0d0d19; 
+    --surface: rgba(255, 255, 255, 0.03);
+    --surface-hover: rgba(255, 255, 255, 0.07);
+    --border: rgba(255, 255, 255, 0.1);
+    --text: #e3e0f2;
+    --muted: #8b9bb4;
+    --accent: #4fdbc8; 
+    --accent-hover: #71f8e4;
+    --danger: #ff8a80;
+    --warn: #fbbf24;
+    
+    /* БОЛЕЕ ЖЕСТКИЕ УГЛЫ */
+    --radius: 12px;
+    --radius-sm: 6px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.5);
+    
+    --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+    --active-card-bg: linear-gradient(135deg, rgba(79, 219, 200, 0.12) 0%, rgba(13, 13, 25, 0.8) 100%);
+    --grid-color: rgba(255, 255, 255, 0.06);
+    --glass-blur: blur(20px);
+
+    /* ЕДИНЫЙ ТЕХНИЧЕСКИЙ ШРИФТ */
+    --font-ui: 'JetBrains Mono', monospace;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  /* --- СВЕТЛАЯ ТЕМА --- */
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f4f6f9;
+    --surface: rgba(255, 255, 255, 0.8);
+    --surface-hover: rgba(255, 255, 255, 1);
+    --border: rgba(0, 0, 0, 0.06);
+    --text: #0f172a;
+    --muted: #64748b;
+    --accent: #0d9488;
+    --accent-hover: #0f766e;
+    --danger: #ef4444;
+    --warn: #d97706;
+    --shadow: 0 10px 25px rgba(0,0,0,0.04);
+    
+    --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 100%);
+    --active-card-bg: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    --grid-color: rgba(0, 0, 0, 0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html, body {
+    height: 100%; height: 100dvh; overflow: hidden;
+    -webkit-tap-highlight-color: transparent; touch-action: manipulation; 
+  }
+  
+  html {
+    background-color: var(--bg);
+    background-image: linear-gradient(to right, var(--grid-color) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-attachment: fixed;
+    color: var(--text); font-family: var(--font-ui); transition: background-color 0.3s ease;
+  }
+  
+  body { background: transparent; }
+
+  .app-container {
+    display: flex; flex-direction: column; height: 100%;
+    padding: 0 12px; padding-left: calc(12px + env(safe-area-inset-left)); padding-right: calc(12px + env(safe-area-inset-right));
+    max-width: 800px; margin: 0 auto;
+  }
+  
+  .mono { font-family: var(--font-mono); }
+  .hidden { display: none !important; }
+  .fade-in { animation: smoothFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards; }
+  @keyframes smoothFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  
+  h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
+  h3 { font-size: 14px; font-weight: 600; margin: 16px 0 8px; color: var(--muted); }
+  p { color: var(--muted); font-size: 13px; }
+  .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+
+  /* Topbar */
+  .topbar {
+    flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+    padding: calc(6px + env(safe-area-inset-top)) 12px 6px; margin-bottom: 10px;
+    background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--border); border-radius: 0 0 var(--radius) var(--radius); margin-left: -12px; margin-right: -12px;
+  }
+  .topbar-spacer { width: 36px; }
+  .topbar-title { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .topbar-title b { font-size: 17px; display: block; color: var(--accent); font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+  :root[data-theme="dark"] .topbar-title b { text-shadow: 0 0 12px rgba(79,219,200,0.45); }
+  .topbar-actions { width: 36px; display: flex; justify-content: flex-end; }
+  .topbar-menu-btn { background: transparent; border: none; color: var(--text); padding: 7px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; transition: background 0.2s, color 0.2s; cursor: pointer; }
+  .topbar-menu-btn:active { background: var(--surface-hover); transform: scale(0.9); }
+  .topbar-menu-btn:hover { color: var(--accent); }
+
+  /* --- ТАКТИЛЬНЫЕ КНОПКИ --- */
+  button { font-family: inherit; font-size: 14px; font-weight: 600; border: none; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background-color 0.15s, transform 0.1s, box-shadow 0.1s; }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  
+  .icon-btn, .back-btn, .choice-btn, .mode-option {
+    background-color: var(--surface);
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 100%);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  
+  .action-btn { 
+    background-color: var(--accent); 
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.1) 100%);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+    border: 1px solid rgba(0,0,0,0.2);
+    color: #fff; padding: 12px 16px; width: 100%; font-size: 14px; font-weight: 700; 
+  }
+  :root[data-theme="dark"] .action-btn { color: #000; }
+  
+  .danger-btn { 
+    background-color: rgba(239, 68, 68, 0.15); 
+    border: 1px solid rgba(239, 68, 68, 0.4); 
+    color: var(--danger); padding: 12px 16px; width: 100%; 
+  }
+
+  /* Светлая тема кнопок */
+  :root[data-theme="light"] .icon-btn, 
+  :root[data-theme="light"] .back-btn, 
+  :root[data-theme="light"] .choice-btn, 
+  :root[data-theme="light"] .mode-option {
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+  :root[data-theme="light"] .action-btn {
+    box-shadow: 0 2px 0 rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+
+  .icon-btn { padding: 8px; }
+  .icon-btn:hover, .back-btn:hover { background-color: var(--surface-hover); }
+  .action-btn.small { padding: 8px 14px; width: auto; font-size: 13px; }
+  .back-btn { padding: 12px 16px; width: 100%; }
+  .back-btn.small { padding: 8px 14px; width: auto; font-size: 13px; }
+
+  /* Нажатие - физический эффект */
+  button:active, .mode-option:active { 
+    transform: translateY(2px) !important; 
+    box-shadow: 0 0 0 rgba(0,0,0,0) !important; 
+  }
+
+  /* Вдавленный эффект для выбранных радио-кнопок */
+  .mode-option:has(input:checked) { 
+    border-color: var(--accent); color: var(--accent); 
+    background-color: rgba(79, 219, 200, 0.1); 
+    background-image: none;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
+    transform: translateY(1px);
+  }
+  :root[data-theme="light"] .mode-option:has(input:checked) {
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05) !important;
+  }
+
+  /* Inputs */
+  input[type="number"], input[type="text"], textarea { width: 100%; padding: 12px; margin: 6px 0 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: inherit; font-size: 14px; font-weight: 500; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(79, 219, 200, 0.15); }
+
+  /* Секции Настройки */
+  .step-container { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--border); padding: 16px; border-radius: var(--radius); box-shadow: var(--shadow); flex: 1; overflow-y: auto; }
+  .mode-row { display: flex; gap: 8px; margin: 6px 0 12px; flex-wrap: wrap; }
+  .mode-option { flex: 1; min-width: 90px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px; cursor: pointer; font-size: 12px; font-weight: 600; }
+  .mode-option input { margin: 0; width: 0; height: 0; display: none; } 
+
+  /* --- UX LAYOUT STEP 3 --- */
+  #step3 { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  
+  .log-feed-viewport {
+    flex: 1; min-height: 40px; max-height: 140px; display: flex; flex-direction: column; justify-content: flex-end;
+    margin-bottom: 6px; overflow: hidden; pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 35%, black 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 35%, black 100%);
+  }
+  #logFeed { display: flex; flex-direction: column; gap: 2px; padding-bottom: 2px; }
+  
+  .feed-item {
+    display: flex; justify-content: space-between; align-items: center; padding: 4px 8px;
+    animation: smoothFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+  }
+  
+  .workspace-viewport {
+    flex: 0 0 auto; max-height: 85vh; display: flex; flex-direction: column;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+  
+  .log-action-header { display: flex; justify-content: flex-start; align-items: center; margin-bottom: 10px; gap: 10px; }
+  .workspace-scroll { overflow-y: auto; padding-right: 2px; }
+  .workspace-scroll::-webkit-scrollbar { width: 4px; }
+  .workspace-scroll::-webkit-scrollbar-track { background: transparent; }
+  .workspace-scroll::-webkit-scrollbar-thumb { background: rgba(139, 155, 180, 0.3); border-radius: 4px; }
+
+  #singleArea { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  #multiArea { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+  /* Карточки Зон - тоже делаем чуть объемнее */
+  .tracker-btn, .zone-card { 
+    background-color: var(--surface);
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); 
+    border: 1px solid var(--border); border-radius: var(--radius); 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05); 
+    position: relative; overflow: hidden; transition: all 0.2s ease; 
+  }
+  :root[data-theme="light"] .tracker-btn, :root[data-theme="light"] .zone-card {
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.3) 100%);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+  
+  .tracker-btn { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; min-height: 90px; cursor: pointer; text-align: left; }
+  .tracker-btn.active { background: var(--active-card-bg); border-color: var(--accent); }
+  :root[data-theme="dark"] .tracker-btn.active { box-shadow: 0 0 15px rgba(79, 219, 200, 0.2); }
+  :root[data-theme="light"] .tracker-btn.active * { color: #ffffff !important; }
+  .tracker-btn:active { transform: scale(0.97); }
+  
+  .zone-card { padding: 16px; }
+
+  .summary-bar {
+    display: flex; gap: 8px; padding: 10px 14px; justify-content: space-between; align-items: center;
+    background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+    border-radius: 8px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    font-size: 11px; font-weight: 600; color: var(--muted); border: 1px solid var(--border);
+  }
+  .summary-bar b { color: var(--text); font-size: 12px; }
+  .summary-bar div { display: flex; flex-direction: row; align-items: center; gap: 6px; }
+
+  /* Modals (Bottom Sheets) */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: flex-end; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+  .modal-content {
+    background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); width: 100%; max-width: 600px; border-radius: 16px 16px 0 0; 
+    padding: 24px 16px calc(16px + env(safe-area-inset-bottom)) 16px; border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+    transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1); box-shadow: 0 -10px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 8px; max-height: 90vh; overflow-y: auto; position: relative;
+  }
+  .modal-overlay.show .modal-content { transform: translateY(0); }
+  .modal-content::before { content: ''; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 36px; height: 4px; border-radius: 4px; background: var(--muted); opacity: 0.4; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+  .modal-header h3 { margin: 0; color: var(--text); font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
+  .close-btn { width: auto; color: var(--muted); border-radius: var(--radius-sm); }
+  
+  .note-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .choice-btn { flex-direction: column; padding: 20px 10px; color: var(--text); gap: 10px; }
+  .mic-pulse { animation: pulse 1.5s infinite; color: var(--danger) !important; text-shadow: 0 0 10px var(--danger); }
+  @keyframes pulse { 0% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 0.7; } }
+  .pulse-pip { animation: pipAnim 2s infinite; }
+  @keyframes pipAnim { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+
+  .edit-list { display: flex; flex-direction: column; gap: 8px; margin: 10px 0; }
+  .edit-item { display: flex; align-items: center; gap: 10px; background: var(--surface); padding: 8px; border-radius: var(--radius); border: 1px solid var(--border); transition: transform 0.2s ease, border-color 0.2s ease; }
+  .edit-item:focus-within { border-color: var(--accent); }
+  .color-dot { width: 22px; height: 22px; border-radius: 6px; cursor: pointer; flex-shrink: 0; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15), 0 0 0 1px var(--border); transition: transform 0.15s ease; }
+  .color-dot:active { transform: scale(0.85); }
+
+  /* Поле названия зоны — явная зона ввода с иконкой-подсказкой */
+  .edit-name-wrap { position: relative; flex: 1; min-width: 0; }
+  .edit-name-wrap input {
+    margin: 0; width: 100%; padding: 9px 30px 9px 10px;
+    background: var(--surface-hover); border: 1.5px solid transparent; border-radius: var(--radius-sm);
+    color: var(--text); font-size: 14px; font-weight: 600;
+  }
+  .edit-name-wrap input:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px rgba(79, 219, 200, 0.15); }
+  .edit-name-wrap input::placeholder { color: var(--muted); font-weight: 500; }
+  .edit-name-wrap .edit-name-icon { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--muted); opacity: 0.55; pointer-events: none; }
+  
+  #toast {
+    position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top)); transform: translateX(-50%) translateY(-14px) scale(0.96);
+    display: flex; align-items: center; gap: 9px; max-width: calc(100vw - 32px); width: max-content;
+    background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    color: var(--text); font-weight: 600; padding: 10px 16px 10px 13px; border-radius: 10px; font-size: 13px; line-height: 1.3;
+    border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    opacity: 0; pointer-events: none; transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 3000; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  #toast.warn { border-left-color: var(--danger); }
+  #toast i { flex-shrink: 0; width: 16px; height: 16px; color: var(--accent); }
+  #toast.warn i { color: var(--danger); }
+  #toast span { overflow-wrap: anywhere; }
+  
+  .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); }
+  table { width: 100%; border-collapse: collapse; min-width: 480px; }
+  th, td { border-bottom: 1px solid var(--border); padding: 10px 12px; text-align: left; font-size: 12px; }
+  th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .note-row td { background: rgba(79, 219, 200, 0.05); border-left: 3px solid var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <div class="topbar">
+    <div class="topbar-spacer"></div>
+    <div class="topbar-title">
+      <b>AnyTimer</b>
+    </div>
+    <div class="topbar-actions">
+      <button class="topbar-menu-btn icon-btn" onclick="openMenu()" aria-label="Настройки"><i data-lucide="settings-2" style="width:20px; height:20px;"></i></button>
+    </div>
+  </div>
+
+  <!-- ВОССТАНОВЛЕНИЕ СЕССИИ -->
+  <div id="stepResume" class="step-container hidden">
+    <div class="eyebrow">Автосохранение</div>
+    <h2>Есть несохранённая панель</h2>
+    <p id="resumeInfo" style="margin: 10px 0 16px;"></p>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <button class="action-btn" onclick="restoreSessionAction()"><i data-lucide="history"></i> Восстановить</button>
+      <button class="back-btn" onclick="discardSessionAction()">Начать заново</button>
+    </div>
+  </div>
+
+  <!-- РЕДАКТОР ЗОН (Теперь это стартовый экран) -->
+  <div id="editStep" class="step-container hidden">
+    <div class="eyebrow">Редактор</div>
+    <h2>Управление зонами</h2>
+    <p style="font-size:11px; color:var(--muted); margin-top:2px;">Смахивай карточку влево для быстрого удаления</p>
+    
+    <div style="display: flex; gap: 8px; margin-top: 12px;">
+      <button class="back-btn" onclick="editAddZone()" style="flex: 1; border: 1px dashed var(--accent); color: var(--accent); background: rgba(79, 219, 200, 0.05); box-shadow: none;"><i data-lucide="plus"></i> Зона</button>
+      <button class="back-btn" onclick="openPresetsOverlay()" style="flex: 1;"><i data-lucide="bookmark"></i> Пресеты</button>
+    </div>
+
+    <div id="editBlocksList" class="edit-list"></div>
+    <button class="action-btn" style="margin-top: 16px;" onclick="exitEditMode()"><i data-lucide="check"></i> Запустить панель</button>
+  </div>
+
+  <!-- ШАГ 3 (Основной) -->
+  <div id="step3" class="hidden">
+    
+    <!-- Зона ленты логов -->
+    <div class="log-feed-viewport">
+      <div id="logFeed"></div>
+    </div>
+    
+    <!-- Зона управления -->
+    <div class="workspace-viewport">
+      
+      <!-- Заголовок Журнала с иконкой опций -->
+      <div class="log-action-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="margin:0; display:flex; align-items:center; gap:6px;">
+          <i data-lucide="terminal" style="width:16px;"></i> Журнал
+        </h3>
+        <button onclick="openActionMenuModal()" class="back-btn small" style="margin:0; border-color: var(--accent); color: var(--accent); background-color: rgba(79, 219, 200, 0.05);">
+          <i data-lucide="pen-tool" style="width:14px;"></i> Таблица
+        </button>
+      </div>
+
+      <div class="workspace-scroll">
+        <div class="summary-bar" id="summaryBar"></div>
+
+        <h3 id="singleTitle" class="hidden" style="display:flex; align-items:center; gap:6px; margin-top:0;">
+          <span class="pulse-pip" style="width:6px;height:6px;border-radius:2px;background:var(--accent);"></span> Одиночные зоны
+        </h3>
+        <div id="singleArea"></div>
+
+        <h3 id="multiTitle" class="hidden" style="margin-top:0;">Множественные зоны</h3>
+        <div id="multiArea"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- МОДАЛКИ (Bottom Sheets) -->
+
+<!-- Меню Журнала (Супер-кнопка) -->
+<div id="actionMenuModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Журнал и Заметки</h3>
+      <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+    </div>
+    
+    <div id="noteTypeSelector">
+      <div class="eyebrow" style="margin-top: 4px;">Добавить запись</div>
+      <div class="note-choices">
+        <button class="choice-btn" id="voiceBtn" onclick="startVoiceNote()" aria-label="Наговорить заметку">
+          <i data-lucide="mic"></i><span style="font-weight: 600;">Наговорить</span>
+        </button>
+        <button class="choice-btn" onclick="startTextNote()">
+          <i data-lucide="keyboard"></i><span style="font-weight: 600;">Написать</span>
+        </button>
+      </div>
+
+      <div class="eyebrow" style="margin-top: 8px;">Данные</div>
+      <button class="back-btn" style="justify-content: flex-start; margin-bottom: 10px; border-color:var(--accent); color: var(--accent); background-color:rgba(79, 219, 200, 0.05);" onclick="openFullTableModal()"><i data-lucide="table"></i> Просмотр всей таблицы</button>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom: 10px;">
+        <button class="back-btn" onclick="exportCSV()"><i data-lucide="download"></i> Скачать CSV</button>
+        <button class="back-btn" id="shareBtnMenu" onclick="shareCSV()"><i data-lucide="share-2"></i> Поделиться</button>
+      </div>
+
+      <div class="eyebrow" style="margin-top: 8px;">Опасно</div>
+      <button id="menuUndoBtn" class="danger-btn" style="justify-content: flex-start; margin-bottom: 6px;" onclick="undoLastAction()"><i data-lucide="undo-2"></i> Отменить последнее действие</button>
+    </div>
+
+    <!-- Область ввода текста для заметки -->
+    <div id="noteInputArea" class="hidden flex-col gap-3">
+      <textarea id="noteTextInput" placeholder="Текст заметки..."></textarea>
+      <div style="display: flex; gap: 10px;">
+        <button class="back-btn" onclick="resetNoteModal()">Отмена</button>
+        <button class="action-btn" onclick="saveNoteConfirm()"><i data-lucide="send"></i> Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Полная таблица (Выезжающая шторка) -->
+<div id="fullTableModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+  <div class="modal-content" style="max-width: 800px; height: 95vh;">
+    <div class="modal-header">
+      <h3>Полная история</h3>
+      <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+    </div>
+    <div class="table-wrap" style="flex: 1; margin-top: 6px; max-height: calc(100% - 60px);">
+      <table id="fullTable">
+        <thead><tr><th>Событие / Зона</th><th>№</th><th>Старт</th><th>Финиш</th><th>Время</th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div id="confirmModal" class="modal-overlay" style="z-index: 9999;" onclick="closeConfirmOnDim(event)">
+  <div class="modal-content" style="border-radius: var(--radius);">
+    <h3 id="confirmTitle" style="font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Подтверждение</h3>
+    <p id="confirmMessage" style="color: var(--text); opacity: 0.8; margin-bottom: 20px; line-height: 1.5; font-weight: 500;"></p>
+    <div style="display: flex; gap: 10px;">
+      <button id="confirmCancelBtn" class="back-btn" style="flex: 1;">Отмена</button>
+      <button id="confirmOkBtn" class="action-btn" style="flex: 1;">Да</button>
+    </div>
+  </div>
+</div>
+
+<!-- Меню Настроек -->
+<div id="menuModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Настройки</h3>
+      <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      
+      <div class="eyebrow" style="margin: 2px 0 0;">Тема оформления</div>
+      <div class="mode-row" style="margin: 0 0 6px;">
+        <label class="mode-option"><input type="radio" name="themeChoice" id="themeLight" value="light" onchange="setThemePref('light')"> <i data-lucide="sun" style="width:16px;"></i> Светлая</label>
+        <label class="mode-option"><input type="radio" name="themeChoice" id="themeDark" value="dark" onchange="setThemePref('dark')"> <i data-lucide="moon" style="width:16px;"></i> Тёмная</label>
+        <label class="mode-option"><input type="radio" name="themeChoice" id="themeSystem" value="system" onchange="setThemePref('system')"> <i data-lucide="smartphone" style="width:16px;"></i> Авто</label>
+      </div>
+
+      <div class="eyebrow" style="margin: 2px 0 0;">Уведомления</div>
+      <div class="mode-row" style="margin: 0 0 8px;">
+        <label class="mode-option"><input type="radio" name="alertChoice" id="alertMute" value="mute" onchange="setAlertPref('mute')"> <i data-lucide="bell-off" style="width:16px;"></i> Тихо</label>
+        <label class="mode-option"><input type="radio" name="alertChoice" id="alertVibro" value="vibro" onchange="setAlertPref('vibro')"> <i data-lucide="vibrate" style="width:16px;"></i> Вибро</label>
+        <label class="mode-option"><input type="radio" name="alertChoice" id="alertLoud" value="loud" onchange="setAlertPref('loud')"> <i data-lucide="volume-2" style="width:16px;"></i> Звук</label>
+      </div>
+      
+      <button class="back-btn" style="justify-content: flex-start;" onclick="enterEditMode()"><i data-lucide="sliders-horizontal"></i> Редактор зон</button>
+      <button class="back-btn" style="justify-content: flex-start;" onclick="openPresetsOverlay()"><i data-lucide="bookmark"></i> Сохраненные панели</button>
+      <button class="back-btn" style="justify-content: flex-start;" onclick="openWebhookSettings()"><i data-lucide="webhook"></i> Настройка Webhook</button>
+      
+      <div style="height:1px; background:var(--border); margin: 4px 0;"></div>
+      
+      <button class="back-btn" style="justify-content: flex-start;" onclick="actionStopAll()"><i data-lucide="octagon-pause" style="color: var(--warn);"></i> Остановить всех</button>
+      <button class="back-btn" style="justify-content: flex-start;" onclick="actionReset()"><i data-lucide="rotate-ccw" style="color: var(--warn);"></i> Сбросить счётчики</button>
+      <button class="back-btn" style="justify-content: flex-start;" onclick="actionNewTimer()"><i data-lucide="file-plus" style="color: var(--accent);"></i> Новая панель</button>
+      <button class="back-btn" style="justify-content: flex-start; margin-top: 4px;" onclick="actionExit()"><i data-lucide="power" style="color: var(--danger);"></i> Завершить работу</button>
+    </div>
+  </div>
+</div>
+
+<!-- Пресеты -->
+<div id="presetsOverlay" class="modal-overlay" onclick="closeModalsOnDim(event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Сохраненные панели</h3>
+      <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+    </div>
+    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+      <input type="text" id="presetNameInput" placeholder="Название (напр. Цех 1)" style="margin: 0;">
+      <button class="action-btn small" onclick="saveCurrentAsPreset()"><i data-lucide="save"></i></button>
+    </div>
+    <div id="presetsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    <div style="display: flex; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
+      <button class="back-btn small" onclick="exportPresetJSON()"><i data-lucide="download"></i> Экспорт</button>
+      <button class="back-btn small" onclick="document.getElementById('importFileInput').click()"><i data-lucide="upload"></i> Импорт</button>
+    </div>
+    <input type="file" id="importFileInput" accept="application/json" class="hidden" onchange="importPresetJSON(this.files[0])">
+  </div>
+</div>
+
+<!-- Модалка Webhook -->
+<div id="webhookModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Настройка Webhook</h3>
+      <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+    </div>
+    <p style="margin-bottom:6px; font-size:12px;">События отсылаются POST-запросом.</p>
+    <input type="text" id="webhookInput" placeholder="https://example.com/webhook" inputmode="url" autocapitalize="off" autocorrect="off">
+    <div style="display: flex; gap: 12px;">
+      <button class="back-btn" onclick="closeModals()">Отмена</button>
+      <button class="action-btn" onclick="saveWebhookConfirm()"><i data-lucide="check"></i> Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"><span id="toastIconWrap"></span><span id="toastMsg"></span></div>
+
+<script>
+lucide.createIcons();
+
+let zoneIdCounter = 0; let logIdCounter = 0; let zones = []; let logs = []; let tickHandle = null; let historyStack = [];
+const SESSION_KEY = 'zonesPanel.session.v2'; const PRESETS_KEY = 'zonesPanel.presets.v2'; const WEBHOOK_KEY = 'zonesPanel.webhook.v2';
+const palette = ['#14b8a6','#3b82f6','#8b5cf6','#d946ef','#f43f5e','#f97316','#eab308','#84cc16','#06b6d4','#6366f1','#a855f7','#ec4899','#ef4444','#f59e0b','#10b981','#0ea5e9'];
+function colorFor(id){ return palette[id % palette.length]; }
+function escapeHtml(str){ return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* --- Async Confirm --- */
+let activeConfirmResolve = null;
+function customConfirm(message, okText = 'Да', isDanger = false) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('confirmModal'); const msgEl = document.getElementById('confirmMessage'); const btnOk = document.getElementById('confirmOkBtn'); const btnCancel = document.getElementById('confirmCancelBtn');
+    msgEl.innerHTML = message; btnOk.textContent = okText;
+    if (isDanger) { btnOk.style.background = 'var(--danger)'; btnOk.style.color = '#fff'; } else { btnOk.style.background = 'var(--accent)'; btnOk.style.color = '#fff'; if (document.documentElement.getAttribute('data-theme') === 'dark') btnOk.style.color = '#000'; }
+    overlay.classList.add('show');
+    const cleanup = () => { overlay.classList.remove('show'); btnOk.removeEventListener('click', onOk); btnCancel.removeEventListener('click', onCancel); activeConfirmResolve = null; };
+    const onOk = () => { cleanup(); resolve(true); }; const onCancel = () => { cleanup(); resolve(false); };
+    btnOk.addEventListener('click', onOk); btnCancel.addEventListener('click', onCancel); activeConfirmResolve = onCancel;
+  });
+}
+function closeConfirmOnDim(e) { if(e.target.id === 'confirmModal' && activeConfirmResolve) activeConfirmResolve(); }
+
+/* --- Тема --- */
+const THEME_KEY = 'zonesPanel.theme.v1';
+function getThemePref(){ return localStorage.getItem(THEME_KEY) || 'dark'; }
+function resolveTheme(pref){ return pref === 'system' ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : pref; }
+function applyTheme(){
+  const resolved = resolveTheme(getThemePref()); document.documentElement.setAttribute('data-theme', resolved); document.documentElement.style.colorScheme = resolved;
+  const meta = document.getElementById('themeColorMeta'); if (meta) meta.setAttribute('content', resolved === 'light' ? '#f4f6f9' : '#0d0d19');
+}
+function setThemePref(pref){ localStorage.setItem(THEME_KEY, pref); applyTheme(); showToast('Тема обновлена'); }
+if (window.matchMedia) window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (getThemePref() === 'system') applyTheme(); });
+
+/* --- Звук и Haptics --- */
+const ALERT_KEY = 'zonesPanel.alert.v2';
+function getAlertPref(){ return localStorage.getItem(ALERT_KEY) || 'loud'; }
+function setAlertPref(mode){ 
+  localStorage.setItem(ALERT_KEY, mode); 
+  showToast(mode === 'mute' ? 'Без звука' : (mode === 'vibro' ? 'Только вибро' : 'Звук + Вибро')); 
+}
+
+let audioCtx = null;
+function playTone(freq = 880, durationMs = 90){
+  if (getAlertPref() !== 'loud') return;
+  try{
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = 'sine'; osc.frequency.value = freq; gain.gain.setValueAtTime(0.15, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durationMs / 1000);
+    osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + durationMs / 1000);
+  }catch(e){ }
+}
+
+function haptic(ms = 15, tone = 'start'){ 
+  const pref = getAlertPref();
+  if (pref === 'mute') return;
+  try{ if (navigator.vibrate) navigator.vibrate(ms); }catch(e){} 
+  if (pref === 'loud') playTone(tone === 'stop' ? 520 : 880, 90);
+}
+
+function syncMenuControls(){ 
+  const pref = getThemePref(); 
+  const el = document.getElementById('theme' + pref.charAt(0).toUpperCase() + pref.slice(1)); 
+  if (el) el.checked = true; 
+  
+  const alertPref = getAlertPref(); 
+  const alertEl = document.getElementById('alert' + alertPref.charAt(0).toUpperCase() + alertPref.slice(1)); 
+  if (alertEl) alertEl.checked = true; 
+}
+applyTheme();
+
+/* --- Wake Lock --- */
+let wakeLock = null;
+async function acquireWakeLock(){ try{ if('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); }catch(e){} }
+function releaseWakeLockIfIdle(){ const anyActive = zones.some(z => (z.mode==='single' && z.active) || (z.mode==='multi' && z.occupants.length>0)); if(!anyActive && wakeLock){ try{ wakeLock.release(); }catch(e){} wakeLock = null; } }
+function refreshWakeLock(){ const anyActive = zones.some(z => (z.mode==='single' && z.active) || (z.mode==='multi' && z.occupants.length>0)); if(anyActive && !wakeLock) acquireWakeLock(); if(!anyActive) releaseWakeLockIfIdle(); }
+document.addEventListener('visibilitychange', () => { if(document.visibilityState==='visible') refreshWakeLock(); });
+function updateIcons(root = document) { lucide.createIcons({ root }); }
+
+/* --- Undo & History --- */
+function saveStateForUndo() { historyStack.push({ zones: JSON.parse(JSON.stringify(zones)), logs: JSON.parse(JSON.stringify(logs)), zoneIdCounter: zoneIdCounter }); if (historyStack.length > 50) historyStack.shift(); updateUndoButton(); }
+function updateUndoButton() { 
+  const btnMenu = document.getElementById('menuUndoBtn'); 
+  if (btnMenu) btnMenu.disabled = historyStack.length === 0; 
+}
+function undoLastAction() {
+  if (historyStack.length === 0) return; const state = historyStack.pop(); zones = state.zones; logs = state.logs; zoneIdCounter = state.zoneIdCounter;
+  rebuildTableFromLogs();
+  if (!document.getElementById('step3').classList.contains('hidden')) { renderMainPanel(); } else if (!document.getElementById('editStep').classList.contains('hidden')) { renderEditList(); }
+  persistSession(); updateUndoButton(); closeModals(); showToast('Отменено ↶');
+}
+
+/* --- Storage & Webhook --- */
+function getWebhook() { return localStorage.getItem(WEBHOOK_KEY) || ''; }
+function setWebhook(url) { localStorage.setItem(WEBHOOK_KEY, url); }
+function openWebhookSettings() { closeModals(); document.getElementById('webhookInput').value = getWebhook(); document.getElementById('webhookModal').classList.add('show'); }
+function saveWebhookConfirm() {
+  const url = document.getElementById('webhookInput').value.trim();
+  if (url && !/^https?:\/\//i.test(url)) { showToast('Нужен адрес, начинающийся с http:// или https://', true); return; }
+  setWebhook(url); closeModals(); showToast(url ? 'Вебхук заряжен' : 'Вебхук вырублен');
+}
+function fireWebhook(payload) { const url = getWebhook(); if (!url) return; payload.timestamp = new Date().toISOString(); try { fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(()=>{}); } catch(e) {} }
+
+function storageTest(){ try{ localStorage.setItem('__zt','1'); localStorage.removeItem('__zt'); return true; }catch(e){ return false; } }
+const storageOK = storageTest();
+function persistSession(){ if (!storageOK) return; try{ localStorage.setItem(SESSION_KEY, JSON.stringify({ zoneIdCounter, logIdCounter, zones, logs, savedAt: Date.now() })); }catch(e){ showToast('Память забита', true); } }
+function loadSessionRaw(){ if (!storageOK) return null; try{ const raw = localStorage.getItem(SESSION_KEY); return raw ? JSON.parse(raw) : null; }catch(e){ return null; } }
+function clearSession(){ if (storageOK) localStorage.removeItem(SESSION_KEY); }
+function getPresets(){ if (!storageOK) return {}; try{ return JSON.parse(localStorage.getItem(PRESETS_KEY) || '{}'); }catch(e){ return {}; } }
+function savePresetsObj(obj){ if(storageOK) try{ localStorage.setItem(PRESETS_KEY, JSON.stringify(obj)); }catch(e){} }
+function ensureLogIds(){ let maxId = -1; logs.forEach(e => { if (typeof e.id === 'number') maxId = Math.max(maxId, e.id); }); logs.forEach(e => { if (typeof e.id !== 'number') e.id = ++maxId; }); logIdCounter = Math.max(logIdCounter, maxId + 1); }
+function restoreSessionAction() { const pending = window.__pendingSession; if (!pending) return; zoneIdCounter = pending.zoneIdCounter || 0; logIdCounter = pending.logIdCounter || 0; zones = pending.zones || []; logs = pending.logs || []; ensureLogIds(); historyStack = []; updateUndoButton(); document.getElementById('stepResume').classList.add('hidden'); document.getElementById('step3').classList.add('fade-in'); document.getElementById('step3').classList.remove('hidden'); rebuildTableFromLogs(); renderMainPanel(); startTicker(); refreshWakeLock(); showToast('Сессия восстановлена'); }
+function discardSessionAction() { clearSession(); window.__pendingSession = null; document.getElementById('stepResume').classList.add('hidden'); zones = []; logs = []; zoneIdCounter = 0; logIdCounter = 0; enterEditMode(); }
+
+let toastTimer = null;
+function showToast(msg, warn){
+  const t = document.getElementById('toast'); document.getElementById('toastMsg').textContent = msg;
+  t.classList.toggle('warn', !!warn);
+  document.getElementById('toastIconWrap').innerHTML = `<i data-lucide="${warn ? 'alert-triangle' : 'check-circle-2'}"></i>`;
+  updateIcons(t);
+  t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function openMenu(){ syncMenuControls(); document.getElementById('menuModal').classList.add('show'); }
+function closeModals(){ document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('show')); }
+function closeModalsOnDim(e){ if(e.target.classList.contains('modal-overlay') && e.target.id !== 'confirmModal') closeModals(); }
+
+/* --- Отрисовка Дашборда --- */
+function renderMainPanel(){
+  const singleZones = zones.filter(z => z.mode === 'single'); const multiZones = zones.filter(z => z.mode === 'multi');
+  document.getElementById('singleTitle').classList.toggle('hidden', singleZones.length === 0); document.getElementById('multiTitle').classList.toggle('hidden', multiZones.length === 0);
+
+  const singleArea = document.getElementById('singleArea'); singleArea.innerHTML = '';
+  singleZones.forEach(z => {
+    const btn = document.createElement('button'); btn.id = `singleBtn_${z.id}`; btn.className = 'tracker-btn' + (z.active ? ' active' : ''); btn.onclick = () => toggleSingle(z.id);
+    btn.innerHTML = singleInnerHTML(z); singleArea.appendChild(btn);
+  });
+
+  const multiArea = document.getElementById('multiArea'); multiArea.innerHTML = '';
+  multiZones.forEach(z => multiArea.appendChild(renderMultiCard(z)));
+
+  document.getElementById('editStep').classList.add('hidden'); document.getElementById('stepResume').classList.add('hidden'); document.getElementById('step3').classList.remove('hidden'); 
+  renderSummaryBar(); updateIcons(document.getElementById('multiArea'));
+}
+
+function singleInnerHTML(z){
+  const elapsed = z.active ? formatDuration(Date.now() - z.startTime) : formatDuration(z.totalMs);
+  const statusBadge = z.active 
+    ? `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.2); color:inherit; display:flex; align-items:center; gap:4px;"><span style="width:4px;height:4px;border-radius:2px;background:#fff;" class="pulse-pip"></span> ИДЁТ</span>` 
+    : `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--surface); color:var(--muted); border:1px solid var(--border);">ГОТОВ</span>`;
+
+  return `
+    <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;">
+      <div style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
+        <span style="font-size:14px; font-weight:700; line-height:1.2;">${escapeHtml(z.name)}</span>
+        <div style="display:flex; align-items:center; gap:4px;">
+           <span style="width:6px;height:6px;border-radius:2px;background:${z.color};"></span>
+           <span style="font-size:10px; font-weight:600; color:var(--muted);">${z.active ? 'Активен' : `Визитов: ${z.triggerCount}`}</span>
+        </div>
+      </div>
+      ${statusBadge}
+    </div>
+    <div style="margin: 12px 0 0 0; width:100%; text-align:left;">
+      <div style="font-size:20px; font-weight:700; letter-spacing: -0.02em;">${elapsed}</div>
+    </div>
+  `;
+}
+
+function renderMultiCard(z){ const card = document.createElement('div'); card.className = 'zone-card'; card.id = `multiCard_${z.id}`; card.style.setProperty('--zc', z.color); card.innerHTML = multiCardInnerHTML(z); return card; }
+
+function multiCardInnerHTML(z){
+  const occHtml = z.occupants.length
+    ? z.occupants.map(o => `
+        <div style="display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:4px 4px 4px 10px; font-size:12px; font-weight:600;">
+          <span>№${o.localNum} · <b style="color:var(--accent); font-weight:700;">${formatDuration(Date.now() - o.startTime)}</b></span>
+          <button class="danger-btn" onclick="event.stopPropagation(); multiDepart(${z.id}, ${o.localNum})" style="padding:4px 10px; font-size:11px; font-weight:700; border-radius:4px; margin:0; width:auto; box-shadow:none;">СТОП</button>
+        </div>`).join('')
+    : `<span style="color:var(--muted); font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; opacity:0.8;">ПУСТО</span>`;
+  return `
+    <div class="zone-card-head" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="display:flex; flex-direction:column; gap:2px;">
+        <span class="zone-card-title" style="font-size:15px; font-weight:700;">${escapeHtml(z.name)}</span>
+        <span style="font-size:10px; font-weight:600; color:var(--muted);">Активно: <b style="color:var(--text);">${z.occupants.length}</b> | Всего: ${z.triggerCount}</span>
+      </div>
+      <button class="action-btn" onclick="multiArrive(${z.id})" style="width:auto; padding:6px 12px; font-size:12px; border-radius:6px;">+ Добавить</button>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:6px;">${occHtml}</div>`;
+}
+
+function renderSummaryBar(){
+  const bar = document.getElementById('summaryBar'); let totalMs = 0, activeCount = 0;
+  zones.forEach(z => {
+    totalMs += z.totalMs;
+    if (z.mode === 'single'){ if (z.active){ totalMs += Date.now() - z.startTime; activeCount++; } }
+    else { z.occupants.forEach(o => { totalMs += Date.now() - o.startTime; }); activeCount += z.occupants.length; }
+  });
+  bar.innerHTML = `<div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="layers" style="color:var(--accent); width:14px;"></i> <span>Зон: <b>${zones.length}</b></span></div>
+                   <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="activity" style="color:var(--accent); width:14px;"></i> <span>Внутри: <b>${activeCount}</b></span></div>
+                   <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="clock" style="color:var(--accent); width:14px;"></i> <span>Время: <b>${formatDuration(totalMs)}</b></span></div>`;
+  updateIcons(bar);
+}
+
+function startTicker(){
+  if (tickHandle) clearInterval(tickHandle);
+  tickHandle = setInterval(() => {
+    if (document.getElementById('step3').classList.contains('hidden')) return; let updateNeeded = false;
+    zones.forEach(z => {
+      if (z.mode === 'single'){ if (z.active){ const el = document.getElementById(`singleBtn_${z.id}`); if (el) el.innerHTML = singleInnerHTML(z); } }
+      else { const card = document.getElementById(`multiCard_${z.id}`); if (card && z.occupants.length){ card.innerHTML = multiCardInnerHTML(z); updateNeeded = true; } }
+    });
+    renderSummaryBar(); if(updateNeeded) updateIcons(document.getElementById('multiArea'));
+  }, 1000);
+}
+
+/* --- Логика Управления --- */
+const LONG_TIMER_CONFIRM_MS = 30 * 60 * 1000; 
+
+async function toggleSingle(id){
+  const z = zones.find(x => x.id === id); if (!z) return; const now = Date.now();
+  if (z.active){
+    const elapsed = now - z.startTime;
+    if (elapsed > LONG_TIMER_CONFIRM_MS && !(await customConfirm(`«${escapeHtml(z.name)}» активна уже ${formatDuration(elapsed)}.<br>Остановить?`, 'Остановить'))) return;
+  }
+  saveStateForUndo();
+  if (!z.active){ z.active = true; z.triggerCount++; z.startTime = now; fireWebhook({ event: 'start', zoneId: z.id, zoneName: z.name }); } else { forceOffSingle(z, now); }
+  
+  const el = document.getElementById(`singleBtn_${id}`); el.className = 'tracker-btn' + (z.active ? ' active' : ''); el.innerHTML = singleInnerHTML(z);
+  haptic(15, z.active ? 'start' : 'stop'); renderSummaryBar(); persistSession(); refreshWakeLock();
+}
+
+function forceOffSingle(z, offTime = Date.now()){
+  if (!z.active) return; const durationMs = offTime - z.startTime; z.active = false; z.totalMs += durationMs;
+  fireWebhook({ event: 'stop', zoneId: z.id, zoneName: z.name, durationMs: durationMs });
+  const entry = { id: logIdCounter++, type: 'event', name:z.name, num:z.triggerCount, onTime:formatTime(z.startTime), offTime:formatTime(offTime), duration:formatDuration(durationMs) };
+  logs.push(entry); prependTableRow(entry);
+}
+
+function multiArrive(id){
+  const z = zones.find(x => x.id === id); if (!z) return; saveStateForUndo(); const localNum = z.nextLocalNum++; z.occupants.push({ localNum: localNum, startTime: Date.now() });
+  fireWebhook({ event: 'arrive', zoneId: z.id, zoneName: z.name, localNum: localNum }); haptic(15, 'start'); refreshMultiCard(z); renderSummaryBar(); persistSession(); refreshWakeLock();
+}
+
+async function multiDepart(id, localNum, opts = {}){
+  const z = zones.find(x => x.id === id); if (!z) return;
+  const idx = z.occupants.findIndex(o => o.localNum === localNum); if (idx === -1) return;
+  const occ = z.occupants[idx]; const offTime = Date.now(); const durationMs = offTime - occ.startTime;
+  if (!opts.skipConfirm && durationMs > LONG_TIMER_CONFIRM_MS && !(await customConfirm(`№${localNum} в «${escapeHtml(z.name)}» уже ${formatDuration(durationMs)}.<br>Остановить?`, 'Стоп'))) return;
+  saveStateForUndo(); z.occupants.splice(idx, 1); z.triggerCount++; z.totalMs += durationMs;
+  fireWebhook({ event: 'depart', zoneId: z.id, zoneName: z.name, localNum: localNum, durationMs: durationMs });
+  const entry = { id: logIdCounter++, type: 'event', name:z.name, num:localNum, onTime:formatTime(occ.startTime), offTime:formatTime(offTime), duration:formatDuration(durationMs) };
+  logs.push(entry); prependTableRow(entry); haptic(15, 'stop'); refreshMultiCard(z); renderSummaryBar(); persistSession(); refreshWakeLock();
+}
+function refreshMultiCard(z){ const card = document.getElementById(`multiCard_${z.id}`); if (card) { card.innerHTML = multiCardInnerHTML(z); updateIcons(card); } }
+
+/* --- Action Menu (Кнопка Журнала) & Заметки --- */
+function openActionMenuModal() { updateUndoButton(); updateShareButtonVisibility(); document.getElementById('actionMenuModal').classList.add('show'); }
+let recognition = null; let editingNoteId = null;
+function editNoteEntry(id) {
+  const entry = logs.find(e => e.id === id && e.type === 'note'); if (!entry) return; editingNoteId = id;
+  document.getElementById('noteTypeSelector').classList.add('hidden'); document.getElementById('noteInputArea').classList.remove('hidden'); document.getElementById('noteTextInput').value = entry.text; document.getElementById('actionMenuModal').classList.add('show');
+  setTimeout(() => document.getElementById('noteTextInput').focus(), 100);
+}
+async function deleteNoteEntry(id) {
+  const entry = logs.find(e => e.id === id && e.type === 'note'); if (!entry) return;
+  if (!(await customConfirm('Удалить эту заметку?', 'Удалить', true))) return;
+  saveStateForUndo(); logs = logs.filter(e => !(e.id === id && e.type === 'note')); rebuildTableFromLogs(); persistSession(); showToast('Заметка удалена');
+}
+function resetNoteModal() {
+  if (recognition) { try { recognition.stop(); } catch(e){} } editingNoteId = null;
+  document.getElementById('noteTypeSelector').classList.remove('hidden'); document.getElementById('noteInputArea').classList.add('hidden'); document.getElementById('noteTextInput').value = '';
+  const micIcon = document.getElementById('voiceBtn').querySelector('svg, i'); if (micIcon) micIcon.classList.remove('mic-pulse');
+}
+function startTextNote() { document.getElementById('noteTypeSelector').classList.add('hidden'); document.getElementById('noteInputArea').classList.remove('hidden'); document.getElementById('noteTextInput').focus(); }
+function startVoiceNote() {
+  const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!Speech) { showToast('Диктовка не поддерживается', true); startTextNote(); return; }
+  try {
+    recognition = new Speech(); recognition.lang = 'ru-RU'; recognition.interimResults = false; recognition.maxAlternatives = 1;
+    recognition.onstart = () => { const m = document.getElementById('voiceBtn').querySelector('svg, i'); if (m) m.classList.add('mic-pulse'); showToast('Говори...'); };
+    recognition.onresult = (e) => { document.getElementById('noteTextInput').value = e.results[0][0].transcript; startTextNote(); };
+    recognition.onerror = () => { const m = document.getElementById('voiceBtn').querySelector('svg, i'); if (m) m.classList.remove('mic-pulse'); showToast('Ошибка микрофона', true); startTextNote(); };
+    recognition.onend = () => { const m = document.getElementById('voiceBtn').querySelector('svg, i'); if (m) m.classList.remove('mic-pulse'); };
+    recognition.start();
+  } catch(e) { showToast('Нет доступа к микрофону', true); startTextNote(); }
+}
+function saveNoteConfirm() {
+  const text = document.getElementById('noteTextInput').value.trim(); if (!text) { showToast('Заметка пуста', true); return; }
+  saveStateForUndo();
+  if (editingNoteId !== null) { const entry = logs.find(e => e.id === editingNoteId && e.type === 'note'); if (entry) { entry.text = text; rebuildTableFromLogs(); showToast('Заметка обновлена'); } editingNoteId = null; } 
+  else { const entry = { id: logIdCounter++, type: 'note', text: text, onTime: formatTime(Date.now()) }; logs.push(entry); prependTableRow(entry); fireWebhook({ event: 'note', text: text }); showToast('Заметка сохранена'); }
+  closeModals(); resetNoteModal(); persistSession();
+}
+
+function openFullTableModal() { closeModals(); document.getElementById('fullTableModal').classList.add('show'); }
+
+/* --- Журнал и Экспорт (Feed + Table) --- */
+function formatTime(ms){ return new Date(ms).toTimeString().split(' ')[0]; }
+function formatDuration(ms){ const totalSeconds = Math.floor(ms / 1000); const h = Math.floor(totalSeconds / 3600); const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2,'0'); const s = (totalSeconds % 60).toString().padStart(2,'0'); return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`; }
+
+function getFeedItemHTML(entry) {
+  if (entry.type === 'note') {
+    return `
+    <div class="feed-item">
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:10px;">
+        <span style="display:flex; align-items:center; gap:4px; color:var(--accent); font-weight:700;"><i data-lucide="pen-tool" style="width:12px;height:12px;"></i> Заметка</span>
+        <span style="color:var(--muted);">${entry.onTime}</span>
+      </div>
+      <div style="font-size:13px; font-weight:600; color:var(--text); margin-top:2px;">${escapeHtml(entry.text)}</div>
+    </div>`;
+  }
+  return `
+    <div class="feed-item">
+       <div style="display:flex; gap:6px; align-items:center;">
+          <span style="color:var(--muted); font-size:11px;">${entry.onTime}</span>
+          <span style="color:var(--accent); font-weight:700; font-size:13px;">№${entry.num}</span>
+          <span style="font-weight:700; font-size:14px; color:var(--text);">${escapeHtml(entry.name)}</span>
+       </div>
+       <div style="display:flex; gap:6px; align-items:center; font-size:11px;">
+          <span style="color:var(--accent); font-weight:700; font-size:12px;">${entry.duration}</span>
+       </div>
+    </div>`;
+}
+
+function getTableRowHTML(entry) {
+  if (entry.type === 'note') {
+    return `<tr class="note-row"><td colspan="5"><div class="note-content" style="flex-direction:row; align-items:center; justify-content:space-between; gap:12px;">
+                <div style="display:flex; flex-direction:column; gap:4px;"><b><i data-lucide="pen-tool" style="width:14px;height:14px;display:inline-block;vertical-align:bottom;"></i> Заметка [${entry.onTime}]:</b><span>${escapeHtml(entry.text)}</span></div>
+                <div style="display:flex; gap:6px; flex-shrink:0;">
+                  <button class="icon-btn" style="padding:8px;" onclick="editNoteEntry(${entry.id}); closeModals();"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
+                  <button class="icon-btn" style="padding:8px; color:var(--danger); background:rgba(239, 68, 68, 0.1);" onclick="deleteNoteEntry(${entry.id})"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+                </div></div></td></tr>`;
+  }
+  return `<tr><td>${escapeHtml(entry.name)}</td><td class="mono">${entry.num}</td><td class="mono">${entry.onTime}</td><td class="mono">${entry.offTime}</td><td class="mono" style="color:var(--accent); font-weight:700;">${entry.duration}</td></tr>`;
+}
+
+function prependTableRow(entry){ 
+  const tbody = document.getElementById('logBody'); tbody.insertAdjacentHTML('afterbegin', getTableRowHTML(entry)); updateIcons(tbody.firstElementChild); 
+  const feed = document.getElementById('logFeed'); feed.insertAdjacentHTML('beforeend', getFeedItemHTML(entry)); updateIcons(feed.lastElementChild);
+  while(feed.children.length > 5) feed.removeChild(feed.firstChild);
+  requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+}
+
+function rebuildTableFromLogs(){ 
+  const tbody = document.getElementById('logBody'); tbody.innerHTML = ''; 
+  const feed = document.getElementById('logFeed'); feed.innerHTML = '';
+  for (let i = logs.length - 1; i >= 0; i--){ tbody.insertAdjacentHTML('beforeend', getTableRowHTML(logs[i])); }
+  const feedLogs = logs.slice(-5);
+  for (let i = 0; i < feedLogs.length; i++){ feed.insertAdjacentHTML('beforeend', getFeedItemHTML(feedLogs[i])); }
+  updateIcons(tbody); updateIcons(feed);
+  requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+}
+
+function buildCSV(){
+  let csv = "\uFEFFСобытие/Зона,№,Старт,Финиш,Текст/Длительность\n";
+  logs.forEach(r => { if (r.type === 'note') { csv += `ЗАМЕТКА,,-,${r.onTime},"${r.text.replace(/"/g, '""')}"\n`; } else { csv += `"${r.name}",${r.num},${r.onTime},${r.offTime},${r.duration}\n`; } });
+  csv += "\nСводка по зонам\nЗона,Тип,Прошло,Суммарное время\n";
+  zones.forEach(z => { let total = z.totalMs; if (z.mode === 'single' && z.active) total += Date.now() - z.startTime; if (z.mode === 'multi') z.occupants.forEach(o => { total += Date.now() - o.startTime; }); csv += `"${z.name}",${z.mode === 'single' ? 'Одиночная' : 'Множественная'},${z.triggerCount},${formatDuration(total)}\n`; });
+  return csv;
+}
+function exportCSV(){
+  if (logs.length === 0 && zones.every(z => z.totalMs === 0)){ showToast('Лог пустой', true); return; } const blob = new Blob([buildCSV()], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `zones_log_${new Date().toISOString().slice(0,10)}.csv`; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
+}
+async function shareCSV(){
+  if (logs.length === 0 && zones.every(z => z.totalMs === 0)){ showToast('Лог пустой', true); return; } const csv = buildCSV(); const file = new File([csv], `zones_log_${new Date().toISOString().slice(0,10)}.csv`, {type:'text/csv'});
+  try{ if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], title: 'Журнал панели зон' }); } else { showToast('Общий доступ не поддерживается', true); } }catch(e){}
+}
+function updateShareButtonVisibility(){ const btn = document.getElementById('shareBtnMenu'); if (btn) btn.style.display = !!(navigator.share) ? 'flex' : 'none'; }
+
+/* --- Управление --- */
+async function actionStopAll(){
+  closeModals(); const anyActive = zones.some(z => (z.mode==='single' && z.active) || (z.mode==='multi' && z.occupants.length>0)); if(!anyActive){ showToast('Все зоны уже свободны'); return; }
+  if(!(await customConfirm('Остановить отсчёт во всех зонах?', 'Остановить всех', true))) return;
+  saveStateForUndo(); const now = Date.now();
+  zones.forEach(z => { if (z.mode === 'single' && z.active) forceOffSingle(z, now); if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, {skipConfirm:true})); });
+  renderMainPanel(); renderSummaryBar(); persistSession(); refreshWakeLock(); showToast('Все зоны остановлены');
+}
+
+async function actionReset(){
+  closeModals(); if (logs.length > 0 && await customConfirm('Скачать логи перед сбросом данных?', 'Скачать')) exportCSV();
+  if(!(await customConfirm('Сбросить все счётчики?', 'Сбросить', true))) return;
+  saveStateForUndo();
+  zones.forEach(z => { if (z.mode === 'single' && z.active) forceOffSingle(z); if (z.mode === 'multi') [...z.occupants].forEach(o => { const idx = z.occupants.findIndex(x => x.localNum === o.localNum); if (idx !== -1) z.occupants.splice(idx, 1); }); });
+  logs = []; document.getElementById('logBody').innerHTML = ''; document.getElementById('logFeed').innerHTML = ''; zones.forEach(z => { z.triggerCount = 0; z.totalMs = 0; z.nextLocalNum = 1; });
+  renderMainPanel(); persistSession();
+}
+
+async function actionNewTimer(){
+  closeModals(); if (logs.length > 0 && await customConfirm('Скачать логи перед созданием новой панели?', 'Скачать')) exportCSV();
+  if(!(await customConfirm('Создать новую панель?', 'Создать', true))) return;
+  clearSession(); historyStack = []; updateUndoButton();
+  zones = []; logs = []; zoneIdCounter = 0; logIdCounter = 0;
+  document.getElementById('step3').classList.add('hidden'); enterEditMode();
+}
+
+async function actionExit(){
+  closeModals(); if (!(await customConfirm('Завершить работу приложения?', 'Завершить', true))) return;
+  if (logs.length > 0 && await customConfirm('Скачать логи напоследок?', 'Скачать')) exportCSV();
+  if (tickHandle) clearInterval(tickHandle); document.body.innerHTML = '<div style="text-align:center; padding-top:40vh; color:var(--muted);"><i data-lucide="check-circle" style="width:56px;height:56px;margin-bottom:16px;color:var(--accent);"></i><h2>Работа завершена</h2><p>Данные сохранены локально.</p></div>'; updateIcons();
+}
+
+/* --- Редактор со свайпами --- */
+function enterEditMode(){ closeModals(); document.getElementById('step3').classList.add('hidden'); document.getElementById('editStep').classList.remove('hidden'); document.getElementById('editStep').classList.add('fade-in'); renderEditList(); }
+function exitEditMode(){
+  if (zones.length === 0) { showToast('Добавь хотя бы одну зону!', true); return; }
+  document.getElementById('editStep').classList.add('hidden'); document.getElementById('step3').classList.remove('hidden'); document.getElementById('step3').classList.add('fade-in');
+  renderMainPanel(); startTicker(); persistSession();
+}
+
+function renderEditList(){
+  const list = document.getElementById('editBlocksList'); list.innerHTML = ''; 
+  if (zones.length === 0){ list.innerHTML = '<div style="text-align:center; padding:30px 10px; color:var(--muted); font-size:13px; font-weight:500;">Ни одной зоны пока нет.<br>Нажми «Зона» или загрузи пресет.</div>'; return; }
+  zones.forEach(z => {
+    const div = document.createElement('div'); div.className = 'edit-item';
+    div.innerHTML = `<div class="color-dot" style="background:${z.color}" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
+      <div class="edit-name-wrap">
+        <input type="text" value="${escapeHtml(z.name)}" placeholder="Название зоны" onchange="commitRename(${z.id}, this.value)">
+        <i data-lucide="pencil" class="edit-name-icon"></i>
+      </div>
+      <button class="icon-btn" onclick="toggleZoneMode(${z.id})" title="Режим зоны"><i data-lucide="${z.mode === 'single' ? 'user' : 'users'}"></i></button>
+      <button class="icon-btn danger-btn" style="padding:8px; width:auto; border-color:transparent; box-shadow:none;" onclick="editDeleteOne(${z.id})" title="Удалить"><i data-lucide="trash-2"></i></button>`;
+    
+    let startX = 0;
+    div.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
+    div.addEventListener('touchend', e => {
+      let diffX = e.changedTouches[0].clientX - startX;
+      if (diffX < -80) { div.style.transform = 'translateX(-100%)'; div.style.opacity = '0'; setTimeout(() => editDeleteOne(z.id), 200); }
+    }, {passive: true});
+    list.appendChild(div);
+  });
+  updateIcons(list);
+}
+function commitRename(id, val){ const z = zones.find(x => x.id === id); if(!z) return; const trimmed = (val||'').trim(); if (trimmed && z.name !== trimmed) { saveStateForUndo(); z.name = trimmed; persistSession(); } }
+function cycleColor(id){ const z = zones.find(x => x.id === id); if(!z) return; saveStateForUndo(); z.color = palette[(palette.indexOf(z.color)+1) % palette.length]; renderEditList(); persistSession(); }
+function toggleZoneMode(id){ const z = zones.find(x => x.id === id); if(!z) return; saveStateForUndo(); if(z.mode==='single' && z.active) forceOffSingle(z); if(z.mode==='multi') [...z.occupants].forEach(o=>multiDepart(z.id, o.localNum, {skipConfirm:true})); z.mode = z.mode === 'single' ? 'multi' : 'single'; z.active=false; z.startTime=null; z.occupants=[]; z.nextLocalNum=1; renderEditList(); persistSession(); }
+function editAddZone(){ saveStateForUndo(); const id = zoneIdCounter++; zones.push({ id, name:`Зона ${id+1}`, mode:'single', color:colorFor(id), active:false, startTime:null, occupants:[], nextLocalNum:1, triggerCount:0, totalMs:0 }); renderEditList(); persistSession(); }
+function editDeleteOne(id){ const z = zones.find(x=>x.id===id); if(z){ saveStateForUndo(); if(z.mode==='single'&&z.active) forceOffSingle(z); if(z.mode==='multi') [...z.occupants].forEach(o=>multiDepart(z.id, o.localNum, {skipConfirm:true})); } zones = zones.filter(x=>x.id!==id); renderEditList(); persistSession(); }
+
+/* --- Пресеты --- */
+function openPresetsOverlay(){ closeModals(); renderPresetsList(); document.getElementById('presetsOverlay').classList.add('show'); }
+function renderPresetsList(){
+  const presets = getPresets(); const list = document.getElementById('presetsList'); const names = Object.keys(presets);
+  list.innerHTML = names.length ? '' : '<p>Сохранённых панелей нет.</p>';
+  names.forEach(name => {
+    const p = presets[name]; const row = document.createElement('div'); row.style.cssText = "display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);";
+    row.innerHTML = `<div style="flex:1;"><b style="font-size:14px; display:block;">${escapeHtml(name)}</b><span style="font-size:11px;color:var(--muted);">${p.zones.length} зон</span></div>
+                     <button class="action-btn small" style="width:auto;" onclick="loadPreset('${escapeHtml(name.replace(/'/g,"\\'"))}')"><i data-lucide="download-cloud"></i> Загрузить</button>
+                     <button class="icon-btn danger-btn" style="padding:8px; width:auto; border-color:transparent; box-shadow:none;" onclick="deletePreset('${escapeHtml(name.replace(/'/g,"\\'"))}')"><i data-lucide="trash-2"></i></button>`;
+    list.appendChild(row);
+  });
+  updateIcons(list);
+}
+function saveCurrentAsPreset(){
+  if(zones.length===0){ showToast('Нет зон для сохранения', true); return; } const name = document.getElementById('presetNameInput').value.trim(); if(!name){ showToast('Введи название', true); return; }
+  const presets = getPresets(); presets[name] = { zones: zones.map(z=>({name:z.name, mode:z.mode, color:z.color})), savedAt:Date.now() };
+  savePresetsObj(presets); document.getElementById('presetNameInput').value = ''; renderPresetsList(); showToast('Сохранено');
+}
+function applyZonesConfig(zConf){
+  saveStateForUndo(); zoneIdCounter = 0; logIdCounter = 0;
+  zones = zConf.map(zc => { const id = zoneIdCounter++; return { id, name:zc.name, mode:zc.mode, color:zc.color||colorFor(id), active:false, startTime:null, occupants:[], nextLocalNum:1, triggerCount:0, totalMs:0 }; });
+  logs = []; document.getElementById('logBody').innerHTML = ''; document.getElementById('logFeed').innerHTML = ''; closeModals();
+  document.getElementById('editStep').classList.add('hidden'); document.getElementById('stepResume').classList.add('hidden');
+  document.getElementById('step3').classList.add('fade-in'); document.getElementById('step3').classList.remove('hidden');
+  renderMainPanel(); startTicker(); persistSession(); refreshWakeLock();
+}
+async function loadPreset(name){
+  const p = getPresets()[name]; if(!p) return; const hasLive = logs.length>0 || zones.some(z=>z.active||z.occupants.length);
+  if(hasLive && !(await customConfirm('Текущая панель будет заменена. Логи удалятся. Продолжить?', 'Заменить', true))) return;
+  applyZonesConfig(p.zones); showToast(`Загружено: ${name}`);
+}
+async function deletePreset(name){ if(!(await customConfirm(`Удалить панель «${escapeHtml(name)}»?`, 'Удалить', true))) return; const p = getPresets(); delete p[name]; savePresetsObj(p); renderPresetsList(); }
+function exportPresetJSON(){
+  if(zones.length===0) return; const blob = new Blob([JSON.stringify({zones: zones.map(z=>({name:z.name, mode:z.mode, color:z.color}))}, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `preset_${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
+}
+function importPresetJSON(file){
+  if(!file) return; const reader = new FileReader();
+  reader.onload = async ()=>{
+    try{
+      const data = JSON.parse(reader.result); if(!data.zones || !Array.isArray(data.zones)) throw new Error('bad fmt');
+      const hasLive = logs.length>0 || zones.some(z=>z.active||z.occupants.length);
+      if(hasLive && !(await customConfirm('Текущая панель будет заменена. Продолжить?', 'Заменить', true))) return;
+      applyZonesConfig(data.zones); showToast('Импортировано');
+    }catch(e){ showToast('Ошибка файла', true); }
+  };
+  reader.readAsText(file);
+}
+
+if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { }); }); }
+updateShareButtonVisibility(); updateUndoButton();
+const pending = loadSessionRaw();
+if(pending && pending.zones && pending.zones.length){
+  window.__pendingSession = pending; document.getElementById('stepResume').classList.remove('hidden'); document.getElementById('stepResume').classList.add('fade-in');
+} else {
+  enterEditMode(); document.getElementById('editStep').classList.add('fade-in');
+}
+</script>
+</body>
+</html>
