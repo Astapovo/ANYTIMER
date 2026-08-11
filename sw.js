@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anytimer-v4'; // <--- ПОДНИМАЙ ВЕРСИЮ (v3, v4...) ПРИ КАЖДОМ ПУШЕ
+const CACHE_NAME = 'anytimer-v5'; // <--- ПОДНИМАЙ ВЕРСИЮ (v3, v4...) ПРИ КАЖДОМ ПУШЕ
 
 const ASSETS = [
   './',
