@@ -176,7 +176,7 @@
   }
 
   /* Inputs */
-  input[type="number"], input[type="text"], textarea { width: 100%; padding: 12px; margin: 6px 0 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: inherit; font-size: 14px; font-weight: 500; }
+  input[type="number"], input[type="text"], textarea, input[type="checkbox"] { width: 100%; padding: 12px; margin: 6px 0 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: inherit; font-size: 14px; font-weight: 500; }
   input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(79, 219, 200, 0.15); }
 
   /* Секции Настройки */
@@ -494,6 +494,14 @@
         <label class="mode-option"><input type="radio" name="alertChoice" id="alertLoud" value="loud" onchange="setAlertPref('loud')"> <i data-lucide="volume-2" style="width:16px;"></i> Звук</label>
       </div>
       
+      <div class="eyebrow" style="margin: 2px 0 0;">Музыка</div>
+      <div class="mode-row" style="margin: 0 0 8px;">
+        <label class="mode-option" style="justify-content: flex-start;">
+          <input type="checkbox" id="musicToggle" onchange="toggleMusic(this.checked)"> 
+          <i data-lucide="music" style="width:16px;"></i> Фоновая музыка
+        </label>
+      </div>
+      
       <button class="back-btn" style="justify-content: flex-start;" onclick="enterEditMode()"><i data-lucide="sliders-horizontal"></i> Редактор зон</button>
       <button class="back-btn" style="justify-content: flex-start;" onclick="openPresetsOverlay()"><i data-lucide="bookmark"></i> Сохраненные панели</button>
       <button class="back-btn" style="justify-content: flex-start;" onclick="openWebhookSettings()"><i data-lucide="webhook"></i> Настройка Webhook</button>
@@ -608,6 +616,32 @@ function haptic(ms = 15, tone = 'start'){
   if (pref === 'loud') playTone(tone === 'stop' ? 520 : 880, 90);
 }
 
+/* --- Фоновая музыка --- */
+const MUSIC_KEY = 'zonesPanel.music.v1';
+let bgMusic = new Audio('./bg-music.mp3');
+bgMusic.loop = true;
+bgMusic.volume = 0.3; // 30% громкости по дефолту, чтобы не глушило системные звуки
+
+function getMusicPref(){ return localStorage.getItem(MUSIC_KEY) === 'true'; }
+function setMusicPref(state){ localStorage.setItem(MUSIC_KEY, state); }
+
+function toggleMusic(state){
+  setMusicPref(state);
+  if(state){
+    bgMusic.play().catch(() => showToast('Ткни в экран для старта музыки', true));
+  } else {
+    bgMusic.pause();
+  }
+}
+
+// Костыль против блокировки автоплея браузером: запускаем при первом касании экрана
+document.addEventListener('pointerdown', () => {
+  if(getMusicPref() && bgMusic.paused) {
+    bgMusic.play().catch(()=>{});
+  }
+}, { once: true });
+
+
 function syncMenuControls(){ 
   const pref = getThemePref(); 
   const el = document.getElementById('theme' + pref.charAt(0).toUpperCase() + pref.slice(1)); 
@@ -616,6 +650,9 @@ function syncMenuControls(){
   const alertPref = getAlertPref(); 
   const alertEl = document.getElementById('alert' + alertPref.charAt(0).toUpperCase() + alertPref.slice(1)); 
   if (alertEl) alertEl.checked = true; 
+  
+  const musicEl = document.getElementById('musicToggle');
+  if (musicEl) musicEl.checked = getMusicPref();
 }
 applyTheme();
 
@@ -947,6 +984,7 @@ async function actionNewTimer(){
 async function actionExit(){
   closeModals(); if (!(await customConfirm('Завершить работу приложения?', 'Завершить', true))) return;
   if (logs.length > 0 && await customConfirm('Скачать логи напоследок?', 'Скачать')) exportCSV();
+  bgMusic.pause();
   if (tickHandle) clearInterval(tickHandle); document.body.innerHTML = '<div style="text-align:center; padding-top:40vh; color:var(--muted);"><i data-lucide="check-circle" style="width:56px;height:56px;margin-bottom:16px;color:var(--accent);"></i><h2>Работа завершена</h2><p>Данные сохранены локально.</p></div>'; updateIcons();
 }
 

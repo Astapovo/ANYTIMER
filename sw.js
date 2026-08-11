@@ -1,10 +1,11 @@
-const CACHE_NAME = 'anytimer-v2'; // <--- ПОДНИМАЙ ВЕРСИЮ (v3, v4...) ПРИ КАЖДОМ ПУШЕ
+const CACHE_NAME = 'anytimer-v3'; // <--- ПОДНИМАЙ ВЕРСИЮ (v3, v4...) ПРИ КАЖДОМ ПУШЕ
 
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon.svg'
+  './icon.svg',
+  './bg-music.mp3'
 ];
 
 // Установка: мгновенно активируем новый воркер
