@@ -39,6 +39,17 @@
     --grid-color: rgba(255, 255, 255, 0.06);
     --glass-blur: blur(20px);
 
+    /* Мерцающая полупрозрачная заливка активных карточек */
+    --shimmer-rgb: 79, 219, 200;
+    --active-shimmer-bg: linear-gradient(115deg,
+      rgba(var(--shimmer-rgb), 0.05) 0%,
+      rgba(var(--shimmer-rgb), 0.34) 18%,
+      rgba(var(--shimmer-rgb), 0.08) 36%,
+      rgba(var(--shimmer-rgb), 0.30) 54%,
+      rgba(var(--shimmer-rgb), 0.05) 72%,
+      rgba(var(--shimmer-rgb), 0.32) 90%,
+      rgba(var(--shimmer-rgb), 0.05) 100%);
+
     /* ЕДИНЫЙ ТЕХНИЧЕСКИЙ ШРИФТ */
     --font-ui: 'JetBrains Mono', monospace;
     --font-mono: 'JetBrains Mono', monospace;
@@ -58,6 +69,7 @@
     --danger: #ef4444;
     --warn: #d97706;
     --shadow: 0 10px 25px rgba(0,0,0,0.04);
+    --shimmer-rgb: 13, 148, 136;
     
     --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.6) 100%);
     --active-card-bg: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
@@ -230,24 +242,57 @@
   }
   
   .tracker-btn { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; min-height: 90px; cursor: pointer; text-align: left; }
-  
-  .tracker-btn.active { background: var(--active-card-bg); border-color: var(--accent); }
-  
-  :root[data-theme="dark"] .tracker-btn.active { 
-    box-shadow: 0 0 15px rgba(79, 219, 200, 0.2); 
+
+  /* --- Мерцающая, "просвечивающая" заливка активных карточек --- */
+  @keyframes shimmerSweep {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 250% 50%; }
   }
-  
-  /* Жестко задаем градиент для активной кнопки в светлой теме и кидаем тень */
-  :root[data-theme="light"] .tracker-btn.active { 
-    background-image: var(--active-card-bg) !important;
-    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3) !important;
+
+  .tracker-btn.active, .zone-card.active {
+    position: relative;
+    background-color: transparent;
+    background-image: var(--active-shimmer-bg);
+    background-size: 250% 250%;
+    animation: shimmerSweep 4.5s linear infinite;
+    border-color: var(--accent);
   }
-  
-  :root[data-theme="light"] .tracker-btn.active * { color: #ffffff !important; }
+
+  /* Лёгкий блик поверх мерцания, усиливает эффект "переливания" */
+  .tracker-btn.active::after, .zone-card.active::after {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.12) 48%, transparent 66%);
+    background-size: 250% 250%;
+    animation: shimmerSweep 4.5s linear infinite;
+    mix-blend-mode: screen;
+  }
+
+  :root[data-theme="dark"] .tracker-btn.active {
+    box-shadow: 0 0 16px rgba(var(--shimmer-rgb), 0.25), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  :root[data-theme="light"] .tracker-btn.active {
+    box-shadow: 0 4px 14px rgba(var(--shimmer-rgb), 0.28), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
+
+  :root[data-theme="light"] .tracker-btn.active * { color: var(--text) !important; }
+
+  /* Множественные зоны: подсветка своим цветом (--zc), задаётся инлайн для каждой карточки */
+  .zone-card.active {
+    --shimmer-rgb: var(--zc-rgb, 79, 219, 200);
+    border-color: var(--zc, var(--accent));
+  }
+  :root[data-theme="dark"] .zone-card.active {
+    box-shadow: 0 0 16px rgba(var(--zc-rgb, 79, 219, 200), 0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  :root[data-theme="light"] .zone-card.active {
+    box-shadow: 0 4px 14px rgba(var(--zc-rgb, 13, 148, 136), 0.25), inset 0 1px 0 rgba(255,255,255,0.5);
+  }
 
   .tracker-btn:active { transform: scale(0.97); }
   
-  .zone-card { padding: 16px; }
+  .zone-card { padding: 16px; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
 
   .summary-bar {
     display: flex; gap: 8px; padding: 10px 14px; justify-content: space-between; align-items: center;
@@ -754,21 +799,50 @@ function singleInnerHTML(z){
   `;
 }
 
-function renderMultiCard(z){ const card = document.createElement('div'); card.className = 'zone-card'; card.id = `multiCard_${z.id}`; card.style.setProperty('--zc', z.color); card.innerHTML = multiCardInnerHTML(z); return card; }
+function hexToRgbStr(hex){
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
+  return m ? `${parseInt(m[1],16)}, ${parseInt(m[2],16)}, ${parseInt(m[3],16)}` : '79, 219, 200';
+}
+
+function renderMultiCard(z){
+  const card = document.createElement('div');
+  card.id = `multiCard_${z.id}`;
+  card.className = 'zone-card' + (z.occupants.length ? ' active' : '');
+  card.style.setProperty('--zc', z.color);
+  card.style.setProperty('--zc-rgb', hexToRgbStr(z.color));
+  card.innerHTML = multiCardInnerHTML(z);
+  return card;
+}
 
 function multiCardInnerHTML(z){
+  const liveMs = z.occupants.reduce((sum, o) => sum + (Date.now() - o.startTime), 0);
+  const totalOccupiedMs = z.totalMs + liveMs;
+  const isBusy = z.occupants.length > 0;
+  const statusBadge = isBusy
+    ? `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(${hexToRgbStr(z.color)},0.22); color:${z.color}; display:flex; align-items:center; gap:4px;"><span style="width:4px;height:4px;border-radius:2px;background:${z.color};" class="pulse-pip"></span> ЗАНЯТО · ${z.occupants.length}</span>`
+    : `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--surface); color:var(--muted); border:1px solid var(--border);">СВОБОДНО</span>`;
   const occHtml = z.occupants.length
     ? z.occupants.map(o => `
         <div style="display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:4px 4px 4px 10px; font-size:12px; font-weight:600;">
-          <span>№${o.localNum} · <b style="color:var(--accent); font-weight:700;">${formatDuration(Date.now() - o.startTime)}</b></span>
+          <span>№${o.localNum} · <b style="color:${z.color}; font-weight:700;">${formatDuration(Date.now() - o.startTime)}</b></span>
           <button class="danger-btn" onclick="event.stopPropagation(); multiDepart(${z.id}, ${o.localNum})" style="padding:4px 10px; font-size:11px; font-weight:700; border-radius:4px; margin:0; width:auto; box-shadow:none;">СТОП</button>
         </div>`).join('')
     : `<span style="color:var(--muted); font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; opacity:0.8;">ПУСТО</span>`;
   return `
-    <div class="zone-card-head" style="margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-      <div style="display:flex; flex-direction:column; gap:2px;">
+    <div class="zone-card-head" style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="display:flex; flex-direction:column; gap:4px;">
         <span class="zone-card-title" style="font-size:15px; font-weight:700;">${escapeHtml(z.name)}</span>
-        <span style="font-size:10px; font-weight:600; color:var(--muted);">Активно: <b style="color:var(--text);">${z.occupants.length}</b> | Всего: ${z.triggerCount}</span>
+        <div style="display:flex; align-items:center; gap:4px;">
+          <span style="width:6px;height:6px;border-radius:2px;background:${z.color};"></span>
+          <span style="font-size:10px; font-weight:600; color:var(--muted);">Активно: <b style="color:var(--text);">${z.occupants.length}</b> | Всего визитов: ${z.triggerCount}</span>
+        </div>
+      </div>
+      ${statusBadge}
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin: 6px 0 10px;">
+      <div>
+        <div style="font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:2px;">Занято всего</div>
+        <div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; color:${isBusy ? z.color : 'var(--text)'};">${formatDuration(totalOccupiedMs)}</div>
       </div>
       <button class="action-btn" onclick="multiArrive(${z.id})" style="width:auto; padding:6px 12px; font-size:12px; border-radius:6px;">+ Добавить</button>
     </div>
@@ -838,7 +912,7 @@ async function multiDepart(id, localNum, opts = {}){
   const entry = { id: logIdCounter++, type: 'event', name:z.name, num:localNum, onTime:formatTime(occ.startTime), offTime:formatTime(offTime), duration:formatDuration(durationMs) };
   logs.push(entry); prependTableRow(entry); haptic(15, 'stop'); refreshMultiCard(z); renderSummaryBar(); persistSession(); refreshWakeLock();
 }
-function refreshMultiCard(z){ const card = document.getElementById(`multiCard_${z.id}`); if (card) { card.innerHTML = multiCardInnerHTML(z); updateIcons(card); } }
+function refreshMultiCard(z){ const card = document.getElementById(`multiCard_${z.id}`); if (card) { card.className = 'zone-card' + (z.occupants.length ? ' active' : ''); card.innerHTML = multiCardInnerHTML(z); updateIcons(card); } }
 
 /* --- Action Menu (Кнопка Журнала) & Заметки --- */
 function openActionMenuModal() { updateUndoButton(); updateShareButtonVisibility(); document.getElementById('actionMenuModal').classList.add('show'); }
