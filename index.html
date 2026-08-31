@@ -463,20 +463,31 @@
 
  .bubble-drag-badge {
  position: absolute;
- top: -20px;
+ top: -26px;
  left: 50%;
  transform: translateX(-50%);
- background: var(--accent);
- color: #000;
- font-size: 9px;
- font-weight: 800;
- text-transform: uppercase;
- padding: 2px 6px;
- border-radius: 4px;
+ background: rgba(13, 13, 25, 0.94);
+ backdrop-filter: blur(8px);
+ -webkit-backdrop-filter: blur(8px);
+ border: 1px solid var(--accent);
+ color: var(--accent);
+ font-size: 10px;
+ font-weight: 600;
+ text-transform: none;
+ padding: 3px 9px;
+ border-radius: 12px;
  white-space: nowrap;
  pointer-events: none;
- box-shadow: 0 2px 6px rgba(0,0,0,0.3);
- letter-spacing: 0.05em;
+ box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+ letter-spacing: 0.02em;
+ line-height: 1.2;
+ }
+
+ :root[data-theme="light"] .bubble-drag-badge {
+ background: rgba(255, 255, 255, 0.96);
+ border: 1px solid #0d9488;
+ color: #0d9488;
+ box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
  }
 
  /* Всплывающее меню бабла */
@@ -934,6 +945,208 @@
  box-shadow: 0 0 20px var(--accent);
  }
 
+
+ /* =========================================================
+    ЕДИНЫЙ СТИЛЬ КАРТОЧЕК И ВЫПАДАЮЩИХ МЕНЮ (КАК В БАБЛ-МЕНЮ)
+    ========================================================= */
+ .menu-card-list {
+ display: flex;
+ flex-direction: column;
+ gap: 7px;
+ }
+
+ .menu-card-btn {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ gap: 12px;
+ width: 100%;
+ padding: 10px 14px;
+ background: var(--surface);
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
+ border: 1px solid var(--border);
+ border-radius: 12px;
+ text-align: left;
+ color: var(--text);
+ box-shadow: 0 2px 8px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.04);
+ cursor: pointer;
+ transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+ box-sizing: border-box;
+ }
+
+ :root[data-theme="light"] .menu-card-btn {
+ background-color: rgba(255, 255, 255, 0.95);
+ background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+ border: 1px solid rgba(0, 0, 0, 0.08);
+ box-shadow: 0 2px 8px rgba(0,0,0,0.04), inset 0 1px 0 #ffffff;
+ }
+
+ .menu-card-btn:hover {
+ background-color: var(--surface-hover);
+ border-color: var(--accent);
+ }
+
+ .menu-card-btn:active {
+ transform: scale(0.98) translateY(1px);
+ }
+
+ .menu-card-left {
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ min-width: 0;
+ flex: 1;
+ }
+
+ .menu-card-icon {
+ width: 36px;
+ height: 36px;
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ flex-shrink: 0;
+ background: rgba(79, 219, 200, 0.12);
+ border: 1px solid rgba(79, 219, 200, 0.25);
+ color: var(--accent);
+ }
+ :root[data-theme="light"] .menu-card-icon {
+ background: rgba(13, 148, 136, 0.1);
+ border-color: rgba(13, 148, 136, 0.2);
+ color: #0d9488;
+ }
+
+ .menu-card-text {
+ display: flex;
+ flex-direction: column;
+ min-width: 0;
+ }
+ .menu-card-text b {
+ font-size: 13.5px;
+ font-weight: 700;
+ color: var(--text);
+ line-height: 1.25;
+ }
+ .menu-card-text span {
+ font-size: 11px;
+ color: var(--muted);
+ font-weight: 500;
+ line-height: 1.3;
+ margin-top: 2px;
+ }
+
+ .menu-card-chevron {
+ color: var(--muted);
+ opacity: 0.6;
+ flex-shrink: 0;
+ }
+
+ /* Гриды для действий и переключателей */
+ .menu-grid-row {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+ gap: 8px;
+ margin: 4px 0;
+ }
+
+ .menu-grid-card {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ gap: 6px;
+ padding: 12px 8px;
+ background: var(--surface);
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
+ border: 1px solid var(--border);
+ border-radius: 12px;
+ color: var(--text);
+ text-align: center;
+ cursor: pointer;
+ transition: all 0.15s ease;
+ box-sizing: border-box;
+ box-shadow: 0 2px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.03);
+ }
+
+ :root[data-theme="light"] .menu-grid-card {
+ background: #ffffff;
+ background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+ border-color: rgba(0,0,0,0.08);
+ box-shadow: 0 2px 6px rgba(0,0,0,0.03), inset 0 1px 0 #ffffff;
+ }
+
+ .menu-grid-card:hover {
+ background: var(--surface-hover);
+ border-color: var(--accent);
+ }
+
+ .menu-grid-card:active {
+ transform: scale(0.97) translateY(1px);
+ }
+
+ .menu-grid-card b {
+ font-size: 12px;
+ font-weight: 700;
+ color: var(--text);
+ }
+ .menu-grid-card span {
+ font-size: 10px;
+ color: var(--muted);
+ }
+
+ .menu-grid-card:has(input:checked) {
+ border-color: var(--accent);
+ background-color: rgba(79, 219, 200, 0.14);
+ background-image: none;
+ color: var(--accent);
+ box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 0 12px rgba(79,219,200,0.15);
+ transform: translateY(1px);
+ }
+ :root[data-theme="light"] .menu-grid-card:has(input:checked) {
+ background-color: rgba(13, 148, 136, 0.12);
+ border-color: #0d9488;
+ color: #0d9488;
+ box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+ }
+
+ .menu-grid-card input {
+ display: none;
+ }
+
+ .menu-grid-card.danger {
+ border-color: rgba(239, 68, 68, 0.35);
+ background: rgba(239, 68, 68, 0.08);
+ color: var(--danger);
+ }
+ .menu-grid-card.danger:hover {
+ background: rgba(239, 68, 68, 0.15);
+ border-color: var(--danger);
+ }
+ .menu-grid-card.danger b {
+ color: var(--danger);
+ }
+
+ .menu-section-eyebrow {
+ font-size: 10px;
+ font-weight: 800;
+ letter-spacing: 0.1em;
+ text-transform: uppercase;
+ color: var(--accent);
+ margin: 10px 0 4px;
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ }
+ :root[data-theme="light"] .menu-section-eyebrow {
+ color: #0d9488;
+ }
+
+ .menu-divider {
+ height: 1px;
+ background: var(--border);
+ margin: 6px 0;
+ }
+
 </style>
 </head>
 <body>
@@ -1064,14 +1277,14 @@
  <!-- Сама кнопка-бабл -->
  <button id="bubbleBtn" class="bubble-btn" aria-label="Кнопка управления (удержание — голос, нажатие — меню)" title="Нажми для меню, удерживай для голоса">
  <div class="bubble-icon-wrap">
- <i data-lucide="sparkles" id="bubbleMainIcon" style="width:24px;height:24px;"></i>
- <i data-lucide="mic" id="bubbleMicIcon" class="hidden" style="width:24px;height:24px;"></i>
- <i data-lucide="move" id="bubbleDragIcon" class="hidden" style="width:24px;height:24px;"></i>
+ <i data-lucide="sparkles" id="bubbleMainIcon" style="width:22px;height:22px;stroke-width:1.75;"></i>
+ <i data-lucide="mic" id="bubbleMicIcon" class="hidden" style="width:22px;height:22px;stroke-width:1.75;"></i>
+ <i data-lucide="move" id="bubbleDragIcon" class="hidden" style="width:20px;height:20px;stroke-width:1.75;"></i>
  </div>
  <svg class="bubble-progress-ring" viewBox="0 0 56 56">
  <circle class="bubble-progress-circle" cx="28" cy="28" r="25"></circle>
  </svg>
- <span id="bubbleDragBadge" class="bubble-drag-badge hidden">Перетащи</span>
+ <span id="bubbleDragBadge" class="bubble-drag-badge hidden">Переместить</span>
  </button>
 </div>
 
@@ -1081,18 +1294,40 @@
 <div id="noteModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
  <div class="modal-content">
  <div class="modal-header">
- <h3>Создание заметки</h3>
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="pen-tool" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Создание заметки</h3>
+ </div>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
  
  <div id="noteTypeSelector">
- <div class="eyebrow" style="margin-top: 4px;">Способ ввода</div>
- <div class="note-choices">
- <button class="choice-btn" id="voiceBtn" onclick="startVoiceNote()" aria-label="Наговорить заметку">
- <i data-lucide="mic"></i><span style="font-weight: 600;">Наговорить</span>
+ <div class="menu-section-eyebrow" style="margin-top: 4px;">Способ ввода заметки</div>
+ <div class="menu-card-list">
+ <button class="menu-card-btn" id="voiceBtn" onclick="startVoiceNote()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.3); color: var(--danger);">
+ <i data-lucide="mic" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>Наговорить голосом</b>
+ <span>Мгновенная диктовка с автопаузой музыки</span>
+ </div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
  </button>
- <button class="choice-btn" onclick="startTextNote()">
- <i data-lucide="keyboard"></i><span style="font-weight: 600;">Написать</span>
+
+ <button class="menu-card-btn" onclick="startTextNote()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(251, 191, 36, 0.15); border-color: rgba(251, 191, 36, 0.3); color: var(--warn);">
+ <i data-lucide="keyboard" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>Написать текстом</b>
+ <span>Ручной ввод комментария с клавиатуры</span>
+ </div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
  </button>
  </div>
  </div>
@@ -1100,29 +1335,33 @@
  <!-- Область ввода текста для заметки -->
  <div id="noteInputArea" class="hidden flex-col gap-3">
  <div style="display:flex; justify-content:space-between; align-items:center;">
- <div class="eyebrow" style="margin:0;">Текст заметки</div>
+ <div class="menu-section-eyebrow" style="margin:0;">Текст заметки</div>
  <button class="icon-btn small" id="voiceNoteAppendBtn" onclick="startVoiceNote()" title="Додиктовать голосом" style="padding:4px 8px; border-color:var(--accent); color:var(--accent);"><i data-lucide="mic" style="width:14px;height:14px;"></i></button>
  </div>
  <textarea id="noteTextInput" placeholder="Текст заметки..." rows="4"></textarea>
- <div style="display: flex; gap: 10px;">
- <button class="back-btn" onclick="resetNoteModal()">Отмена</button>
- <button class="action-btn" onclick="saveNoteConfirm()"><i data-lucide="send"></i> Сохранить</button>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top: 6px;">
+ <button class="resume-btn resume-btn-secondary" onclick="resetNoteModal()">Отмена</button>
+ <button class="resume-btn resume-btn-primary" onclick="saveNoteConfirm()"><i data-lucide="send" style="width:16px;height:16px;"></i> Сохранить</button>
  </div>
  </div>
  </div>
+</div>
 </div>
 
 <!-- Полная таблица истории и экспорт -->
 <div id="fullTableModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
  <div class="modal-content" style="max-width: 800px; height: 95vh;">
  <div class="modal-header">
- <h3>История и Экспорт</h3>
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="table" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">История и Экспорт</h3>
+ </div>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
  
- <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin: 6px 0 10px;">
- <button class="back-btn small" onclick="exportCSV()"><i data-lucide="download"></i> Скачать CSV</button>
- <button class="back-btn small" id="shareBtnMenu" onclick="shareCSV()"><i data-lucide="share-2"></i> Поделиться</button>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin: 6px 0 10px;">
+ <button class="resume-btn resume-btn-secondary" onclick="exportCSV()"><i data-lucide="download" style="width:16px;height:16px;"></i> Скачать CSV</button>
+ <button class="resume-btn resume-btn-primary" id="shareBtnMenu" onclick="shareCSV()"><i data-lucide="share-2" style="width:16px;height:16px;"></i> Поделиться</button>
  </div>
 
  <div class="table-wrap" style="flex: 1; margin-top: 4px; max-height: calc(100% - 100px);">
@@ -1331,22 +1570,35 @@
 <div id="timerSettingsModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
  <div class="modal-content">
  <div class="modal-header">
- <h3>Параметры элемента</h3>
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="sliders" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Параметры элемента</h3>
+ </div>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
- <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
+ <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;">
 
  <div>
- <div class="eyebrow">Режим работы</div>
- <div class="mode-row" style="margin:0;">
- <label class="mode-option"><input type="radio" name="tsCountdown" value="false" onchange="toggleTsCountdown(false)"> <i data-lucide="arrow-up-10" style="width:16px;"></i> Секундомер</label>
- <label class="mode-option"><input type="radio" name="tsCountdown" value="true" onchange="toggleTsCountdown(true)"> <i data-lucide="hourglass" style="width:16px;"></i> Таймер (Лимит)</label>
+ <div class="menu-section-eyebrow">Режим работы</div>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <label class="menu-grid-card">
+ <input type="radio" name="tsCountdown" value="false" onchange="toggleTsCountdown(false)">
+ <i data-lucide="arrow-up-10" style="width:20px;height:20px;"></i>
+ <b>Секундомер</b>
+ <span>Прямой счёт</span>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="tsCountdown" value="true" onchange="toggleTsCountdown(true)">
+ <i data-lucide="hourglass" style="width:20px;height:20px;"></i>
+ <b>Таймер (Лимит)</b>
+ <span>Обратный счёт</span>
+ </label>
  </div>
  </div>
 
- <div id="tsSettingsArea" class="hidden" style="display:flex; flex-direction:column; gap:12px;">
+ <div id="tsSettingsArea" class="hidden" style="display:flex; flex-direction:column; gap:10px;">
  <div>
- <div class="eyebrow">Время таймера (Ч Ч : М М : С С)</div>
+ <div class="menu-section-eyebrow">Время таймера (ЧЧ : ММ : СС)</div>
  <div style="display: flex; gap: 8px; margin-top: 4px;">
  <div style="flex: 1;">
  <div style="font-size: 10px; font-weight: 700; color: var(--muted); margin-bottom: 2px; text-align: center;">ЧАСЫ</div>
@@ -1364,6 +1616,48 @@
  </div>
  </div>
  </div>
+
+ <div>
+ <div class="menu-section-eyebrow">Действие по окончании лимита</div>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <label class="menu-grid-card">
+ <input type="radio" name="tsAction" value="alert">
+ <i data-lucide="bell" style="width:18px;height:18px;"></i>
+ <b>Сигнал</b>
+ <span>Звук и вибро</span>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="tsAction" value="stop">
+ <i data-lucide="octagon-pause" style="width:18px;height:18px;"></i>
+ <b>Авто-стоп</b>
+ <span>Фиксация в лог</span>
+ </label>
+ </div>
+ </div>
+
+ <div id="tsMultiArea" class="hidden">
+ <div class="menu-section-eyebrow">Применение лимита (для групп)</div>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <label class="menu-grid-card">
+ <input type="radio" name="tsMultiType" value="individual">
+ <i data-lucide="user" style="width:18px;height:18px;"></i>
+ <b>К каждому</b>
+ <span>Личный таймер</span>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="tsMultiType" value="group">
+ <i data-lucide="users" style="width:18px;height:18px;"></i>
+ <b>Ко всем сразу</b>
+ <span>От первого входа</span>
+ </label>
+ </div>
+ </div>
+ </div>
+
+ <button class="resume-btn resume-btn-primary" onclick="saveTimerSettings()" style="margin-top: 12px;"><i data-lucide="save" style="width:18px;height:18px;"></i> Сохранить настройки</button>
+ </div>
+ </div>
+</div>
 
  <div>
  <div class="eyebrow">Действие по окончании</div>
@@ -1389,62 +1683,160 @@
 
 <!-- Confirm Modal -->
 <div id="confirmModal" class="modal-overlay" style="z-index: 9999;" onclick="closeConfirmOnDim(event)">
- <div class="modal-content" style="border-radius: var(--radius);">
- <h3 id="confirmTitle" style="font-size: 18px; font-weight: 700; margin-bottom: 6px; color: var(--text);">Подтверждение</h3>
- <p id="confirmMessage" style="color: var(--text); opacity: 0.8; margin-bottom: 20px; line-height: 1.5; font-weight: 500;"></p>
- <div style="display: flex; gap: 10px;">
- <button id="confirmCancelBtn" class="back-btn" style="flex: 1;">Отмена</button>
- <button id="confirmOkBtn" class="action-btn" style="flex: 1;">Да</button>
+ <div class="modal-content" style="border-radius: 20px; max-width: 440px; margin: auto;">
+ <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+ <div class="menu-card-icon" style="background:rgba(251,191,36,0.15); color:var(--warn); width:38px; height:38px;">
+ <i data-lucide="help-circle" style="width:20px;height:20px;"></i>
+ </div>
+ <h3 id="confirmTitle" style="font-size: 18px; font-weight: 800; color: var(--text); margin:0;">Подтверждение</h3>
+ </div>
+ <p id="confirmMessage" style="color: var(--text); opacity: 0.85; margin-bottom: 18px; line-height: 1.45; font-weight: 500; font-size: 13px;"></p>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <button id="confirmCancelBtn" class="resume-btn resume-btn-secondary">Отмена</button>
+ <button id="confirmOkBtn" class="resume-btn resume-btn-primary">Да</button>
  </div>
  </div>
 </div>
 
-<!-- Меню Настроек -->
+<!-- Меню Настроек (в едином стиле с бабл-меню) -->
 <div id="menuModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
  <div class="modal-content">
  <div class="modal-header">
- <h3>Настройки</h3>
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="settings-2" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Настройки AnyTimer</h3>
+ </div>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
+ 
  <div style="display: flex; flex-direction: column; gap: 8px;">
 
- <div class="eyebrow" style="margin: 2px 0 0;">Тема оформления</div>
+ <div class="menu-section-eyebrow"><i data-lucide="layout-grid" style="width:12px;height:12px;"></i> Инструменты и Справка</div>
  
- <button id="installAppBtn" class="action-btn hidden" style="justify-content: flex-start; margin-bottom: 12px;" onclick="installPWA()">
- <i data-lucide="download-cloud"></i> Установить приложение
+ <div class="menu-card-list">
+ <button class="menu-card-btn" onclick="openHelpModal()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(79, 219, 200, 0.15); color: var(--accent);">
+ <i data-lucide="book-open" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>Справка и руководство</b>
+ <span>Инструкция, жесты и интерактивный тренажер</span>
+ </div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
  </button>
 
- <div class="mode-row" style="margin: 0 0 6px;">
- <label class="mode-option"><input type="radio" name="themeChoice" id="themeLight" value="light" onchange="setThemePref('light')"> <i data-lucide="sun" style="width:16px;"></i> Светлая</label>
- <label class="mode-option"><input type="radio" name="themeChoice" id="themeDark" value="dark" onchange="setThemePref('dark')"> <i data-lucide="moon" style="width:16px;"></i> Тёмная</label>
- <label class="mode-option"><input type="radio" name="themeChoice" id="themeSystem" value="system" onchange="setThemePref('system')"> <i data-lucide="smartphone" style="width:16px;"></i> Авто</label>
+ <button class="menu-card-btn" onclick="openPresetsOverlay()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;">
+ <i data-lucide="bookmark" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>Сохраненные панели (Пресеты)</b>
+ <span>Шаблоны цехов, экспорт и импорт JSON</span>
+ </div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
+ </button>
+
+ <button class="menu-card-btn" onclick="openWebhookSettings()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.3); color: #facc15;">
+ <i data-lucide="webhook" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>Настройка Webhook</b>
+ <span>POST-события в Home Assistant и серверы</span>
+ </div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
+ </button>
  </div>
 
- <div class="eyebrow" style="margin: 2px 0 0;">Уведомления</div>
- <div class="mode-row" style="margin: 0 0 8px;">
- <label class="mode-option"><input type="radio" name="alertChoice" id="alertMute" value="mute" onchange="setAlertPref('mute')"> <i data-lucide="bell-off" style="width:16px;"></i> Тихо</label>
- <label class="mode-option"><input type="radio" name="alertChoice" id="alertVibro" value="vibro" onchange="setAlertPref('vibro')"> <i data-lucide="vibrate" style="width:16px;"></i> Вибро</label>
- <label class="mode-option"><input type="radio" name="alertChoice" id="alertLoud" value="loud" onchange="setAlertPref('loud')"> <i data-lucide="volume-2" style="width:16px;"></i> Звук</label>
+ <button id="installAppBtn" class="action-btn hidden" style="margin: 4px 0 2px;" onclick="installPWA()">
+ <i data-lucide="download-cloud"></i> Установить приложение на рабочий стол
+ </button>
+
+ <div class="menu-section-eyebrow"><i data-lucide="palette" style="width:12px;height:12px;"></i> Тема оформления</div>
+ <div class="menu-grid-row">
+ <label class="menu-grid-card">
+ <input type="radio" name="themeChoice" id="themeLight" value="light" onchange="setThemePref('light')">
+ <i data-lucide="sun" style="width:18px;height:18px;"></i>
+ <b>Светлая</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="themeChoice" id="themeDark" value="dark" onchange="setThemePref('dark')">
+ <i data-lucide="moon" style="width:18px;height:18px;"></i>
+ <b>Тёмная</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="themeChoice" id="themeSystem" value="system" onchange="setThemePref('system')">
+ <i data-lucide="smartphone" style="width:18px;height:18px;"></i>
+ <b>Авто</b>
+ </label>
  </div>
- 
- <div class="eyebrow" style="margin: 2px 0 0;">Музыка</div>
- <div class="mode-row" style="margin: 0 0 8px;">
- <label class="mode-option" style="justify-content: flex-start;">
- <input type="checkbox" id="musicToggle" onchange="toggleMusic(this.checked)"> 
- <i data-lucide="music" style="width:16px;"></i> Фоновая музыка
+
+ <div class="menu-section-eyebrow"><i data-lucide="bell" style="width:12px;height:12px;"></i> Уведомления и звук</div>
+ <div class="menu-grid-row">
+ <label class="menu-grid-card">
+ <input type="radio" name="alertChoice" id="alertMute" value="mute" onchange="setAlertPref('mute')">
+ <i data-lucide="bell-off" style="width:18px;height:18px;"></i>
+ <b>Тихо</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="alertChoice" id="alertVibro" value="vibro" onchange="setAlertPref('vibro')">
+ <i data-lucide="vibrate" style="width:18px;height:18px;"></i>
+ <b>Вибро</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="alertChoice" id="alertLoud" value="loud" onchange="setAlertPref('loud')">
+ <i data-lucide="volume-2" style="width:18px;height:18px;"></i>
+ <b>Звук</b>
  </label>
  </div>
  
- <button class="back-btn" style="justify-content: flex-start; border-color: var(--accent); color: var(--accent); background: rgba(79, 219, 200, 0.08);" onclick="openHelpModal()"><i data-lucide="help-circle"></i> Справка и руководство</button>
- <button class="back-btn" style="justify-content: flex-start;" onclick="openPresetsOverlay()"><i data-lucide="bookmark"></i> Сохраненные панели</button>
- <button class="back-btn" style="justify-content: flex-start;" onclick="openWebhookSettings()"><i data-lucide="webhook"></i> Настройка Webhook</button>
+ <label class="menu-card-btn" style="cursor:pointer; margin-top:2px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); color: #c084fc;">
+ <i data-lucide="music" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>Фоновая музыка</b>
+ <span>Атмосферный трек (автопауза при голосе)</span>
+ </div>
+ </div>
+ <input type="checkbox" id="musicToggle" onchange="toggleMusic(this.checked)" style="width:20px;height:20px;margin:0;cursor:pointer;accent-color:var(--accent);">
+ </label>
+
+ <div class="menu-section-eyebrow"><i data-lucide="activity" style="width:12px;height:12px;"></i> Управление сессией</div>
  
- <div style="height:1px; background:var(--border); margin: 4px 0;"></div>
- 
- <button class="back-btn" style="justify-content: flex-start;" onclick="actionStopAll()"><i data-lucide="octagon-pause" style="color: var(--warn);"></i> Остановить всех</button>
- <button class="back-btn" style="justify-content: flex-start;" onclick="actionReset()"><i data-lucide="rotate-ccw" style="color: var(--warn);"></i> Сбросить счётчики</button>
- <button class="back-btn" style="justify-content: flex-start;" onclick="actionNewTimer()"><i data-lucide="file-plus" style="color: var(--accent);"></i> Новая панель</button>
- <button class="back-btn" style="justify-content: flex-start; margin-top: 4px;" onclick="actionExit()"><i data-lucide="power" style="color: var(--danger);"></i> Завершить работу</button>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <button class="menu-grid-card" onclick="actionStopAll()">
+ <i data-lucide="octagon-pause" style="width:18px;height:18px; color:var(--warn);"></i>
+ <b>Остановить всех</b>
+ <span>Пауза активных</span>
+ </button>
+ <button class="menu-grid-card" onclick="actionReset()">
+ <i data-lucide="rotate-ccw" style="width:18px;height:18px; color:var(--warn);"></i>
+ <b>Сбросить счётчики</b>
+ <span>Сброс в 00:00</span>
+ </button>
+ </div>
+
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top: 4px;">
+ <button class="menu-grid-card" onclick="actionNewTimer()">
+ <i data-lucide="file-plus" style="width:18px;height:18px; color:var(--accent);"></i>
+ <b>Новая панель</b>
+ <span>Создать с нуля</span>
+ </button>
+ <button class="menu-grid-card danger" onclick="actionExit()">
+ <i data-lucide="power" style="width:18px;height:18px;"></i>
+ <b>Завершить работу</b>
+ <span>Выход из панели</span>
+ </button>
+ </div>
+
  </div>
  </div>
 </div>
@@ -1453,17 +1845,25 @@
 <div id="presetsOverlay" class="modal-overlay" onclick="closeModalsOnDim(event)">
  <div class="modal-content">
  <div class="modal-header">
- <h3>Сохраненные панели</h3>
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="bookmark" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Сохраненные панели (Пресеты)</h3>
+ </div>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
+ 
+ <div class="menu-section-eyebrow">Сохранить текущую панель</div>
  <div style="display: flex; gap: 8px; margin-bottom: 12px;">
- <input type="text" id="presetNameInput" placeholder="Название (напр. Цех 1)" style="margin: 0;">
- <button class="action-btn small" onclick="saveCurrentAsPreset()"><i data-lucide="save"></i></button>
+ <input type="text" id="presetNameInput" placeholder="Название (напр. Смена 1, Цех №3)" style="margin: 0;">
+ <button class="resume-btn resume-btn-primary small" style="width:auto; padding:0 16px; height:44px;" onclick="saveCurrentAsPreset()"><i data-lucide="save"></i></button>
  </div>
- <div id="presetsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
- <div style="display: flex; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
- <button class="back-btn small" onclick="exportPresetJSON()"><i data-lucide="download"></i> Экспорт</button>
- <button class="back-btn small" onclick="document.getElementById('importFileInput').click()"><i data-lucide="upload"></i> Импорт</button>
+ 
+ <div class="menu-section-eyebrow">Список готовых шаблонов</div>
+ <div id="presetsList" class="menu-card-list"></div>
+ 
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+ <button class="resume-btn resume-btn-secondary" onclick="exportPresetJSON()"><i data-lucide="download"></i> Экспорт JSON</button>
+ <button class="resume-btn resume-btn-secondary" onclick="document.getElementById('importFileInput').click()"><i data-lucide="upload"></i> Импорт JSON</button>
  </div>
  <input type="file" id="importFileInput" accept="application/json" class="hidden" onchange="importPresetJSON(this.files[0])">
  </div>
@@ -1473,14 +1873,31 @@
 <div id="webhookModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
  <div class="modal-content">
  <div class="modal-header">
- <h3>Настройка Webhook</h3>
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="webhook" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Настройка Webhook</h3>
+ </div>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
- <p style="margin-bottom:6px; font-size:12px;">События отсылаются POST-запросом.</p>
- <input type="text" id="webhookInput" placeholder="https://example.com/webhook" inputmode="url" autocapitalize="off" autocorrect="off">
- <div style="display: flex; gap: 12px;">
- <button class="back-btn" onclick="closeModals()">Отмена</button>
- <button class="action-btn" onclick="saveWebhookConfirm()"><i data-lucide="check"></i> Сохранить</button>
+ 
+ <div class="menu-card-btn" style="margin-top: 6px; cursor: default;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(234, 179, 8, 0.15); color:#facc15;">
+ <i data-lucide="radio" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>Автоматическая отправка событий</b>
+ <span>Каждый старт, стоп и заметка отсылаются POST JSON</span>
+ </div>
+ </div>
+ </div>
+
+ <div class="menu-section-eyebrow" style="margin-top: 8px;">URL адрес получателя (POST)</div>
+ <input type="text" id="webhookInput" placeholder="https://your-server.com/api/webhook" inputmode="url" autocapitalize="off" autocorrect="off" style="margin: 2px 0 10px;">
+ 
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <button class="resume-btn resume-btn-secondary" onclick="closeModals()">Отмена</button>
+ <button class="resume-btn resume-btn-primary" onclick="saveWebhookConfirm()"><i data-lucide="check" style="width:16px;height:16px;"></i> Сохранить</button>
  </div>
  </div>
 </div>
@@ -2124,27 +2541,45 @@ let bubbleStartPos = { x: 0, y: 0 };
 let hasMovedBubble = false;
 let isDraggingBubble = false;
 
+// Надёжное хранение координат кнопки в памяти
+let currentBubbleCoords = null;
+
+function getDefaultBubbleCoords() {
+ const maxX = window.innerWidth - 72;
+ const maxY = window.innerHeight - 100;
+ return {
+ x: Math.max(10, maxX),
+ y: Math.max(60, maxY)
+ };
+}
+
 function initBubblePosition() {
  const saved = localStorage.getItem(BUBBLE_POS_KEY);
  if (saved) {
  try {
  const pos = JSON.parse(saved);
+ if (typeof pos.x === 'number' && typeof pos.y === 'number' && pos.x > 0 && pos.y > 0) {
+ currentBubbleCoords = { x: pos.x, y: pos.y };
  applyBubblePosition(pos.x, pos.y);
  return;
+ }
  } catch(e){}
  }
- const defaultX = window.innerWidth - 76;
- const defaultY = window.innerHeight - 96;
- applyBubblePosition(defaultX, defaultY);
+ currentBubbleCoords = getDefaultBubbleCoords();
+ applyBubblePosition(currentBubbleCoords.x, currentBubbleCoords.y);
 }
 
 function applyBubblePosition(x, y) {
  const bubbleContainer = document.getElementById('bubbleContainer');
  if (!bubbleContainer) return;
+ 
  const maxX = window.innerWidth - 66;
  const maxY = window.innerHeight - 66;
  const clampedX = Math.max(10, Math.min(x, maxX));
  const clampedY = Math.max(50, Math.min(y, maxY));
+ 
+ currentBubbleCoords = { x: clampedX, y: clampedY };
+ 
  bubbleContainer.style.left = clampedX + 'px';
  bubbleContainer.style.top = clampedY + 'px';
  bubbleContainer.style.bottom = 'auto';
@@ -2157,17 +2592,19 @@ function saveBubblePosition(x, y) {
  const maxY = window.innerHeight - 66;
  const clampedX = Math.max(10, Math.min(x, maxX));
  const clampedY = Math.max(50, Math.min(y, maxY));
- localStorage.setItem(BUBBLE_POS_KEY, JSON.stringify({ x: clampedX, y: clampedY }));
+ currentBubbleCoords = { x: clampedX, y: clampedY };
+ localStorage.setItem(BUBBLE_POS_KEY, JSON.stringify(currentBubbleCoords));
 }
 
 function positionBubbleMenu() {
  const bubbleContainer = document.getElementById('bubbleContainer');
  const menu = document.getElementById('bubbleMenu');
- if (!bubbleContainer || !menu) return;
+ if (!bubbleContainer || !menu || !currentBubbleCoords) return;
  
- const rect = bubbleContainer.getBoundingClientRect();
+ const x = currentBubbleCoords.x;
+ const y = currentBubbleCoords.y;
  
- if (rect.top > window.innerHeight - 260) {
+ if (y > window.innerHeight - 260) {
  menu.style.bottom = '64px';
  menu.style.top = 'auto';
  } else {
@@ -2175,7 +2612,7 @@ function positionBubbleMenu() {
  menu.style.bottom = 'auto';
  }
  
- if (rect.left > window.innerWidth - 270) {
+ if (x > window.innerWidth - 270) {
  menu.style.right = '0px';
  menu.style.left = 'auto';
  } else {
@@ -2249,8 +2686,12 @@ const bubbleBtn = document.getElementById('bubbleBtn');
 bubbleBtn.addEventListener('pointerdown', (e) => {
  e.preventDefault();
  bubblePointerStart = { x: e.clientX, y: e.clientY };
- const containerRect = document.getElementById('bubbleContainer').getBoundingClientRect();
- bubbleStartPos = { x: containerRect.left, y: containerRect.top };
+ 
+ if (!currentBubbleCoords) {
+ currentBubbleCoords = getDefaultBubbleCoords();
+ }
+ bubbleStartPos = { x: currentBubbleCoords.x, y: currentBubbleCoords.y };
+ 
  hasMovedBubble = false;
  isDraggingBubble = false;
  isHoldingBubble = false;
@@ -2296,8 +2737,9 @@ function endBubblePointer(e) {
  
  if (isDraggingBubble) {
  isDraggingBubble = false;
- const containerRect = document.getElementById('bubbleContainer').getBoundingClientRect();
- saveBubblePosition(containerRect.left, containerRect.top);
+ if (currentBubbleCoords) {
+ saveBubblePosition(currentBubbleCoords.x, currentBubbleCoords.y);
+ }
  if (hasMovedBubble) {
  showToast('Позиция кнопки сохранена');
  }
@@ -2318,8 +2760,9 @@ document.addEventListener('pointerdown', (e) => {
 });
 
 window.addEventListener('resize', () => {
- const containerRect = document.getElementById('bubbleContainer').getBoundingClientRect();
- applyBubblePosition(containerRect.left, containerRect.top);
+ if (currentBubbleCoords && currentBubbleCoords.x > 0 && currentBubbleCoords.y > 0) {
+ applyBubblePosition(currentBubbleCoords.x, currentBubbleCoords.y);
+ }
 });
 
 /* --- Заметки (Создание, Голосовой ввод с отключением музыки) --- */
@@ -2705,12 +3148,24 @@ function editDeleteOne(id){ const z = zones.find(x=>x.id===id); if(z){ saveState
 function openPresetsOverlay(){ renderPresetsList(); showModal('presetsOverlay'); }
 function renderPresetsList(){
  const presets = getPresets(); const list = document.getElementById('presetsList'); const names = Object.keys(presets);
- list.innerHTML = names.length ? '' : '<p>Сохранённых панелей нет.</p>';
+ list.innerHTML = names.length ? '' : '<div style="text-align:center; padding:20px 10px; color:var(--muted); font-size:12px;">Сохранённых панелей пока нет.<br>Введите название выше и нажмите сохранить.</div>';
  names.forEach(name => {
- const p = presets[name]; const row = document.createElement('div'); row.style.cssText = "display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);";
- row.innerHTML = `<div style="flex:1;"><b style="font-size:14px; display:block;">${escapeHtml(name)}</b><span style="font-size:11px;color:var(--muted);">${p.zones.length} элементов</span></div>
- <button class="action-btn small" style="width:auto;" onclick="loadPreset('${escapeHtml(name.replace(/'/g,"'"))}')"><i data-lucide="download-cloud"></i> Загрузить</button>
- <button class="icon-btn danger-btn" style="padding:8px; width:auto; border-color:transparent; box-shadow:none;" onclick="deletePreset('${escapeHtml(name.replace(/'/g,"'"))}')"><i data-lucide="trash-2"></i></button>`;
+ const p = presets[name]; const row = document.createElement('div'); 
+ row.className = 'menu-card-btn';
+ row.innerHTML = `
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(59, 130, 246, 0.15); border-color:rgba(59, 130, 246, 0.3); color:#60a5fa;">
+ <i data-lucide="layers" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>${escapeHtml(name)}</b>
+ <span>${p.zones.length} элементов</span>
+ </div>
+ </div>
+ <div style="display:flex; gap:6px; flex-shrink:0;">
+ <button class="action-btn small" style="width:auto; padding:6px 12px; height:34px; font-size:11px;" onclick="loadPreset('${escapeHtml(name.replace(/'/g,"\'"))}')"><i data-lucide="download-cloud" style="width:13px;height:13px;"></i> Загрузить</button>
+ <button class="icon-btn danger-btn" style="padding:6px; width:34px; height:34px; border-color:transparent; box-shadow:none;" onclick="deletePreset('${escapeHtml(name.replace(/'/g,"\'"))}')"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+ </div>`;
  list.appendChild(row);
  });
  updateIcons(list);
