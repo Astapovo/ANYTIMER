@@ -19,21 +19,21 @@
  :root {
  color-scheme: dark;
  --bg: #0d0d19; 
---surface: rgba(255, 255, 255, 0.035);
+ --surface: rgba(255, 255, 255, 0.035);
  --surface-hover: rgba(255, 255, 255, 0.075);
  --border: rgba(255, 255, 255, 0.1);
  --text: #e3e0f2;
  --muted: #8b9bb4;
  --accent: #4fdbc8; 
---accent-hover: #71f8e4;
+ --accent-hover: #71f8e4;
  --danger: #ff8a80;
  --warn: #fbbf24;
  
---radius: 14px;
+ --radius: 14px;
  --radius-sm: 8px;
  --shadow: 0 12px 32px rgba(0,0,0,0.45);
  
---glass-bg: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%);
+ --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%);
  --active-card-bg: linear-gradient(135deg, rgba(79, 219, 200, 0.12) 0%, rgba(13, 13, 25, 0.8) 100%);
  --grid-color: rgba(255, 255, 255, 0.05);
  --glass-blur: blur(20px);
@@ -68,19 +68,19 @@
  --shadow: 0 10px 25px rgba(0,0,0,0.04);
  --shimmer-rgb: 13, 148, 136;
  
---glass-bg: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.65) 100%);
+ --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.65) 100%);
  --active-card-bg: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
  --grid-color: rgba(0, 0, 0, 0.05);
  }
 
  * { box-sizing: border-box; margin: 0; padding: 0; }
  
-html, body {
+ html, body {
  height: 100%; height: 100dvh; overflow: hidden;
  -webkit-tap-highlight-color: transparent; touch-action: manipulation; 
-}
+ }
  
-html {
+ html {
  background-color: var(--bg);
  background-image: linear-gradient(to right, var(--grid-color) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
  background-size: 24px 24px;
@@ -88,20 +88,21 @@ html {
  color: var(--text); font-family: var(--font-ui); transition: background-color 0.3s ease;
  }
  
-body { background: transparent; }
+ body { background: transparent; }
 
  .app-container {
  display: flex; flex-direction: column; height: 100%;
  padding: 0 12px; padding-left: calc(12px + env(safe-area-inset-left)); padding-right: calc(12px + env(safe-area-inset-right));
  max-width: 800px; margin: 0 auto;
+ position: relative;
  }
  
-.mono { font-family: var(--font-mono); }
+ .mono { font-family: var(--font-mono); }
  .hidden { display: none !important; }
  .fade-in { animation: smoothFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards; }
  @keyframes smoothFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
  
-h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
+ h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
  h3 { font-size: 14px; font-weight: 600; margin: 16px 0 8px; color: var(--muted); }
  p { color: var(--muted); font-size: 13px; }
  .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
@@ -124,9 +125,9 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.0
 
  /* КНОПКИ */
  button { font-family: inherit; font-size: 13px; font-weight: 600; border: none; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background-color 0.15s, transform 0.1s, box-shadow 0.1s; }
- button:disabled { opacity: 0.5; cursor: not-allowed; }
+ button:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
  
-.icon-btn, .back-btn, .choice-btn, .mode-option {
+ .icon-btn, .back-btn, .choice-btn, .mode-option {
  background-color: var(--surface);
  background-image: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
  box-shadow: 0 2px 0 rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
@@ -134,25 +135,25 @@ h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.0
  color: var(--text);
  }
  
-.action-btn { 
-background-color: var(--accent); 
-background-image: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.08) 100%);
+ .action-btn { 
+ background-color: var(--accent); 
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.08) 100%);
  box-shadow: 0 2px 0 rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.25);
  border: 1px solid rgba(0,0,0,0.2);
  color: #fff; padding: 12px 16px; width: 100%; font-size: 14px; font-weight: 700; 
-}
+ }
  :root[data-theme="dark"] .action-btn { color: #000; }
  
-.danger-btn { 
-background-color: rgba(239, 68, 68, 0.12); 
-border: 1px solid rgba(239, 68, 68, 0.35); 
-color: var(--danger); padding: 12px 16px; width: 100%; 
-}
+ .danger-btn { 
+ background-color: rgba(239, 68, 68, 0.12); 
+ border: 1px solid rgba(239, 68, 68, 0.35); 
+ color: var(--danger); padding: 12px 16px; width: 100%; 
+ }
 
  :root[data-theme="light"] .icon-btn, 
-:root[data-theme="light"] .back-btn, 
-:root[data-theme="light"] .choice-btn, 
-:root[data-theme="light"] .mode-option {
+ :root[data-theme="light"] .back-btn, 
+ :root[data-theme="light"] .choice-btn, 
+ :root[data-theme="light"] .mode-option {
  background-image: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 100%);
  box-shadow: 0 2px 0 rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
  }
@@ -166,14 +167,14 @@ color: var(--danger); padding: 12px 16px; width: 100%;
  .back-btn.small { padding: 8px 14px; width: auto; font-size: 12px; }
 
  button:active, .mode-option:active { 
-transform: translateY(2px) !important; 
-box-shadow: 0 0 0 rgba(0,0,0,0) !important; 
-}
+ transform: translateY(2px) !important; 
+ box-shadow: 0 0 0 rgba(0,0,0,0) !important; 
+ }
 
  .mode-option:has(input:checked) { 
-border-color: var(--accent); color: var(--accent); 
-background-color: rgba(79, 219, 200, 0.12); 
-background-image: none;
+ border-color: var(--accent); color: var(--accent); 
+ background-color: rgba(79, 219, 200, 0.12); 
+ background-image: none;
  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2) !important;
  transform: translateY(1px);
  }
@@ -203,9 +204,9 @@ background-image: none;
  .mode-option { flex: 1; min-width: 85px; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 9px 8px; cursor: pointer; font-size: 12px; font-weight: 600; border-radius: var(--radius-sm); }
  .mode-option input { margin: 0; width: 0; height: 0; display: none; } 
 
-#step3 { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+ #step3 { display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative; }
  
-.log-feed-viewport {
+ .log-feed-viewport {
  flex: 1; min-height: 40px; max-height: 140px; display: flex; flex-direction: column; justify-content: flex-end;
  margin-bottom: 6px; overflow: hidden; pointer-events: none;
  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 35%, black 100%);
@@ -213,17 +214,17 @@ background-image: none;
  }
  #logFeed { display: flex; flex-direction: column; gap: 2px; padding-bottom: 2px; }
  
-.feed-item {
+ .feed-item {
  display: flex; justify-content: space-between; align-items: center; padding: 4px 8px;
  animation: smoothFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
  }
  
-.workspace-viewport {
+ .workspace-viewport {
  flex: 0 0 auto; max-height: 85vh; display: flex; flex-direction: column;
  padding-bottom: calc(16px + env(safe-area-inset-bottom));
  }
  
-.log-action-header { display: flex; justify-content: flex-start; align-items: center; margin-bottom: 10px; gap: 10px; }
+ .log-action-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; }
  .workspace-scroll { overflow-y: auto; padding-right: 2px; }
  .workspace-scroll::-webkit-scrollbar { width: 4px; }
  .workspace-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -234,19 +235,19 @@ background-image: none;
 
  /* Карточки Таймеров */
  .tracker-btn, .zone-card { 
-background-color: var(--surface);
+ background-color: var(--surface);
  background-image: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); 
-border: 1px solid var(--border); border-radius: var(--radius); 
-box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05); 
-position: relative; overflow: hidden; transition: all 0.2s ease; 
-}
+ border: 1px solid var(--border); border-radius: var(--radius); 
+ box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05); 
+ position: relative; overflow: hidden; transition: all 0.2s ease; 
+ }
  :root[data-theme="light"] .tracker-btn, :root[data-theme="light"] .zone-card {
  background-image: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 100%);
  box-shadow: 0 4px 12px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.6);
  }
  
-.tracker-btn { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; min-height: 96px; cursor: pointer; text-align: left; }
+ .tracker-btn { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; min-height: 96px; cursor: pointer; text-align: left; }
 
  @keyframes shimmerSweep {
  0% { background-position: 0% 50%; }
@@ -294,7 +295,7 @@ position: relative; overflow: hidden; transition: all 0.2s ease;
 
  .tracker-btn:active { transform: scale(0.97); }
  
-.zone-card { padding: 16px; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+ .zone-card { padding: 16px; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
 
  .summary-bar {
  display: flex; gap: 8px; padding: 10px 14px; justify-content: space-between; align-items: center;
@@ -306,11 +307,20 @@ position: relative; overflow: hidden; transition: all 0.2s ease;
  .summary-bar div { display: flex; flex-direction: row; align-items: center; gap: 6px; }
 
  /* Modals (Bottom Sheets) */
- .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: flex-end; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+ .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: flex-end; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+ 
+ /* Скрываем бабл при открытых модальных окнах или экране восстановления */
+ body:has(.modal-overlay.show) #bubbleContainer,
+ body:has(#stepResume:not(.hidden)) #bubbleContainer {
+ opacity: 0 !important;
+ pointer-events: none !important;
+ transform: scale(0.85) !important;
+ visibility: hidden !important;
+ }
  .modal-overlay.show { opacity: 1; pointer-events: auto; }
  .modal-content {
  background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); width: 100%; max-width: 600px; border-radius: 18px 18px 0 0; 
-padding: 22px 16px calc(16px + env(safe-area-inset-bottom)) 16px; border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+ padding: 22px 16px calc(16px + env(safe-area-inset-bottom)) 16px; border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-right: 1px solid var(--border);
  transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1); box-shadow: 0 -10px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 8px; max-height: 90vh; overflow-y: auto; position: relative;
  }
  .modal-overlay.show .modal-content { transform: translateY(0); }
@@ -319,7 +329,7 @@ padding: 22px 16px calc(16px + env(safe-area-inset-bottom)) 16px; border-top: 1p
  .modal-header h3 { margin: 0; color: var(--text); font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
  .close-btn { width: auto; color: var(--muted); border-radius: var(--radius-sm); }
  
-.note-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+ .note-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
  .choice-btn { flex-direction: column; padding: 18px 10px; color: var(--text); gap: 8px; }
  .mic-pulse { animation: pulse 1.5s infinite; color: var(--danger) !important; text-shadow: 0 0 10px var(--danger); }
  @keyframes pulse { 0% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 0.7; } }
@@ -329,13 +339,13 @@ padding: 22px 16px calc(16px + env(safe-area-inset-bottom)) 16px; border-top: 1p
  /* РЕДАКТОР СТРУКТУРЫ КАРТОЧЕК */
  .edit-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
  .edit-card { 
-display: flex; flex-direction: column; gap: 10px; background: var(--surface); padding: 12px; 
-border-radius: var(--radius); border: 1px solid var(--border); 
-transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease; 
-}
+ display: flex; flex-direction: column; gap: 10px; background: var(--surface); padding: 12px; 
+ border-radius: var(--radius); border: 1px solid var(--border); 
+ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease; 
+ }
  .edit-card:focus-within { border-color: var(--accent); }
  .edit-card-top { display: flex; align-items: center; gap: 8px; }
- .edit-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; pt: 4px; border-top: 1px solid rgba(255,255,255,0.05); }
+ .edit-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.05); }
 
  .color-dot { width: 26px; height: 26px; border-radius: 8px; cursor: pointer; flex-shrink: 0; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15), 0 0 0 1px var(--border); transition: transform 0.15s ease; }
  .color-dot:active { transform: scale(0.85); }
@@ -350,9 +360,249 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
  .edit-name-wrap input::placeholder { color: var(--muted); font-weight: 500; }
  .edit-name-wrap .edit-name-icon { position: absolute; right: 9px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--muted); opacity: 0.5; pointer-events: none; }
  
-.type-segmented { display: flex; background: rgba(0,0,0,0.2); p: 2px; border-radius: var(--radius-sm); border: 1px solid var(--border); gap: 2px; }
+ .type-segmented { display: flex; background: rgba(0,0,0,0.2); padding: 2px; border-radius: var(--radius-sm); border: 1px solid var(--border); gap: 2px; }
  .type-seg-btn { padding: 5px 10px; font-size: 11px; font-weight: 600; border-radius: 6px; border: none; background: transparent; color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 4px; }
  .type-seg-btn.active { background: var(--surface-hover); color: var(--accent); font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+
+ /* =========================================================
+    ПЛАВАЮЩАЯ КНОПКА-БАБЛ (BUBBLE FAB) И МЕНЮ БЫСТРЫХ ДЕЙСТВИЙ
+    ========================================================= */
+ .bubble-container {
+ position: fixed;
+ z-index: 1200;
+ touch-action: none;
+ user-select: none;
+ -webkit-user-select: none;
+ transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+ }
+ 
+ .bubble-btn {
+ width: 56px;
+ height: 56px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, rgba(79, 219, 200, 0.22) 0%, rgba(13, 13, 25, 0.9) 100%);
+ backdrop-filter: blur(16px);
+ -webkit-backdrop-filter: blur(16px);
+ border: 1.5px solid var(--accent);
+ color: var(--accent);
+ box-shadow: 0 8px 24px rgba(0,0,0,0.45), 0 0 16px rgba(79, 219, 200, 0.35);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ cursor: pointer;
+ position: relative;
+ outline: none;
+ padding: 0;
+ transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+ }
+
+ :root[data-theme="light"] .bubble-btn {
+ background: linear-gradient(135deg, rgba(13, 148, 136, 0.95) 0%, rgba(15, 118, 110, 0.95) 100%);
+ color: #ffffff;
+ border: 1.5px solid rgba(255,255,255,0.6);
+ box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4);
+ }
+
+ .bubble-btn:active {
+ transform: scale(0.92);
+ }
+
+ .bubble-btn.holding {
+ transform: scale(1.12);
+ box-shadow: 0 0 24px var(--accent), 0 8px 28px rgba(0,0,0,0.6);
+ }
+
+ .bubble-btn.drag-mode {
+ border: 2px dashed var(--accent);
+ animation: bubblePulseBorder 1.5s infinite;
+ cursor: grab;
+ }
+ .bubble-btn.drag-mode:active {
+ cursor: grabbing;
+ transform: scale(1.08);
+ }
+
+ @keyframes bubblePulseBorder {
+ 0% { box-shadow: 0 0 0 0 rgba(79, 219, 200, 0.4); }
+ 70% { box-shadow: 0 0 0 10px rgba(79, 219, 200, 0); }
+ 100% { box-shadow: 0 0 0 0 rgba(79, 219, 200, 0); }
+ }
+
+ .bubble-icon-wrap {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ width: 100%;
+ height: 100%;
+ pointer-events: none;
+ }
+
+ .bubble-progress-ring {
+ position: absolute;
+ inset: -3px;
+ width: 62px;
+ height: 62px;
+ pointer-events: none;
+ transform: rotate(-90deg);
+ }
+
+ .bubble-progress-circle {
+ fill: none;
+ stroke: var(--accent);
+ stroke-width: 3.5;
+ stroke-linecap: round;
+ stroke-dasharray: 176;
+ stroke-dashoffset: 176;
+ transition: stroke-dashoffset 0s linear;
+ }
+
+ .bubble-btn.holding .bubble-progress-circle {
+ stroke-dashoffset: 0;
+ transition: stroke-dashoffset 0.5s linear;
+ }
+
+ .bubble-drag-badge {
+ position: absolute;
+ top: -20px;
+ left: 50%;
+ transform: translateX(-50%);
+ background: var(--accent);
+ color: #000;
+ font-size: 9px;
+ font-weight: 800;
+ text-transform: uppercase;
+ padding: 2px 6px;
+ border-radius: 4px;
+ white-space: nowrap;
+ pointer-events: none;
+ box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+ letter-spacing: 0.05em;
+ }
+
+ /* Всплывающее меню бабла */
+ .bubble-menu {
+ position: absolute;
+ width: 250px;
+ background: var(--glass-bg);
+ backdrop-filter: blur(25px);
+ -webkit-backdrop-filter: blur(25px);
+ border: 1px solid var(--border);
+ border-radius: 16px;
+ box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+ padding: 12px;
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+ z-index: 1205;
+ animation: bubbleMenuAnim 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+ }
+
+ @keyframes bubbleMenuAnim {
+ from { opacity: 0; transform: scale(0.88) translateY(10px); }
+ to { opacity: 1; transform: scale(1) translateY(0); }
+ }
+
+ .bubble-menu-header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding-bottom: 6px;
+ border-bottom: 1px solid var(--border);
+ }
+ .bubble-menu-header span {
+ font-size: 11px;
+ font-weight: 800;
+ text-transform: uppercase;
+ letter-spacing: 0.08em;
+ color: var(--accent);
+ }
+ .bubble-close-btn {
+ padding: 4px;
+ border-radius: 6px;
+ color: var(--muted);
+ width: auto;
+ height: auto;
+ }
+
+ .bubble-menu-items {
+ display: flex;
+ flex-direction: column;
+ gap: 6px;
+ }
+
+ .bubble-item-btn {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ width: 100%;
+ padding: 10px 12px;
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-radius: 10px;
+ text-align: left;
+ color: var(--text);
+ transition: background 0.15s ease, transform 0.1s ease;
+ }
+ .bubble-item-btn:hover {
+ background: var(--surface-hover);
+ border-color: var(--accent);
+ }
+ .bubble-item-btn:active {
+ transform: scale(0.97);
+ }
+ .bubble-item-icon {
+ width: 32px;
+ height: 32px;
+ border-radius: 8px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ flex-shrink: 0;
+ }
+ .bubble-item-text {
+ display: flex;
+ flex-direction: column;
+ min-width: 0;
+ }
+ .bubble-item-text b {
+ font-size: 13px;
+ font-weight: 700;
+ color: var(--text);
+ }
+ .bubble-item-text span {
+ font-size: 10px;
+ color: var(--muted);
+ }
+
+ .bubble-menu-row {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 6px;
+ margin-top: 2px;
+ }
+
+ .bubble-action-subbtn {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ gap: 4px;
+ padding: 9px 6px;
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-radius: 8px;
+ color: var(--text);
+ font-size: 11px;
+ font-weight: 700;
+ }
+ .bubble-action-subbtn:hover:not(:disabled) {
+ background: var(--surface-hover);
+ border-color: var(--accent);
+ }
+ .bubble-action-subbtn:disabled {
+ opacity: 0.4;
+ cursor: not-allowed;
+ }
 
  #toast {
  position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top)); transform: translateX(-50%) translateY(-14px) scale(0.96);
@@ -369,11 +619,321 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
  #toast.warn i { color: var(--danger); }
  #toast span { overflow-wrap: anywhere; }
  
-.table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); }
+ .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); }
  table { width: 100%; border-collapse: collapse; min-width: 480px; }
  th, td { border-bottom: 1px solid var(--border); padding: 10px 12px; text-align: left; font-size: 12px; }
  th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
  .note-row td { background: rgba(79, 219, 200, 0.05); border-left: 3px solid var(--accent); }
+
+ /* Экран Восстановления Сессии (Центрирование чуть ниже центра и симметричные кнопки) */
+ #stepResume {
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ flex: 1;
+ min-height: 0;
+ padding: 16px 8px;
+ }
+ 
+ .resume-card {
+ width: 100%;
+ max-width: 440px;
+ background: var(--glass-bg);
+ backdrop-filter: var(--glass-blur);
+ -webkit-backdrop-filter: var(--glass-blur);
+ border: 1px solid var(--border);
+ border-radius: 20px;
+ padding: 32px 22px 28px;
+ box-shadow: var(--shadow);
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ text-align: center;
+ margin-top: 3vh; /* Расположение чуть ниже центра */
+ animation: smoothFadeIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+ }
+ 
+ .resume-icon-badge {
+ width: 52px;
+ height: 52px;
+ border-radius: 16px;
+ background: rgba(79, 219, 200, 0.12);
+ border: 1px solid rgba(79, 219, 200, 0.3);
+ color: var(--accent);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin-bottom: 14px;
+ box-shadow: 0 4px 14px rgba(79, 219, 200, 0.15);
+ }
+ :root[data-theme="light"] .resume-icon-badge {
+ background: rgba(13, 148, 136, 0.1);
+ border-color: rgba(13, 148, 136, 0.25);
+ color: #0d9488;
+ box-shadow: 0 4px 14px rgba(13, 148, 136, 0.1);
+ }
+
+ .resume-actions-grid {
+ display: flex;
+ flex-direction: column;
+ gap: 12px;
+ width: 100%;
+ margin-top: 6px;
+ }
+
+ .resume-btn {
+ width: 100%;
+ height: 50px;
+ min-height: 50px;
+ padding: 0 20px;
+ border-radius: 12px;
+ font-family: inherit;
+ font-size: 14px;
+ font-weight: 700;
+ letter-spacing: 0.02em;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ gap: 10px;
+ cursor: pointer;
+ transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+ outline: none;
+ box-sizing: border-box;
+ }
+
+ .resume-btn:active {
+ transform: translateY(2px) scale(0.98) !important;
+ box-shadow: none !important;
+ }
+
+ /* Первичная кнопка (Восстановить) */
+ .resume-btn-primary {
+ background-color: var(--accent);
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.08) 100%);
+ box-shadow: 0 4px 14px rgba(79, 219, 200, 0.3), inset 0 1px 0 rgba(255,255,255,0.25);
+ border: 1px solid rgba(0,0,0,0.15);
+ color: #000000;
+ }
+
+ :root[data-theme="light"] .resume-btn-primary {
+ background-color: #0d9488;
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.08) 100%);
+ box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+ border: 1px solid rgba(0,0,0,0.1);
+ color: #ffffff;
+ }
+
+ /* Вторичная кнопка (Начать заново) - Полная симметрия */
+ .resume-btn-secondary {
+ background-color: var(--surface);
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 100%);
+ border: 1.5px solid var(--border);
+ box-shadow: 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+ color: var(--text);
+ }
+
+ :root[data-theme="light"] .resume-btn-secondary {
+ background-color: #ffffff;
+ background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+ border: 1.5px solid rgba(13, 148, 136, 0.35);
+ box-shadow: 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 #ffffff;
+ color: #0f172a;
+ }
+
+ .resume-btn-secondary:hover {
+ border-color: var(--accent);
+ background-color: var(--surface-hover);
+ }
+
+
+ /* =========================================================
+    ИНТЕРАКТИВНАЯ И ИЛЛЮСТРИРОВАННАЯ СПРАВКА (HELP SYSTEM)
+    ========================================================= */
+ #helpModal .modal-content {
+ max-width: 720px;
+ height: 92vh;
+ max-height: 92vh;
+ display: flex;
+ flex-direction: column;
+ }
+
+ .help-tabs-nav {
+ display: flex;
+ gap: 6px;
+ overflow-x: auto;
+ padding-bottom: 6px;
+ margin: 4px 0 10px;
+ scrollbar-width: none;
+ }
+ .help-tabs-nav::-webkit-scrollbar { display: none; }
+
+ .help-tab-btn {
+ flex-shrink: 0;
+ padding: 8px 14px;
+ font-size: 12px;
+ font-weight: 700;
+ border-radius: var(--radius-sm);
+ background: var(--surface);
+ border: 1px solid var(--border);
+ color: var(--muted);
+ cursor: pointer;
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ transition: all 0.15s ease;
+ }
+ .help-tab-btn.active {
+ background: rgba(79, 219, 200, 0.12);
+ border-color: var(--accent);
+ color: var(--accent);
+ }
+ :root[data-theme="light"] .help-tab-btn.active {
+ background: rgba(13, 148, 136, 0.12);
+ color: #0d9488;
+ border-color: #0d9488;
+ }
+
+ .help-content-scroll {
+ flex: 1;
+ overflow-y: auto;
+ padding-right: 4px;
+ display: flex;
+ flex-direction: column;
+ gap: 14px;
+ }
+ .help-content-scroll::-webkit-scrollbar { width: 4px; }
+ .help-content-scroll::-webkit-scrollbar-thumb { background: rgba(139, 155, 180, 0.3); border-radius: 4px; }
+
+ .help-card {
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-radius: var(--radius);
+ padding: 14px 16px;
+ display: flex;
+ flex-direction: column;
+ gap: 8px;
+ }
+
+ .help-card-header {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ font-size: 14px;
+ font-weight: 700;
+ color: var(--text);
+ }
+ .help-card-icon {
+ width: 32px;
+ height: 32px;
+ border-radius: 8px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ flex-shrink: 0;
+ background: rgba(79, 219, 200, 0.15);
+ color: var(--accent);
+ }
+ :root[data-theme="light"] .help-card-icon {
+ background: rgba(13, 148, 136, 0.12);
+ color: #0d9488;
+ }
+
+ .help-step-list {
+ display: flex;
+ flex-direction: column;
+ gap: 10px;
+ margin-top: 4px;
+ }
+ .help-step-item {
+ display: flex;
+ gap: 10px;
+ align-items: flex-start;
+ font-size: 12px;
+ line-height: 1.45;
+ color: var(--text);
+ }
+ .help-step-num {
+ width: 22px;
+ height: 22px;
+ border-radius: 6px;
+ background: var(--accent);
+ color: #000;
+ font-weight: 800;
+ font-size: 11px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ flex-shrink: 0;
+ margin-top: 1px;
+ }
+ :root[data-theme="light"] .help-step-num {
+ background: #0d9488;
+ color: #fff;
+ }
+
+ .help-badge {
+ display: inline-flex;
+ align-items: center;
+ gap: 4px;
+ padding: 2px 6px;
+ border-radius: 4px;
+ font-size: 10px;
+ font-weight: 700;
+ background: rgba(255, 255, 255, 0.08);
+ border: 1px solid var(--border);
+ color: var(--accent);
+ }
+ :root[data-theme="light"] .help-badge {
+ background: rgba(13, 148, 136, 0.08);
+ color: #0d9488;
+ border-color: rgba(13, 148, 136, 0.2);
+ }
+
+ .help-demo-box {
+ background: rgba(0, 0, 0, 0.2);
+ border: 1px dashed var(--accent);
+ border-radius: 12px;
+ padding: 14px;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ gap: 10px;
+ margin-top: 6px;
+ text-align: center;
+ }
+ :root[data-theme="light"] .help-demo-box {
+ background: rgba(13, 148, 136, 0.04);
+ }
+
+ .help-demo-bubble {
+ width: 52px;
+ height: 52px;
+ border-radius: 50%;
+ background: linear-gradient(135deg, rgba(79, 219, 200, 0.25) 0%, rgba(13, 13, 25, 0.9) 100%);
+ border: 1.5px solid var(--accent);
+ color: var(--accent);
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ cursor: pointer;
+ position: relative;
+ user-select: none;
+ -webkit-user-select: none;
+ box-shadow: 0 4px 14px rgba(79, 219, 200, 0.3);
+ transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+ }
+ :root[data-theme="light"] .help-demo-bubble {
+ background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+ color: #fff;
+ border-color: rgba(255, 255, 255, 0.6);
+ }
+ .help-demo-bubble.holding {
+ transform: scale(1.15);
+ box-shadow: 0 0 20px var(--accent);
+ }
+
 </style>
 </head>
 <body>
@@ -389,14 +949,26 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
  </div>
  </div>
 
- <!-- ВОССТАНОВЛЕНИЕ СЕССИИ -->
- <div id="stepResume" class="step-container hidden">
+  <!-- ВОССТАНОВЛЕНИЕ СЕССИИ -->
+ <div id="stepResume" class="hidden">
+ <div class="resume-card">
+ <div class="resume-icon-badge">
+ <i data-lucide="history" style="width:26px; height:26px;"></i>
+ </div>
  <div class="eyebrow">Автосохранение</div>
- <h2>Есть несохранённая панель</h2>
- <p id="resumeInfo" style="margin: 10px 0 16px;"></p>
- <div style="display: flex; flex-direction: column; gap: 8px;">
- <button class="action-btn" onclick="restoreSessionAction()"><i data-lucide="history"></i> Восстановить</button>
- <button class="back-btn" onclick="discardSessionAction()">Начать заново</button>
+ <h2 style="font-size:20px; font-weight:800; margin-bottom:8px; line-height:1.25;">Есть несохранённая панель</h2>
+ <p id="resumeInfo" style="margin: 0 0 22px; font-size: 13px; color: var(--muted); line-height: 1.45;">Вы можете восстановить предыдущую сессию со всеми таймерами или начать заново.</p>
+ 
+ <div class="resume-actions-grid">
+ <button class="resume-btn resume-btn-primary" onclick="restoreSessionAction()">
+ <i data-lucide="rotate-ccw" style="width:18px;height:18px;"></i>
+ <span>Восстановить</span>
+ </button>
+ <button class="resume-btn resume-btn-secondary" onclick="discardSessionAction()">
+ <i data-lucide="plus-circle" style="width:18px;height:18px;"></i>
+ <span>Начать заново</span>
+ </button>
+ </div>
  </div>
  </div>
 
@@ -404,9 +976,9 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
  <div id="editStep" class="step-container hidden">
  <div class="eyebrow">Конструктор</div>
  <h2>Панель элементов</h2>
- <p style="font-size:11px; color:var(--muted); margin-top:2px;">Смахивай карточку влево для быстрого удаления</p>
+ <p style="font-size:11px; color:var(--muted); margin-top:2px;">Смахивай карточку влево для удаления • Перетаскивай кнопку-бабл в любое место экрана</p>
  
-<div style="display: flex; gap: 8px; margin-top: 12px;">
+ <div style="display: flex; gap: 8px; margin-top: 12px;">
  <button class="back-btn" onclick="editAddZone()" style="flex: 1; border: 1px dashed var(--accent); color: var(--accent); background: rgba(79, 219, 200, 0.05); box-shadow: none;"><i data-lucide="plus"></i> Добавить</button>
  <button class="back-btn" onclick="openPresetsOverlay()" style="flex: 1;"><i data-lucide="bookmark"></i> Пресеты</button>
  </div>
@@ -418,21 +990,21 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
  <!-- ШАГ 3 (Основной) -->
  <div id="step3" class="hidden">
  
-<!-- Зона ленты логов -->
+ <!-- Зона ленты логов -->
  <div class="log-feed-viewport">
  <div id="logFeed"></div>
  </div>
  
-<!-- Зона управления -->
+ <!-- Зона управления -->
  <div class="workspace-viewport">
  
-<!-- Заголовок Журнала -->
- <div class="log-action-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+ <!-- Заголовок Журнала -->
+ <div class="log-action-header">
  <h3 style="margin:0; display:flex; align-items:center; gap:6px;">
  <i data-lucide="terminal" style="width:16px;"></i> Журнал
  </h3>
- <button onclick="openActionMenuModal()" class="back-btn small" style="margin:0; border-color: var(--accent); color: var(--accent); background-color: rgba(79, 219, 200, 0.05);">
- <i data-lucide="pen-tool" style="width:14px;"></i> Таблица
+ <button onclick="openFullTableModal()" class="back-btn small" style="margin:0; border-color: var(--accent); color: var(--accent); background-color: rgba(79, 219, 200, 0.05);">
+ <i data-lucide="table" style="width:14px;"></i> Таблица и экспорт
  </button>
  </div>
 
@@ -451,18 +1023,70 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
  </div>
 </div>
 
+<!-- =========================================================
+     ПЛАВАЮЩАЯ КНОПКА-БАБЛ (FAB) И МЕНЮ БЫСТРЫХ ДЕЙСТВИЙ
+     ========================================================= -->
+<div id="bubbleContainer" class="bubble-container">
+ <!-- Раскрывающееся меню бабла -->
+ <div id="bubbleMenu" class="bubble-menu hidden">
+ <div class="bubble-menu-header">
+ <span>Быстрые действия</span>
+ <button class="bubble-close-btn icon-btn" onclick="toggleBubbleMenu(false)" aria-label="Закрыть меню"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
+ </div>
+ <div class="bubble-menu-items">
+ <button class="bubble-item-btn" onclick="handleBubbleEdit()">
+ <div class="bubble-item-icon" style="background: rgba(79, 219, 200, 0.15); color: var(--accent);"><i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i></div>
+ <div class="bubble-item-text">
+ <b>Редактор элементов</b>
+ <span>Настройка таймеров и зон</span>
+ </div>
+ </button>
+ <button class="bubble-item-btn" onclick="handleBubbleNote()">
+ <div class="bubble-item-icon" style="background: rgba(251, 191, 36, 0.15); color: var(--warn);"><i data-lucide="pen-tool" style="width:16px;height:16px;"></i></div>
+ <div class="bubble-item-text">
+ <b>Создание заметок</b>
+ <span>Голосовой или текстовый ввод</span>
+ </div>
+ </button>
+ <div class="bubble-menu-row">
+ <button id="bubbleUndoBtn" class="bubble-action-subbtn" onclick="undoLastAction()" title="Отменить действие">
+ <i data-lucide="undo-2" style="width:16px;height:16px;"></i>
+ <span>Назад (Отмена)</span>
+ </button>
+ <button id="bubbleRedoBtn" class="bubble-action-subbtn" onclick="redoLastAction()" title="Вернуть действие">
+ <i data-lucide="redo-2" style="width:16px;height:16px;"></i>
+ <span>Вперёд (Вернуть)</span>
+ </button>
+ </div>
+ </div>
+ </div>
+
+ <!-- Сама кнопка-бабл -->
+ <button id="bubbleBtn" class="bubble-btn" aria-label="Кнопка управления (удержание — голос, нажатие — меню)" title="Нажми для меню, удерживай для голоса">
+ <div class="bubble-icon-wrap">
+ <i data-lucide="sparkles" id="bubbleMainIcon" style="width:24px;height:24px;"></i>
+ <i data-lucide="mic" id="bubbleMicIcon" class="hidden" style="width:24px;height:24px;"></i>
+ <i data-lucide="move" id="bubbleDragIcon" class="hidden" style="width:24px;height:24px;"></i>
+ </div>
+ <svg class="bubble-progress-ring" viewBox="0 0 56 56">
+ <circle class="bubble-progress-circle" cx="28" cy="28" r="25"></circle>
+ </svg>
+ <span id="bubbleDragBadge" class="bubble-drag-badge hidden">Перетащи</span>
+ </button>
+</div>
+
 <!-- МОДАЛКИ -->
 
-<!-- Меню Журнала -->
-<div id="actionMenuModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+<!-- Модалка создания/редактирования заметок -->
+<div id="noteModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
  <div class="modal-content">
  <div class="modal-header">
- <h3>Журнал и Заметки</h3>
+ <h3>Создание заметки</h3>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
  
-<div id="noteTypeSelector">
- <div class="eyebrow" style="margin-top: 4px;">Добавить запись</div>
+ <div id="noteTypeSelector">
+ <div class="eyebrow" style="margin-top: 4px;">Способ ввода</div>
  <div class="note-choices">
  <button class="choice-btn" id="voiceBtn" onclick="startVoiceNote()" aria-label="Наговорить заметку">
  <i data-lucide="mic"></i><span style="font-weight: 600;">Наговорить</span>
@@ -471,22 +1095,15 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
  <i data-lucide="keyboard"></i><span style="font-weight: 600;">Написать</span>
  </button>
  </div>
-
- <div class="eyebrow" style="margin-top: 8px;">Данные</div>
- <button class="back-btn" style="justify-content: flex-start; margin-bottom: 10px; border-color:var(--accent); color: var(--accent); background-color:rgba(79, 219, 200, 0.05);" onclick="openFullTableModal()"><i data-lucide="table"></i> Просмотр всей таблицы</button>
- 
-<div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom: 10px;">
- <button class="back-btn" onclick="exportCSV()"><i data-lucide="download"></i> Скачать CSV</button>
- <button class="back-btn" id="shareBtnMenu" onclick="shareCSV()"><i data-lucide="share-2"></i> Поделиться</button>
- </div>
-
- <div class="eyebrow" style="margin-top: 8px;">Опасно</div>
- <button id="menuUndoBtn" class="danger-btn" style="justify-content: flex-start; margin-bottom: 6px;" onclick="undoLastAction()"><i data-lucide="undo-2"></i> Отменить последнее действие</button>
  </div>
 
  <!-- Область ввода текста для заметки -->
  <div id="noteInputArea" class="hidden flex-col gap-3">
- <textarea id="noteTextInput" placeholder="Текст заметки..."></textarea>
+ <div style="display:flex; justify-content:space-between; align-items:center;">
+ <div class="eyebrow" style="margin:0;">Текст заметки</div>
+ <button class="icon-btn small" id="voiceNoteAppendBtn" onclick="startVoiceNote()" title="Додиктовать голосом" style="padding:4px 8px; border-color:var(--accent); color:var(--accent);"><i data-lucide="mic" style="width:14px;height:14px;"></i></button>
+ </div>
+ <textarea id="noteTextInput" placeholder="Текст заметки..." rows="4"></textarea>
  <div style="display: flex; gap: 10px;">
  <button class="back-btn" onclick="resetNoteModal()">Отмена</button>
  <button class="action-btn" onclick="saveNoteConfirm()"><i data-lucide="send"></i> Сохранить</button>
@@ -495,18 +1112,217 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
  </div>
 </div>
 
-<!-- Полная таблица -->
+<!-- Полная таблица истории и экспорт -->
 <div id="fullTableModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
  <div class="modal-content" style="max-width: 800px; height: 95vh;">
  <div class="modal-header">
- <h3>Полная история</h3>
+ <h3>История и Экспорт</h3>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
- <div class="table-wrap" style="flex: 1; margin-top: 6px; max-height: calc(100% - 60px);">
+ 
+ <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin: 6px 0 10px;">
+ <button class="back-btn small" onclick="exportCSV()"><i data-lucide="download"></i> Скачать CSV</button>
+ <button class="back-btn small" id="shareBtnMenu" onclick="shareCSV()"><i data-lucide="share-2"></i> Поделиться</button>
+ </div>
+
+ <div class="table-wrap" style="flex: 1; margin-top: 4px; max-height: calc(100% - 100px);">
  <table id="fullTable">
  <thead><tr><th>Событие / Элемент</th><th>№</th><th>Старт</th><th>Финиш</th><th>Время</th></tr></thead>
  <tbody id="logBody"></tbody>
  </table>
+ </div>
+ </div>
+</div>
+
+
+<!-- МОДАЛКА СПРАВКИ И РУКОВОДСТВА -->
+<div id="helpModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+ <div class="modal-content">
+ <div class="modal-header">
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="book-open" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Справка AnyTimer</h3>
+ </div>
+ <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+ </div>
+
+ <div class="help-tabs-nav">
+ <button class="help-tab-btn active" onclick="switchHelpTab('start')"><i data-lucide="rocket" style="width:14px;"></i> Старт</button>
+ <button class="help-tab-btn" onclick="switchHelpTab('bubble')"><i data-lucide="sparkles" style="width:14px;"></i> Бабл-кнопка</button>
+ <button class="help-tab-btn" onclick="switchHelpTab('timers')"><i data-lucide="timer" style="width:14px;"></i> Режимы</button>
+ <button class="help-tab-btn" onclick="switchHelpTab('journal')"><i data-lucide="terminal" style="width:14px;"></i> Журнал</button>
+ <button class="help-tab-btn" onclick="switchHelpTab('presets')"><i data-lucide="webhook" style="width:14px;"></i> Интеграции</button>
+ <button class="help-tab-btn" onclick="switchHelpTab('pwa')"><i data-lucide="smartphone" style="width:14px;"></i> Офлайн PWA</button>
+ </div>
+
+ <div class="help-content-scroll" id="helpContentScroll">
+ 
+ <!-- ВКЛАДКА 1: СТАРТ -->
+ <div id="helpSection_start" class="help-tab-pane">
+ <div class="help-card">
+ <div class="help-card-header">
+ <div class="help-card-icon"><i data-lucide="activity"></i></div>
+ <div>Быстрый старт за 3 шага</div>
+ </div>
+ <div class="help-step-list">
+ <div class="help-step-item">
+ <span class="help-step-num">1</span>
+ <div><b>Конструктор элементов:</b> Нажмите «Добавить» в редакторе, задайте имя карточки, цвет и выберите тип: <b>Одиночный</b> или <b>Группа</b>.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">2</span>
+ <div><b>Запуск панели:</b> Нажмите «Запустить панель». Для одиночных элементов клик включает/выключает секундомер. Для групповых нажимайте <b>«+ Добавить»</b> для каждого объекта.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">3</span>
+ <div><b>Фиксация результатов:</b> Все включения, выключения и длительности мгновенно пишутся в ленту и общую таблицу с возможностью экспорта в CSV.</div>
+ </div>
+ </div>
+ </div>
+
+ <div class="help-card" style="margin-top:10px;">
+ <div class="help-card-header">
+ <div class="help-card-icon"><i data-lucide="shield-alert"></i></div>
+ <div>Защита от случайных нажатий</div>
+ </div>
+ <p style="font-size:12px; line-height:1.45; color:var(--text); margin:0;">Если процесс длится более <b>30 минут</b>, приложение запросит подтверждение перед его остановкой, чтобы предотвратить случайный сброс хронометража.</p>
+ </div>
+ </div>
+
+ <!-- ВКЛАДКА 2: БАБЛ-КНОПКА -->
+ <div id="helpSection_bubble" class="help-tab-pane hidden">
+ <div class="help-card">
+ <div class="help-card-header">
+ <div class="help-card-icon"><i data-lucide="sparkles"></i></div>
+ <div>Плавающая кнопка быстрых действий</div>
+ </div>
+ <div class="help-step-list">
+ <div class="help-step-item">
+ <span class="help-step-num">🎙️</span>
+ <div><b>Удержание (Long-press ≥ 500 мс):</b> Мгновенно активирует голосовой набор заметки. При этом <b>фоновая музыка автоматически ставится на паузу</b> и возобновляется после сохранения.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">⚡</span>
+ <div><b>Короткий тап:</b> Открывает меню: вход в конструктор, создание заметок, кнопки <b>«Назад (Отмена ↶)»</b> и <b>«Вперёд (Вернуть ↷)»</b>.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">🖐️</span>
+ <div><b>Перетаскивание (Drag & Drop):</b> При открытии конструктора кнопка переходит в режим перемещения («Перетащи»). Перетащите её в любое удобное место экрана — позиция сохранится.</div>
+ </div>
+ </div>
+
+ <div class="help-demo-box">
+ <div style="font-size:11px; font-weight:700; color:var(--muted);">ИНТЕРАКТИВНЫЙ ТРЕНАЖЕР БАБЛА:</div>
+ <div id="helpDemoBubble" class="help-demo-bubble">
+ <i data-lucide="sparkles" id="helpDemoIcon" style="width:22px; height:22px;"></i>
+ </div>
+ <div id="helpDemoStatus" style="font-size:11px; font-weight:600; color:var(--accent);">Попробуйте зажать на 0.5 сек или нажать коротко</div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ВКЛАДКА 3: РЕЖИМЫ И ЛИМИТЫ -->
+ <div id="helpSection_timers" class="help-tab-pane hidden">
+ <div class="help-card">
+ <div class="help-card-header">
+ <div class="help-card-icon"><i data-lucide="sliders"></i></div>
+ <div>Секундомер vs Таймер (Лимит)</div>
+ </div>
+ <div class="help-step-list">
+ <div class="help-step-item">
+ <span class="help-step-num">⏱️</span>
+ <div><b>Секундомер (Прямой счёт):</b> Стандартный хронометраж от 00:00 вперёд.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">⏳</span>
+ <div><b>Таймер (Лимит времени):</b> Задайте время в формате <b>ЧЧ : ММ : СС</b>. При старте показывается прямой счёт, а снизу — остаток времени.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">🔔</span>
+ <div><b>Действие по окончании:</b><br>
+ • <b>Сигнал:</b> Звуковое и вибро-оповещение с индикацией превышения.<br>
+ • <b>Авто-стоп:</b> Приложение само остановит процесс и зафиксирует финиш в журнале.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">👥</span>
+ <div><b>Лимит для групп:</b> Можно применить <b>«К каждому»</b> (индивидуальный таймер на объект) или <b>«Ко всем сразу»</b> (от первого вошедшего).</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ВКЛАДКА 4: ЖУРНАЛ И ЭКСПОРТ -->
+ <div id="helpSection_journal" class="help-tab-pane hidden">
+ <div class="help-card">
+ <div class="help-card-header">
+ <div class="help-card-icon"><i data-lucide="table"></i></div>
+ <div>Учет, заметки и отчеты</div>
+ </div>
+ <div class="help-step-list">
+ <div class="help-step-item">
+ <span class="help-step-num">📋</span>
+ <div><b>Живая лента и Таблица:</b> Последние 5 событий видны сразу в ленте. Кнопка «Таблица и экспорт» открывает полный протокол за смену.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">✍️</span>
+ <div><b>Заметки в журнале:</b> Наговаривайте или пишите комментарии. Их можно редактировать и удалять прямо в таблице.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">📥</span>
+ <div><b>Экспорт в CSV:</b> Готовый файл таблицы для Excel с корректной кодировкой UTF-8 BOM и итоговой сводкой по времени каждого элемента.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">📤</span>
+ <div><b>Поделиться:</b> Отправляйте CSV-отчёт в Telegram, WhatsApp или на почту в один клик.</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ВКЛАДКА 5: ПРЕСЕТЫ И ИНТЕГРАЦИИ -->
+ <div id="helpSection_presets" class="help-tab-pane hidden">
+ <div class="help-card">
+ <div class="help-card-header">
+ <div class="help-card-icon"><i data-lucide="bookmark"></i></div>
+ <div>Шаблоны и Автоматизация</div>
+ </div>
+ <div class="help-step-list">
+ <div class="help-step-item">
+ <span class="help-step-num">💾</span>
+ <div><b>Сохраненные панели (Пресеты):</b> Сохраняйте готовые наборы таймеров под разные задачи («Цех 1», «Склад», «Станки») и переключайтесь между ними. Экспорт и импорт в JSON.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">🌐</span>
+ <div><b>Webhook (POST JSON):</b> Интеграция с Home Assistant, Node-RED или собственным сервером. AnyTimer отсылает события старта, стопа и заметок с временными метками в реальном времени.</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- ВКЛАДКА 6: PWA И ОФЛАЙН -->
+ <div id="helpSection_pwa" class="help-tab-pane hidden">
+ <div class="help-card">
+ <div class="help-card-header">
+ <div class="help-card-icon"><i data-lucide="wifi-off"></i></div>
+ <div>Работа без интернета и установка</div>
+ </div>
+ <div class="help-step-list">
+ <div class="help-step-item">
+ <span class="help-step-num">1</span>
+ <div><b>100% Офлайн:</b> Все скрипты, звуки и оформление кэшируются через Service Worker. Приложение работает в экранированных помещениях и глухих подвалах.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">2</span>
+ <div><b>Установка PWA:</b> Нажмите «Установить приложение» в меню настроек, чтобы добавить AnyTimer как полноценное приложение на рабочий стол Android / iOS / ПК.</div>
+ </div>
+ <div class="help-step-item">
+ <span class="help-step-num">3</span>
+ <div><b>Экран не гаснет (Wake Lock):</b> При активных таймерах экран остаётся включённым автоматически.</div>
+ </div>
+ </div>
+ </div>
+ </div>
+
  </div>
  </div>
 </div>
@@ -594,7 +1410,7 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 
  <div class="eyebrow" style="margin: 2px 0 0;">Тема оформления</div>
  
-<button id="installAppBtn" class="action-btn hidden" style="justify-content: flex-start; margin-bottom: 12px;" onclick="installPWA()">
+ <button id="installAppBtn" class="action-btn hidden" style="justify-content: flex-start; margin-bottom: 12px;" onclick="installPWA()">
  <i data-lucide="download-cloud"></i> Установить приложение
  </button>
 
@@ -611,21 +1427,21 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
  <label class="mode-option"><input type="radio" name="alertChoice" id="alertLoud" value="loud" onchange="setAlertPref('loud')"> <i data-lucide="volume-2" style="width:16px;"></i> Звук</label>
  </div>
  
-<div class="eyebrow" style="margin: 2px 0 0;">Музыка</div>
+ <div class="eyebrow" style="margin: 2px 0 0;">Музыка</div>
  <div class="mode-row" style="margin: 0 0 8px;">
  <label class="mode-option" style="justify-content: flex-start;">
  <input type="checkbox" id="musicToggle" onchange="toggleMusic(this.checked)"> 
-<i data-lucide="music" style="width:16px;"></i> Фоновая музыка
+ <i data-lucide="music" style="width:16px;"></i> Фоновая музыка
  </label>
  </div>
  
-<button class="back-btn" style="justify-content: flex-start;" onclick="enterEditMode()"><i data-lucide="sliders-horizontal"></i> Редактор элементов</button>
+ <button class="back-btn" style="justify-content: flex-start; border-color: var(--accent); color: var(--accent); background: rgba(79, 219, 200, 0.08);" onclick="openHelpModal()"><i data-lucide="help-circle"></i> Справка и руководство</button>
  <button class="back-btn" style="justify-content: flex-start;" onclick="openPresetsOverlay()"><i data-lucide="bookmark"></i> Сохраненные панели</button>
  <button class="back-btn" style="justify-content: flex-start;" onclick="openWebhookSettings()"><i data-lucide="webhook"></i> Настройка Webhook</button>
  
-<div style="height:1px; background:var(--border); margin: 4px 0;"></div>
+ <div style="height:1px; background:var(--border); margin: 4px 0;"></div>
  
-<button class="back-btn" style="justify-content: flex-start;" onclick="actionStopAll()"><i data-lucide="octagon-pause" style="color: var(--warn);"></i> Остановить всех</button>
+ <button class="back-btn" style="justify-content: flex-start;" onclick="actionStopAll()"><i data-lucide="octagon-pause" style="color: var(--warn);"></i> Остановить всех</button>
  <button class="back-btn" style="justify-content: flex-start;" onclick="actionReset()"><i data-lucide="rotate-ccw" style="color: var(--warn);"></i> Сбросить счётчики</button>
  <button class="back-btn" style="justify-content: flex-start;" onclick="actionNewTimer()"><i data-lucide="file-plus" style="color: var(--accent);"></i> Новая панель</button>
  <button class="back-btn" style="justify-content: flex-start; margin-top: 4px;" onclick="actionExit()"><i data-lucide="power" style="color: var(--danger);"></i> Завершить работу</button>
@@ -674,8 +1490,10 @@ transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
 <script>
 lucide.createIcons();
 
-let zoneIdCounter = 0; let logIdCounter = 0; let zones = []; let logs = []; let tickHandle = null; let historyStack = [];
+let zoneIdCounter = 0; let logIdCounter = 0; let zones = []; let logs = []; let tickHandle = null; 
+let historyStack = []; let redoStack = [];
 const SESSION_KEY = 'zonesPanel.session.v3'; const PRESETS_KEY = 'zonesPanel.presets.v3'; const WEBHOOK_KEY = 'zonesPanel.webhook.v2';
+const BUBBLE_POS_KEY = 'zonesPanel.bubblePos.v1';
 const palette = ['#14b8a6','#3b82f6','#8b5cf6','#d946ef','#f43f5e','#f97316','#eab308','#84cc16','#06b6d4','#6366f1','#a855f7','#ec4899','#ef4444','#f59e0b','#10b981','#0ea5e9'];
 function colorFor(id){ return palette[id % palette.length]; }
 function escapeHtml(str){ return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -688,7 +1506,8 @@ function customConfirm(message, okText = 'Да', isDanger = false) {
  msgEl.innerHTML = message; btnOk.textContent = okText;
  if (isDanger) { btnOk.style.background = 'var(--danger)'; btnOk.style.color = '#fff'; } else { btnOk.style.background = 'var(--accent)'; btnOk.style.color = '#fff'; if (document.documentElement.getAttribute('data-theme') === 'dark') btnOk.style.color = '#000'; }
  overlay.classList.add('show');
- const cleanup = () => { overlay.classList.remove('show'); btnOk.removeEventListener('click', onOk); btnCancel.removeEventListener('click', onCancel); activeConfirmResolve = null; };
+ updateBubbleMode();
+ const cleanup = () => { overlay.classList.remove('show'); updateBubbleMode(); btnOk.removeEventListener('click', onOk); btnCancel.removeEventListener('click', onCancel); activeConfirmResolve = null; };
  const onOk = () => { cleanup(); resolve(true); }; const onCancel = () => { cleanup(); resolve(false); };
  btnOk.addEventListener('click', onOk); btnCancel.addEventListener('click', onCancel); activeConfirmResolve = onCancel;
  });
@@ -710,8 +1529,8 @@ if (window.matchMedia) window.matchMedia('(prefers-color-scheme: light)').addEve
 const ALERT_KEY = 'zonesPanel.alert.v2';
 function getAlertPref(){ return localStorage.getItem(ALERT_KEY) || 'loud'; }
 function setAlertPref(mode){ 
-localStorage.setItem(ALERT_KEY, mode); 
-showToast(mode === 'mute' ? 'Без звука' : (mode === 'vibro' ? 'Только вибро' : 'Звук + Вибро')); 
+ localStorage.setItem(ALERT_KEY, mode); 
+ showToast(mode === 'mute' ? 'Без звука' : (mode === 'vibro' ? 'Только вибро' : 'Звук + Вибро')); 
 }
 
 let audioCtx = null;
@@ -727,10 +1546,10 @@ function playTone(freq = 880, durationMs = 90){
 }
 
 function haptic(ms = 15, tone = 'start'){ 
-const pref = getAlertPref();
+ const pref = getAlertPref();
  if (pref === 'mute') return;
  try{ if (navigator.vibrate) navigator.vibrate(ms); }catch(e){} 
-if (pref === 'loud') playTone(tone === 'stop' ? 520 : 880, 90);
+ if (pref === 'loud') playTone(tone === 'stop' ? 520 : 880, 90);
 }
 
 function playAlarm(){
@@ -745,23 +1564,48 @@ function playAlarm(){
  }
 }
 
-/* --- Фоновая музыка --- */
+/* --- Фоновая музыка и отключение при голосе --- */
 const MUSIC_KEY = 'zonesPanel.music.v1';
 let bgMusic = new Audio('./bg-music.mp3');
 bgMusic.loop = true; bgMusic.volume = 0.3;
+let wasMusicPlayingBeforeVoice = false;
+
 function getMusicPref(){ return localStorage.getItem(MUSIC_KEY) === 'true'; }
 function setMusicPref(state){ localStorage.setItem(MUSIC_KEY, state); }
-function toggleMusic(state){ setMusicPref(state); if(state){ bgMusic.play().catch(() => showToast('Ткни в экран для старта музыки', true)); } else { bgMusic.pause(); } }
+function toggleMusic(state){ 
+ setMusicPref(state); 
+ if(state){ 
+ bgMusic.play().catch(() => showToast('Ткни в экран для старта музыки', true)); 
+ } else { 
+ bgMusic.pause(); 
+ } 
+}
 document.addEventListener('pointerdown', () => { if(getMusicPref() && bgMusic.paused) { bgMusic.play().catch(()=>{}); } }, { once: true });
 
+function pauseMusicForVoice(){
+ if (bgMusic && !bgMusic.paused) {
+ wasMusicPlayingBeforeVoice = true;
+ bgMusic.pause();
+ }
+}
+
+function resumeMusicAfterVoice(){
+ if (wasMusicPlayingBeforeVoice) {
+ wasMusicPlayingBeforeVoice = false;
+ if (getMusicPref() && bgMusic) {
+ bgMusic.play().catch(()=>{});
+ }
+ }
+}
+
 function syncMenuControls(){ 
-const pref = getThemePref(); 
-const el = document.getElementById('theme' + pref.charAt(0).toUpperCase() + pref.slice(1)); 
-if (el) el.checked = true; 
-const alertPref = getAlertPref(); 
-const alertEl = document.getElementById('alert' + alertPref.charAt(0).toUpperCase() + alertPref.slice(1)); 
-if (alertEl) alertEl.checked = true; 
-const musicEl = document.getElementById('musicToggle');
+ const pref = getThemePref(); 
+ const el = document.getElementById('theme' + pref.charAt(0).toUpperCase() + pref.slice(1)); 
+ if (el) el.checked = true; 
+ const alertPref = getAlertPref(); 
+ const alertEl = document.getElementById('alert' + alertPref.charAt(0).toUpperCase() + alertPref.slice(1)); 
+ if (alertEl) alertEl.checked = true; 
+ const musicEl = document.getElementById('musicToggle');
  if (musicEl) musicEl.checked = getMusicPref();
 }
 applyTheme();
@@ -774,20 +1618,80 @@ function refreshWakeLock(){ const anyActive = zones.some(z => (z.mode==='single'
 document.addEventListener('visibilitychange', () => { if(document.visibilityState==='visible') refreshWakeLock(); });
 function updateIcons(root = document) { lucide.createIcons({ root }); }
 
-/* --- Undo & History --- */
-function saveStateForUndo() { historyStack.push({ zones: JSON.parse(JSON.stringify(zones)), logs: JSON.parse(JSON.stringify(logs)), zoneIdCounter: zoneIdCounter }); if (historyStack.length > 50) historyStack.shift(); updateUndoButton(); }
-function updateUndoButton() { const btnMenu = document.getElementById('menuUndoBtn'); if (btnMenu) btnMenu.disabled = historyStack.length === 0; }
+/* --- Undo & Redo (Отмена и возврат действия) --- */
+function saveStateForUndo() { 
+ historyStack.push({ 
+ zones: JSON.parse(JSON.stringify(zones)), 
+ logs: JSON.parse(JSON.stringify(logs)), 
+ zoneIdCounter: zoneIdCounter, 
+ logIdCounter: logIdCounter 
+ }); 
+ if (historyStack.length > 50) historyStack.shift(); 
+ redoStack = [];
+ updateUndoRedoButtons(); 
+}
+
+function updateUndoRedoButtons() { 
+ const undoBtn = document.getElementById('bubbleUndoBtn'); 
+ const redoBtn = document.getElementById('bubbleRedoBtn');
+ if (undoBtn) undoBtn.disabled = historyStack.length === 0; 
+ if (redoBtn) redoBtn.disabled = redoStack.length === 0;
+}
+
 function undoLastAction() {
- if (historyStack.length === 0) return; const state = historyStack.pop(); zones = state.zones; logs = state.logs; zoneIdCounter = state.zoneIdCounter;
+ if (historyStack.length === 0) return; 
+ const currentState = { 
+ zones: JSON.parse(JSON.stringify(zones)), 
+ logs: JSON.parse(JSON.stringify(logs)), 
+ zoneIdCounter: zoneIdCounter, 
+ logIdCounter: logIdCounter 
+ };
+ redoStack.push(currentState);
+ const state = historyStack.pop(); 
+ zones = state.zones; 
+ logs = state.logs; 
+ zoneIdCounter = state.zoneIdCounter;
+ logIdCounter = state.logIdCounter || logIdCounter;
  rebuildTableFromLogs();
- if (!document.getElementById('step3').classList.contains('hidden')) { renderMainPanel(); } else if (!document.getElementById('editStep').classList.contains('hidden')) { renderEditList(); }
- persistSession(); updateUndoButton(); closeModals(); showToast('Отменено ↶');
+ if (!document.getElementById('step3').classList.contains('hidden')) { 
+ renderMainPanel(); 
+ } else if (!document.getElementById('editStep').classList.contains('hidden')) { 
+ renderEditList(); 
+ }
+ persistSession(); 
+ updateUndoRedoButtons(); 
+ showToast('Отменено ↶');
+}
+
+function redoLastAction() {
+ if (redoStack.length === 0) return;
+ const currentState = { 
+ zones: JSON.parse(JSON.stringify(zones)), 
+ logs: JSON.parse(JSON.stringify(logs)), 
+ zoneIdCounter: zoneIdCounter, 
+ logIdCounter: logIdCounter 
+ };
+ historyStack.push(currentState);
+ const state = redoStack.pop();
+ zones = state.zones;
+ logs = state.logs;
+ zoneIdCounter = state.zoneIdCounter;
+ logIdCounter = state.logIdCounter || logIdCounter;
+ rebuildTableFromLogs();
+ if (!document.getElementById('step3').classList.contains('hidden')) { 
+ renderMainPanel(); 
+ } else if (!document.getElementById('editStep').classList.contains('hidden')) { 
+ renderEditList(); 
+ }
+ persistSession(); 
+ updateUndoRedoButtons(); 
+ showToast('Возвращено ↷');
 }
 
 /* --- Storage & Webhook --- */
 function getWebhook() { return localStorage.getItem(WEBHOOK_KEY) || ''; }
 function setWebhook(url) { localStorage.setItem(WEBHOOK_KEY, url); }
-function openWebhookSettings() { closeModals(); document.getElementById('webhookInput').value = getWebhook(); document.getElementById('webhookModal').classList.add('show'); }
+function openWebhookSettings() { document.getElementById('webhookInput').value = getWebhook(); showModal('webhookModal'); }
 function saveWebhookConfirm() {
  const url = document.getElementById('webhookInput').value.trim();
  if (url && !/^https?:\/\//i.test(url)) { showToast('Нужен адрес, начинающийся с http:// или https://', true); return; }
@@ -805,15 +1709,15 @@ function savePresetsObj(obj){ if(storageOK) try{ localStorage.setItem(PRESETS_KE
 function ensureLogIds(){ let maxId = -1; logs.forEach(e => { if (typeof e.id === 'number') maxId = Math.max(maxId, e.id); }); logs.forEach(e => { if (typeof e.id !== 'number') e.id = ++maxId; }); logIdCounter = Math.max(logIdCounter, maxId + 1); }
 
 function restoreSessionAction() { 
-const pending = window.__pendingSession; if (!pending) return; 
-zoneIdCounter = pending.zoneIdCounter || 0; logIdCounter = pending.logIdCounter || 0; zones = pending.zones || []; logs = pending.logs || []; 
-zones.forEach(z => {
+ const pending = window.__pendingSession; if (!pending) return; 
+ zoneIdCounter = pending.zoneIdCounter || 0; logIdCounter = pending.logIdCounter || 0; zones = pending.zones || []; logs = pending.logs || []; 
+ zones.forEach(z => {
  z.countdown = z.countdown || false; z.limitMs = z.limitMs || 0;
  z.limitAction = z.limitAction || 'alert'; z.multiLimitType = z.multiLimitType || 'individual';
  });
- ensureLogIds(); historyStack = []; updateUndoButton(); 
-document.getElementById('stepResume').classList.add('hidden'); document.getElementById('step3').classList.add('fade-in'); document.getElementById('step3').classList.remove('hidden'); 
-rebuildTableFromLogs(); renderMainPanel(); startTicker(); refreshWakeLock(); showToast('Сессия восстановлена'); 
+ ensureLogIds(); historyStack = []; redoStack = []; updateUndoRedoButtons(); 
+ document.getElementById('stepResume').classList.add('hidden'); document.getElementById('step3').classList.add('fade-in'); document.getElementById('step3').classList.remove('hidden'); 
+ rebuildTableFromLogs(); renderMainPanel(); startTicker(); refreshWakeLock(); updateBubbleMode(); showToast('Сессия восстановлена'); 
 }
 function discardSessionAction() { clearSession(); window.__pendingSession = null; document.getElementById('stepResume').classList.add('hidden'); zones = []; logs = []; zoneIdCounter = 0; logIdCounter = 0; enterEditMode(); }
 
@@ -827,8 +1731,25 @@ function showToast(msg, warn){
  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-function openMenu(){ syncMenuControls(); document.getElementById('menuModal').classList.add('show'); }
-function closeModals(){ document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('show')); }
+function openMenu(){ syncMenuControls(); showModal('menuModal'); }
+function isAnyModalOpen() {
+ return !!document.querySelector('.modal-overlay.show');
+}
+
+function showModal(id) {
+ closeModals();
+ const el = document.getElementById(id);
+ if (el) {
+ el.classList.add('show');
+ updateBubbleMode();
+ }
+}
+
+function closeModals(){ 
+ document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('show')); 
+ toggleBubbleMenu(false);
+ updateBubbleMode();
+}
 function closeModalsOnDim(e){ if(e.target.classList.contains('modal-overlay') && e.target.id !== 'confirmModal') closeModals(); }
 
 /* --- Отрисовка Дашборда --- */
@@ -847,9 +1768,10 @@ function renderMainPanel(){
 
  document.getElementById('editStep').classList.add('hidden'); document.getElementById('stepResume').classList.add('hidden'); document.getElementById('step3').classList.remove('hidden'); 
 
-document.getElementById('summaryBar').innerHTML = '';
+ document.getElementById('summaryBar').innerHTML = '';
  renderSummaryBar(); 
-updateIcons(document.getElementById('multiArea'));
+ updateIcons(document.getElementById('multiArea'));
+ updateBubbleMode();
 }
 
 /* Одиночный элемент: Главное время — ПРЯМОЙ СЧЁТ, обратный отсчёт — снизу */
@@ -857,7 +1779,7 @@ function singleInnerHTML(z){
  const now = Date.now();
  let mainElapsedStr = z.active ? formatDuration(now - z.startTime) : formatDuration(z.totalMs);
  
-let countdownBadge = '';
+ let countdownBadge = '';
  if (z.active && z.countdown && z.limitMs > 0) {
  const left = Math.max(0, z.limitMs - (now - z.startTime));
  countdownBadge = `
@@ -867,8 +1789,8 @@ let countdownBadge = '';
  }
 
  const statusBadge = z.active 
-? `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.2); color:inherit; display:flex; align-items:center; gap:4px;"><span style="width:4px;height:4px;border-radius:2px;background:#fff;" class="pulse-pip"></span> ИДЁТ</span>` 
-: `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--surface); color:var(--muted); border:1px solid var(--border);">ГОТОВ</span>`;
+ ? `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.2); color:inherit; display:flex; align-items:center; gap:4px;"><span style="width:4px;height:4px;border-radius:2px;background:#fff;" class="pulse-pip"></span> ИДЁТ</span>` 
+ : `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--surface); color:var(--muted); border:1px solid var(--border);">ГОТОВ</span>`;
 
  return `
  <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;">
@@ -909,7 +1831,7 @@ function multiCardInnerHTML(z){
  const totalOccupiedMs = z.totalMs + liveMs;
  const isBusy = z.occupants.length > 0;
  
-let groupBadge = '';
+ let groupBadge = '';
  if (z.countdown && z.limitMs > 0 && z.multiLimitType === 'group' && isBusy) {
  const earliest = Math.min(...z.occupants.map(o => o.startTime));
  const left = Math.max(0, z.limitMs - (now - earliest));
@@ -963,7 +1885,7 @@ function renderSummaryBar(){
  else { z.occupants.forEach(o => { totalMs += Date.now() - o.startTime; }); activeCount += z.occupants.length; }
  });
  
-if (!bar.hasChildNodes()) {
+ if (!bar.hasChildNodes()) {
  bar.innerHTML = `
  <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="layers" style="color:var(--accent); width:14px;"></i> <span>Элементов: <b id="sbZones">0</b></span></div>
  <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="activity" style="color:var(--accent); width:14px;"></i> <span>Активно: <b id="sbActive">0</b></span></div>
@@ -972,7 +1894,7 @@ if (!bar.hasChildNodes()) {
  updateIcons(bar);
  }
  
-document.getElementById('sbZones').textContent = zones.length;
+ document.getElementById('sbZones').textContent = zones.length;
  document.getElementById('sbActive').textContent = activeCount;
  document.getElementById('sbTime').textContent = formatDuration(totalMs);
 }
@@ -982,7 +1904,7 @@ function checkCountdowns() {
  zones.forEach(z => {
  if (!z.countdown || z.limitMs <= 0) return;
  
-if (z.mode === 'single' && z.active) {
+ if (z.mode === 'single' && z.active) {
  const elapsed = now - z.startTime;
  if (elapsed >= z.limitMs && !z.limitNotified) {
  z.limitNotified = true;
@@ -1011,7 +1933,7 @@ function executeLimitAction(z, occupant, now) {
  playAlarm();
  const targetName = occupant ? `№${occupant.localNum} в «${z.name}»` : `«${z.name}»`;
  
-if (z.limitAction === 'alert') {
+ if (z.limitAction === 'alert') {
  showToast(`Время вышло: ${targetName}!`, true);
  } else if (z.limitAction === 'stop') {
  showToast(`Авто-стоп: ${targetName}`, true);
@@ -1034,14 +1956,13 @@ function startTicker(){
  if (tickHandle) clearInterval(tickHandle);
  tickHandle = setInterval(() => {
  if (document.getElementById('step3').classList.contains('hidden')) return; 
-checkCountdowns();
- let updateNeeded = false;
+ checkCountdowns();
  zones.forEach(z => {
  if (z.mode === 'single'){ if (z.active){ const el = document.getElementById(`singleBtn_${z.id}`); if (el) el.innerHTML = singleInnerHTML(z); } }
- else { const card = document.getElementById(`multiCard_${z.id}`); if (card && z.occupants.length){ card.innerHTML = multiCardInnerHTML(z); updateNeeded = true; } }
+ else { const card = document.getElementById(`multiCard_${z.id}`); if (card && z.occupants.length){ card.innerHTML = multiCardInnerHTML(z); } }
  });
  renderSummaryBar(); 
-}, 1000);
+ }, 1000);
 }
 
 /* --- Логика Управления --- */
@@ -1050,7 +1971,6 @@ const LONG_TIMER_CONFIRM_MS = 30 * 60 * 1000;
 async function toggleSingle(id){
  const z = zones.find(x => x.id === id); if (!z) return; const now = Date.now();
  
-// Проверка: если режим Таймер, но время 0 -> заставляем настроить время
  if (!z.active && z.countdown && z.limitMs <= 0) {
  openTimerSettings(id);
  highlightTimeErrors();
@@ -1065,7 +1985,7 @@ async function toggleSingle(id){
  saveStateForUndo();
  if (!z.active){ z.active = true; z.triggerCount++; z.startTime = now; z.limitNotified = false; fireWebhook({ event: 'start', zoneId: z.id, zoneName: z.name }); } else { forceOffSingle(z, now); }
  
-const el = document.getElementById(`singleBtn_${id}`); el.className = 'tracker-btn' + (z.active ? ' active' : ''); el.innerHTML = singleInnerHTML(z);
+ const el = document.getElementById(`singleBtn_${id}`); el.className = 'tracker-btn' + (z.active ? ' active' : ''); el.innerHTML = singleInnerHTML(z);
  haptic(15, z.active ? 'start' : 'stop'); renderSummaryBar(); persistSession(); refreshWakeLock();
 }
 
@@ -1079,7 +1999,6 @@ function forceOffSingle(z, offTime = Date.now()){
 function multiArrive(id){
  const z = zones.find(x => x.id === id); if (!z) return; 
 
-// Проверка на лимит времени
  if (z.countdown && z.limitMs <= 0) {
  openTimerSettings(id);
  highlightTimeErrors();
@@ -1088,8 +2007,8 @@ function multiArrive(id){
  }
 
  saveStateForUndo(); 
-const localNum = z.nextLocalNum++; 
-if(z.occupants.length === 0) z.limitNotified = false;
+ const localNum = z.nextLocalNum++; 
+ if(z.occupants.length === 0) z.limitNotified = false;
  z.occupants.push({ localNum: localNum, startTime: Date.now(), limitNotified: false });
  fireWebhook({ event: 'arrive', zoneId: z.id, zoneName: z.name, localNum: localNum }); haptic(15, 'start'); refreshMultiCard(z); renderSummaryBar(); persistSession(); refreshWakeLock();
 }
@@ -1123,20 +2042,20 @@ function openTimerSettings(id) {
  editingTsId = id;
  clearTimeErrors();
  
-document.querySelector(`input[name="tsCountdown"][value="${z.countdown ? 'true' : 'false'}"]`).checked = true;
+ document.querySelector(`input[name="tsCountdown"][value="${z.countdown ? 'true' : 'false'}"]`).checked = true;
  
-const { h, m, s } = msToHMS(z.limitMs);
+ const { h, m, s } = msToHMS(z.limitMs);
  document.getElementById('tsHours').value = String(h).padStart(2, '0');
  document.getElementById('tsMinutes').value = String(m).padStart(2, '0');
  document.getElementById('tsSeconds').value = String(s).padStart(2, '0');
  
-document.querySelector(`input[name="tsAction"][value="${z.limitAction || 'alert'}"]`).checked = true;
+ document.querySelector(`input[name="tsAction"][value="${z.limitAction || 'alert'}"]`).checked = true;
  document.querySelector(`input[name="tsMultiType"][value="${z.multiLimitType || 'individual'}"]`).checked = true;
  
-document.getElementById('tsMultiArea').classList.toggle('hidden', z.mode !== 'multi');
+ document.getElementById('tsMultiArea').classList.toggle('hidden', z.mode !== 'multi');
  toggleTsCountdown(z.countdown);
  
-closeModals(); document.getElementById('timerSettingsModal').classList.add('show');
+ showModal('timerSettingsModal');
 }
 
 function toggleTsCountdown(isCountdown) {
@@ -1169,7 +2088,7 @@ function highlightTimeErrors() {
 function saveTimerSettings() {
  const z = zones.find(x => x.id === editingTsId); if (!z) return;
  
-const isCountdown = document.querySelector('input[name="tsCountdown"]:checked').value === 'true';
+ const isCountdown = document.querySelector('input[name="tsCountdown"]:checked').value === 'true';
  const h = parseInt(document.getElementById('tsHours').value) || 0;
  const m = parseInt(document.getElementById('tsMinutes').value) || 0;
  const s = parseInt(document.getElementById('tsSeconds').value) || 0;
@@ -1183,57 +2102,353 @@ const isCountdown = document.querySelector('input[name="tsCountdown"]:checked').
 
  saveStateForUndo();
  
-z.countdown = isCountdown;
+ z.countdown = isCountdown;
  z.limitMs = isCountdown ? totalMs : 0;
  z.limitAction = document.querySelector('input[name="tsAction"]:checked').value;
  z.multiLimitType = document.querySelector('input[name="tsMultiType"]:checked').value;
  
-z.limitNotified = false;
+ z.limitNotified = false;
  z.occupants.forEach(o => o.limitNotified = false);
  
-persistSession(); renderEditList(); closeModals(); showToast('Настройки сохранены');
+ persistSession(); renderEditList(); closeModals(); showToast('Настройки сохранены');
 }
 
-/* --- Action Menu & Заметки --- */
-function openActionMenuModal() { updateUndoButton(); updateShareButtonVisibility(); document.getElementById('actionMenuModal').classList.add('show'); }
-let recognition = null; let editingNoteId = null;
+/* =========================================================
+   ЛОГИКА КНОПКИ-БАБЛ (BUBBLE FAB), МЕНЮ И ПЕРЕТАСКИВАНИЯ
+   ========================================================= */
+let isBubbleMenuOpen = false;
+let isHoldingBubble = false;
+let bubbleHoldTimer = null;
+let bubblePointerStart = { x: 0, y: 0 };
+let bubbleStartPos = { x: 0, y: 0 };
+let hasMovedBubble = false;
+let isDraggingBubble = false;
+
+function initBubblePosition() {
+ const saved = localStorage.getItem(BUBBLE_POS_KEY);
+ if (saved) {
+ try {
+ const pos = JSON.parse(saved);
+ applyBubblePosition(pos.x, pos.y);
+ return;
+ } catch(e){}
+ }
+ const defaultX = window.innerWidth - 76;
+ const defaultY = window.innerHeight - 96;
+ applyBubblePosition(defaultX, defaultY);
+}
+
+function applyBubblePosition(x, y) {
+ const bubbleContainer = document.getElementById('bubbleContainer');
+ if (!bubbleContainer) return;
+ const maxX = window.innerWidth - 66;
+ const maxY = window.innerHeight - 66;
+ const clampedX = Math.max(10, Math.min(x, maxX));
+ const clampedY = Math.max(50, Math.min(y, maxY));
+ bubbleContainer.style.left = clampedX + 'px';
+ bubbleContainer.style.top = clampedY + 'px';
+ bubbleContainer.style.bottom = 'auto';
+ bubbleContainer.style.right = 'auto';
+ positionBubbleMenu();
+}
+
+function saveBubblePosition(x, y) {
+ const maxX = window.innerWidth - 66;
+ const maxY = window.innerHeight - 66;
+ const clampedX = Math.max(10, Math.min(x, maxX));
+ const clampedY = Math.max(50, Math.min(y, maxY));
+ localStorage.setItem(BUBBLE_POS_KEY, JSON.stringify({ x: clampedX, y: clampedY }));
+}
+
+function positionBubbleMenu() {
+ const bubbleContainer = document.getElementById('bubbleContainer');
+ const menu = document.getElementById('bubbleMenu');
+ if (!bubbleContainer || !menu) return;
+ 
+ const rect = bubbleContainer.getBoundingClientRect();
+ 
+ if (rect.top > window.innerHeight - 260) {
+ menu.style.bottom = '64px';
+ menu.style.top = 'auto';
+ } else {
+ menu.style.top = '64px';
+ menu.style.bottom = 'auto';
+ }
+ 
+ if (rect.left > window.innerWidth - 270) {
+ menu.style.right = '0px';
+ menu.style.left = 'auto';
+ } else {
+ menu.style.left = '0px';
+ menu.style.right = 'auto';
+ }
+}
+
+function toggleBubbleMenu(forceState) {
+ const menu = document.getElementById('bubbleMenu');
+ isBubbleMenuOpen = (typeof forceState === 'boolean') ? forceState : menu.classList.contains('hidden');
+ if (isBubbleMenuOpen) {
+ positionBubbleMenu();
+ updateUndoRedoButtons();
+ menu.classList.remove('hidden');
+ } else {
+ menu.classList.add('hidden');
+ }
+}
+
+function handleBubbleEdit() {
+ toggleBubbleMenu(false);
+ enterEditMode();
+}
+
+function handleBubbleNote() {
+ toggleBubbleMenu(false);
+ openNoteModal();
+}
+
+function isEditScreenActive() {
+ const editStep = document.getElementById('editStep');
+ return editStep && !editStep.classList.contains('hidden');
+}
+
+function updateBubbleMode() {
+ const btn = document.getElementById('bubbleBtn');
+ const dragBadge = document.getElementById('bubbleDragBadge');
+ const mainIcon = document.getElementById('bubbleMainIcon');
+ const dragIcon = document.getElementById('bubbleDragIcon');
+ const container = document.getElementById('bubbleContainer');
+ const inEdit = isEditScreenActive();
+ 
+ const resumeStep = document.getElementById('stepResume');
+ const isResume = resumeStep && !resumeStep.classList.contains('hidden');
+ const anyModal = isAnyModalOpen();
+ 
+ if (container) {
+ if (isResume || anyModal) {
+ container.classList.add('hidden');
+ toggleBubbleMenu(false);
+ } else {
+ container.classList.remove('hidden');
+ }
+ }
+ 
+ if (btn) btn.classList.toggle('drag-mode', inEdit);
+ if (dragBadge) dragBadge.classList.toggle('hidden', !inEdit);
+ if (inEdit) {
+ if (mainIcon) mainIcon.classList.add('hidden');
+ if (dragIcon) dragIcon.classList.remove('hidden');
+ } else {
+ if (mainIcon) mainIcon.classList.remove('hidden');
+ if (dragIcon) dragIcon.classList.add('hidden');
+ }
+}
+
+/* Привязка событий тач/мыши к баблу */
+const bubbleBtn = document.getElementById('bubbleBtn');
+
+bubbleBtn.addEventListener('pointerdown', (e) => {
+ e.preventDefault();
+ bubblePointerStart = { x: e.clientX, y: e.clientY };
+ const containerRect = document.getElementById('bubbleContainer').getBoundingClientRect();
+ bubbleStartPos = { x: containerRect.left, y: containerRect.top };
+ hasMovedBubble = false;
+ isDraggingBubble = false;
+ isHoldingBubble = false;
+ 
+ if (isEditScreenActive()) {
+ isDraggingBubble = true;
+ bubbleBtn.setPointerCapture(e.pointerId);
+ } else {
+ bubbleBtn.classList.add('holding');
+ bubbleHoldTimer = setTimeout(() => {
+ isHoldingBubble = true;
+ bubbleBtn.classList.remove('holding');
+ haptic(30, 'start');
+ triggerVoiceNoteFromBubble();
+ }, 500);
+ bubbleBtn.setPointerCapture(e.pointerId);
+ }
+});
+
+bubbleBtn.addEventListener('pointermove', (e) => {
+ const dx = e.clientX - bubblePointerStart.x;
+ const dy = e.clientY - bubblePointerStart.y;
+ if (Math.hypot(dx, dy) > 8) {
+ hasMovedBubble = true;
+ if (bubbleHoldTimer) {
+ clearTimeout(bubbleHoldTimer);
+ bubbleHoldTimer = null;
+ bubbleBtn.classList.remove('holding');
+ }
+ }
+ 
+ if (isDraggingBubble) {
+ applyBubblePosition(bubbleStartPos.x + dx, bubbleStartPos.y + dy);
+ }
+});
+
+function endBubblePointer(e) {
+ if (bubbleHoldTimer) {
+ clearTimeout(bubbleHoldTimer);
+ bubbleHoldTimer = null;
+ bubbleBtn.classList.remove('holding');
+ }
+ 
+ if (isDraggingBubble) {
+ isDraggingBubble = false;
+ const containerRect = document.getElementById('bubbleContainer').getBoundingClientRect();
+ saveBubblePosition(containerRect.left, containerRect.top);
+ if (hasMovedBubble) {
+ showToast('Позиция кнопки сохранена');
+ }
+ } else if (!isHoldingBubble && !hasMovedBubble) {
+ toggleBubbleMenu();
+ }
+ isHoldingBubble = false;
+}
+
+bubbleBtn.addEventListener('pointerup', endBubblePointer);
+bubbleBtn.addEventListener('pointercancel', endBubblePointer);
+
+document.addEventListener('pointerdown', (e) => {
+ const container = document.getElementById('bubbleContainer');
+ if (isBubbleMenuOpen && !container.contains(e.target)) {
+ toggleBubbleMenu(false);
+ }
+});
+
+window.addEventListener('resize', () => {
+ const containerRect = document.getElementById('bubbleContainer').getBoundingClientRect();
+ applyBubblePosition(containerRect.left, containerRect.top);
+});
+
+/* --- Заметки (Создание, Голосовой ввод с отключением музыки) --- */
+let recognition = null; 
+let editingNoteId = null;
+
+function openNoteModal() {
+ resetNoteModal();
+ showModal('noteModal');
+}
+
+function triggerVoiceNoteFromBubble() {
+ openNoteModal();
+ startVoiceNote();
+}
+
 function editNoteEntry(id) {
- const entry = logs.find(e => e.id === id && e.type === 'note'); if (!entry) return; editingNoteId = id;
- document.getElementById('noteTypeSelector').classList.add('hidden'); document.getElementById('noteInputArea').classList.remove('hidden'); document.getElementById('noteTextInput').value = entry.text; document.getElementById('actionMenuModal').classList.add('show');
+ const entry = logs.find(e => e.id === id && e.type === 'note'); if (!entry) return; 
+ editingNoteId = id;
+ document.getElementById('noteTypeSelector').classList.add('hidden'); 
+ document.getElementById('noteInputArea').classList.remove('hidden'); 
+ document.getElementById('noteTextInput').value = entry.text; 
+ showModal('noteModal');
  setTimeout(() => document.getElementById('noteTextInput').focus(), 100);
 }
+
 async function deleteNoteEntry(id) {
  const entry = logs.find(e => e.id === id && e.type === 'note'); if (!entry) return;
  if (!(await customConfirm('Удалить эту заметку?', 'Удалить', true))) return;
  saveStateForUndo(); logs = logs.filter(e => !(e.id === id && e.type === 'note')); rebuildTableFromLogs(); persistSession(); showToast('Заметка удалена');
 }
+
 function resetNoteModal() {
- if (recognition) { try { recognition.stop(); } catch(e){} } editingNoteId = null;
- document.getElementById('noteTypeSelector').classList.remove('hidden'); document.getElementById('noteInputArea').classList.add('hidden'); document.getElementById('noteTextInput').value = '';
- const micIcon = document.getElementById('voiceBtn').querySelector('svg, i'); if (micIcon) micIcon.classList.remove('mic-pulse');
-}
-function startTextNote() { document.getElementById('noteTypeSelector').classList.add('hidden'); document.getElementById('noteInputArea').classList.remove('hidden'); document.getElementById('noteTextInput').focus(); }
-function startVoiceNote() {
- const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
- if (!Speech) { showToast('Диктовка не поддерживается', true); startTextNote(); return; }
- try {
- recognition = new Speech(); recognition.lang = 'ru-RU'; recognition.interimResults = false; recognition.maxAlternatives = 1;
- recognition.onstart = () => { const m = document.getElementById('voiceBtn').querySelector('svg, i'); if (m) m.classList.add('mic-pulse'); showToast('Говори...'); };
- recognition.onresult = (e) => { document.getElementById('noteTextInput').value = e.results[0][0].transcript; startTextNote(); };
- recognition.onerror = () => { const m = document.getElementById('voiceBtn').querySelector('svg, i'); if (m) m.classList.remove('mic-pulse'); showToast('Ошибка микрофона', true); startTextNote(); };
- recognition.onend = () => { const m = document.getElementById('voiceBtn').querySelector('svg, i'); if (m) m.classList.remove('mic-pulse'); };
- recognition.start();
- } catch(e) { showToast('Нет доступа к микрофону', true); startTextNote(); }
-}
-function saveNoteConfirm() {
- const text = document.getElementById('noteTextInput').value.trim(); if (!text) { showToast('Заметка пуста', true); return; }
- saveStateForUndo();
- if (editingNoteId !== null) { const entry = logs.find(e => e.id === editingNoteId && e.type === 'note'); if (entry) { entry.text = text; rebuildTableFromLogs(); showToast('Заметка обновлена'); } editingNoteId = null; } 
- else { const entry = { id: logIdCounter++, type: 'note', text: text, onTime: formatTime(Date.now()) }; logs.push(entry); prependTableRow(entry); fireWebhook({ event: 'note', text: text }); showToast('Заметка сохранена'); }
- closeModals(); resetNoteModal(); persistSession();
+ if (recognition) { 
+ try { recognition.stop(); } catch(e){} 
+ } 
+ editingNoteId = null;
+ resumeMusicAfterVoice();
+ document.getElementById('noteTypeSelector').classList.remove('hidden'); 
+ document.getElementById('noteInputArea').classList.add('hidden'); 
+ document.getElementById('noteTextInput').value = '';
+ const micIcon = document.getElementById('voiceBtn')?.querySelector('svg, i'); 
+ if (micIcon) micIcon.classList.remove('mic-pulse');
 }
 
-function openFullTableModal() { closeModals(); document.getElementById('fullTableModal').classList.add('show'); }
+function startTextNote() { 
+ document.getElementById('noteTypeSelector').classList.add('hidden'); 
+ document.getElementById('noteInputArea').classList.remove('hidden'); 
+ document.getElementById('noteTextInput').focus(); 
+}
+
+function startVoiceNote() {
+ pauseMusicForVoice();
+ const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+ if (!Speech) { 
+ showToast('Диктовка не поддерживается в этом браузере', true); 
+ startTextNote(); 
+ resumeMusicAfterVoice();
+ return; 
+ }
+ try {
+ if (recognition) { try { recognition.stop(); } catch(e){} }
+ recognition = new Speech(); 
+ recognition.lang = 'ru-RU'; 
+ recognition.interimResults = true; 
+ recognition.maxAlternatives = 1;
+ 
+ startTextNote();
+ 
+ recognition.onstart = () => { 
+ const m = document.getElementById('voiceBtn')?.querySelector('svg, i'); 
+ if (m) m.classList.add('mic-pulse'); 
+ showToast('Слушаю... Говорите'); 
+ };
+ 
+ recognition.onresult = (e) => { 
+ const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+ document.getElementById('noteTextInput').value = transcript; 
+ };
+ 
+ recognition.onerror = () => { 
+ const m = document.getElementById('voiceBtn')?.querySelector('svg, i'); 
+ if (m) m.classList.remove('mic-pulse'); 
+ showToast('Ошибка микрофона', true); 
+ resumeMusicAfterVoice();
+ };
+ 
+ recognition.onend = () => { 
+ const m = document.getElementById('voiceBtn')?.querySelector('svg, i'); 
+ if (m) m.classList.remove('mic-pulse'); 
+ resumeMusicAfterVoice();
+ };
+ 
+ recognition.start();
+ } catch(e) { 
+ showToast('Нет доступа к микрофону', true); 
+ startTextNote(); 
+ resumeMusicAfterVoice();
+ }
+}
+
+function saveNoteConfirm() {
+ const text = document.getElementById('noteTextInput').value.trim(); 
+ if (!text) { showToast('Заметка пуста', true); return; }
+ saveStateForUndo();
+ if (editingNoteId !== null) { 
+ const entry = logs.find(e => e.id === editingNoteId && e.type === 'note'); 
+ if (entry) { 
+ entry.text = text; 
+ rebuildTableFromLogs(); 
+ showToast('Заметка обновлена'); 
+ } 
+ editingNoteId = null; 
+ } else { 
+ const entry = { id: logIdCounter++, type: 'note', text: text, onTime: formatTime(Date.now()) }; 
+ logs.push(entry); 
+ prependTableRow(entry); 
+ fireWebhook({ event: 'note', text: text }); 
+ showToast('Заметка сохранена'); 
+ }
+ closeModals(); 
+ resetNoteModal(); 
+ persistSession();
+}
+
+function openFullTableModal() { 
+ updateShareButtonVisibility();
+ showModal('fullTableModal'); 
+}
 
 /* --- Журнал и Экспорт (Feed + Table) --- */
 function formatTime(ms){ return new Date(ms).toTimeString().split(' ')[0]; }
@@ -1265,7 +2480,7 @@ function getFeedItemHTML(entry) {
 
 function getTableRowHTML(entry) {
  if (entry.type === 'note') {
- return `<tr class="note-row"><td colspan="5"><div class="note-content" style="flex-direction:row; align-items:center; justify-content:space-between; gap:12px;">
+ return `<tr class="note-row"><td colspan="5"><div class="note-content" style="flex-direction:row; align-items:center; justify-content:space-between; gap:12px; display:flex;">
  <div style="display:flex; flex-direction:column; gap:4px;"><b><i data-lucide="pen-tool" style="width:14px;height:14px;display:inline-block;vertical-align:bottom;"></i> Заметка [${entry.onTime}]:</b><span>${escapeHtml(entry.text)}</span></div>
  <div style="display:flex; gap:6px; flex-shrink:0;">
  <button class="icon-btn" style="padding:8px;" onclick="editNoteEntry(${entry.id}); closeModals();"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
@@ -1276,15 +2491,15 @@ function getTableRowHTML(entry) {
 }
 
 function prependTableRow(entry){ 
-const tbody = document.getElementById('logBody'); tbody.insertAdjacentHTML('afterbegin', getTableRowHTML(entry)); updateIcons(tbody.firstElementChild); 
-const feed = document.getElementById('logFeed'); feed.insertAdjacentHTML('beforeend', getFeedItemHTML(entry)); updateIcons(feed.lastElementChild);
+ const tbody = document.getElementById('logBody'); tbody.insertAdjacentHTML('afterbegin', getTableRowHTML(entry)); updateIcons(tbody.firstElementChild); 
+ const feed = document.getElementById('logFeed'); feed.insertAdjacentHTML('beforeend', getFeedItemHTML(entry)); updateIcons(feed.lastElementChild);
  while(feed.children.length > 5) feed.removeChild(feed.firstChild);
  requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
 }
 
 function rebuildTableFromLogs(){ 
-const tbody = document.getElementById('logBody'); tbody.innerHTML = ''; 
-const feed = document.getElementById('logFeed'); feed.innerHTML = '';
+ const tbody = document.getElementById('logBody'); tbody.innerHTML = ''; 
+ const feed = document.getElementById('logFeed'); feed.innerHTML = '';
  for (let i = logs.length - 1; i >= 0; i--){ tbody.insertAdjacentHTML('beforeend', getTableRowHTML(logs[i])); }
  const feedLogs = logs.slice(-5);
  for (let i = 0; i < feedLogs.length; i++){ feed.insertAdjacentHTML('beforeend', getFeedItemHTML(feedLogs[i])); }
@@ -1330,7 +2545,7 @@ async function actionReset(){
 async function actionNewTimer(){
  closeModals(); if (logs.length > 0 && await customConfirm('Скачать логи перед созданием новой панели?', 'Скачать')) exportCSV();
  if(!(await customConfirm('Создать новую панель?', 'Создать', true))) return;
- clearSession(); historyStack = []; updateUndoButton();
+ clearSession(); historyStack = []; redoStack = []; updateUndoRedoButtons();
  zones = []; logs = []; zoneIdCounter = 0; logIdCounter = 0;
  document.getElementById('step3').classList.add('hidden'); enterEditMode();
 }
@@ -1342,24 +2557,106 @@ async function actionExit(){
  if (tickHandle) clearInterval(tickHandle); document.body.innerHTML = '<div style="text-align:center; padding-top:40vh; color:var(--muted);"><i data-lucide="check-circle" style="width:56px;height:56px;margin-bottom:16px;color:var(--accent);"></i><h2>Работа завершена</h2><p>Данные сохранены локально.</p></div>'; updateIcons();
 }
 
-/* --- Редактор с чистым дизайном --- */
-function enterEditMode(){ closeModals(); document.getElementById('step3').classList.add('hidden'); document.getElementById('editStep').classList.remove('hidden'); document.getElementById('editStep').classList.add('fade-in'); renderEditList(); }
+
+/* --- Интерактивная справка и руководство --- */
+function openHelpModal() {
+ closeModals();
+ switchHelpTab('start');
+ showModal('helpModal');
+ initHelpDemo();
+}
+
+function switchHelpTab(tabKey) {
+ document.querySelectorAll('.help-tab-btn').forEach(btn => btn.classList.remove('active'));
+ document.querySelectorAll('.help-tab-pane').forEach(pane => pane.classList.add('hidden'));
+ 
+ const targetBtn = document.querySelector(`.help-tab-btn[onclick*="${tabKey}"]`);
+ const targetPane = document.getElementById(`helpSection_${tabKey}`);
+ 
+ if (targetBtn) targetBtn.classList.add('active');
+ if (targetPane) targetPane.classList.remove('hidden');
+ 
+ const scrollArea = document.getElementById('helpContentScroll');
+ if (scrollArea) scrollArea.scrollTop = 0;
+ updateIcons(document.getElementById('helpModal'));
+}
+
+let helpDemoTimer = null;
+let isHelpDemoHolding = false;
+
+function initHelpDemo() {
+ const bubble = document.getElementById('helpDemoBubble');
+ const status = document.getElementById('helpDemoStatus');
+ const icon = document.getElementById('helpDemoIcon');
+ if (!bubble) return;
+ 
+ bubble.onpointerdown = (e) => {
+ e.preventDefault();
+ isHelpDemoHolding = false;
+ bubble.classList.add('holding');
+ status.textContent = 'Удерживайте для голосовой заметки...';
+ status.style.color = 'var(--warn)';
+ helpDemoTimer = setTimeout(() => {
+ isHelpDemoHolding = true;
+ bubble.classList.remove('holding');
+ haptic(30, 'start');
+ status.textContent = '🎉 Удержание распознано! Голосовой ввод + пауза музыки';
+ status.style.color = 'var(--accent)';
+ }, 500);
+ };
+ 
+ bubble.onpointerup = () => {
+ if (helpDemoTimer) {
+ clearTimeout(helpDemoTimer);
+ helpDemoTimer = null;
+ }
+ bubble.classList.remove('holding');
+ if (!isHelpDemoHolding) {
+ status.textContent = '⚡ Короткий клик: открыто меню быстрых действий!';
+ status.style.color = 'var(--accent)';
+ }
+ isHelpDemoHolding = false;
+ };
+ 
+ bubble.onpointercancel = () => {
+ if (helpDemoTimer) clearTimeout(helpDemoTimer);
+ bubble.classList.remove('holding');
+ isHelpDemoHolding = false;
+ };
+}
+
+/* --- Редактор элементов --- */
+function enterEditMode(){ 
+ closeModals(); 
+ document.getElementById('step3').classList.add('hidden'); 
+ document.getElementById('editStep').classList.remove('hidden'); 
+ document.getElementById('editStep').classList.add('fade-in'); 
+ renderEditList(); 
+ updateBubbleMode();
+ showToast('Режим редактора: бабл можно перетащить');
+}
+
 function exitEditMode(){
  if (zones.length === 0) { showToast('Добавь хотя бы один элемент!', true); return; }
- document.getElementById('editStep').classList.add('hidden'); document.getElementById('step3').classList.remove('hidden'); document.getElementById('step3').classList.add('fade-in');
- renderMainPanel(); startTicker(); persistSession();
+ document.getElementById('editStep').classList.add('hidden'); 
+ document.getElementById('step3').classList.remove('hidden'); 
+ document.getElementById('step3').classList.add('fade-in');
+ renderMainPanel(); 
+ startTicker(); 
+ persistSession();
+ updateBubbleMode();
 }
 
 function renderEditList(){
  const list = document.getElementById('editBlocksList'); list.innerHTML = ''; 
-if (zones.length === 0){ list.innerHTML = '<div style="text-align:center; padding:30px 10px; color:var(--muted); font-size:13px; font-weight:500;">Ни одного элемента пока нет.<br>Нажми «Добавить» или загрузи пресет.</div>'; return; }
+ if (zones.length === 0){ list.innerHTML = '<div style="text-align:center; padding:30px 10px; color:var(--muted); font-size:13px; font-weight:500;">Ни одного элемента пока нет.<br>Нажми «Добавить» или загрузи пресет.</div>'; return; }
  zones.forEach(z => {
  const card = document.createElement('div'); card.className = 'edit-card';
  
-const isSingle = z.mode === 'single';
+ const isSingle = z.mode === 'single';
  const isTimerSet = z.countdown && z.limitMs > 0;
  
-card.innerHTML = `
+ card.innerHTML = `
  <div class="edit-card-top">
  <div class="color-dot" style="background:${z.color}" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
  <div class="edit-name-wrap">
@@ -1378,7 +2675,7 @@ card.innerHTML = `
  </div>
  </div>`;
  
-let startX = 0;
+ let startX = 0;
  card.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive: true});
  card.addEventListener('touchend', e => {
  let diffX = e.changedTouches[0].clientX - startX;
@@ -1393,27 +2690,27 @@ function commitRename(id, val){ const z = zones.find(x => x.id === id); if(!z) r
 function cycleColor(id){ const z = zones.find(x => x.id === id); if(!z) return; saveStateForUndo(); z.color = palette[(palette.indexOf(z.color)+1) % palette.length]; renderEditList(); persistSession(); }
 
 function setZoneMode(id, mode){ 
-const z = zones.find(x => x.id === id); if(!z || z.mode === mode) return; 
-saveStateForUndo(); 
-if(z.mode==='single' && z.active) forceOffSingle(z); 
-if(z.mode==='multi') [...z.occupants].forEach(o=>multiDepart(z.id, o.localNum, {skipConfirm:true})); 
-z.mode = mode; z.active=false; z.startTime=null; z.occupants=[]; z.nextLocalNum=1; 
-renderEditList(); persistSession(); 
+ const z = zones.find(x => x.id === id); if(!z || z.mode === mode) return; 
+ saveStateForUndo(); 
+ if(z.mode==='single' && z.active) forceOffSingle(z); 
+ if(z.mode==='multi') [...z.occupants].forEach(o=>multiDepart(z.id, o.localNum, {skipConfirm:true})); 
+ z.mode = mode; z.active=false; z.startTime=null; z.occupants=[]; z.nextLocalNum=1; 
+ renderEditList(); persistSession(); 
 }
 
 function editAddZone(){ saveStateForUndo(); const id = zoneIdCounter++; zones.push({ id, name:`Элемент ${id+1}`, mode:'single', color:colorFor(id), active:false, startTime:null, occupants:[], nextLocalNum:1, triggerCount:0, totalMs:0, countdown:false, limitMs:0, limitAction:'alert', multiLimitType:'individual' }); renderEditList(); persistSession(); }
 function editDeleteOne(id){ const z = zones.find(x=>x.id===id); if(z){ saveStateForUndo(); if(z.mode==='single'&&z.active) forceOffSingle(z); if(z.mode==='multi') [...z.occupants].forEach(o=>multiDepart(z.id, o.localNum, {skipConfirm:true})); } zones = zones.filter(x=>x.id!==id); renderEditList(); persistSession(); }
 
 /* --- Пресеты --- */
-function openPresetsOverlay(){ closeModals(); renderPresetsList(); document.getElementById('presetsOverlay').classList.add('show'); }
+function openPresetsOverlay(){ renderPresetsList(); showModal('presetsOverlay'); }
 function renderPresetsList(){
  const presets = getPresets(); const list = document.getElementById('presetsList'); const names = Object.keys(presets);
  list.innerHTML = names.length ? '' : '<p>Сохранённых панелей нет.</p>';
  names.forEach(name => {
  const p = presets[name]; const row = document.createElement('div'); row.style.cssText = "display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);";
  row.innerHTML = `<div style="flex:1;"><b style="font-size:14px; display:block;">${escapeHtml(name)}</b><span style="font-size:11px;color:var(--muted);">${p.zones.length} элементов</span></div>
- <button class="action-btn small" style="width:auto;" onclick="loadPreset('${escapeHtml(name.replace(/'/g,"\'"))}')"><i data-lucide="download-cloud"></i> Загрузить</button>
- <button class="icon-btn danger-btn" style="padding:8px; width:auto; border-color:transparent; box-shadow:none;" onclick="deletePreset('${escapeHtml(name.replace(/'/g,"\'"))}')"><i data-lucide="trash-2"></i></button>`;
+ <button class="action-btn small" style="width:auto;" onclick="loadPreset('${escapeHtml(name.replace(/'/g,"'"))}')"><i data-lucide="download-cloud"></i> Загрузить</button>
+ <button class="icon-btn danger-btn" style="padding:8px; width:auto; border-color:transparent; box-shadow:none;" onclick="deletePreset('${escapeHtml(name.replace(/'/g,"'"))}')"><i data-lucide="trash-2"></i></button>`;
  list.appendChild(row);
  });
  updateIcons(list);
@@ -1429,7 +2726,7 @@ function applyZonesConfig(zConf){
  logs = []; document.getElementById('logBody').innerHTML = ''; document.getElementById('logFeed').innerHTML = ''; closeModals();
  document.getElementById('editStep').classList.add('hidden'); document.getElementById('stepResume').classList.add('hidden');
  document.getElementById('step3').classList.add('fade-in'); document.getElementById('step3').classList.remove('hidden');
- renderMainPanel(); startTicker(); persistSession(); refreshWakeLock();
+ renderMainPanel(); startTicker(); persistSession(); refreshWakeLock(); updateBubbleMode();
 }
 async function loadPreset(name){
  const p = getPresets()[name]; if(!p) return; const hasLive = logs.length>0 || zones.some(z=>z.active||z.occupants.length);
@@ -1460,7 +2757,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
  e.preventDefault();
  deferredPrompt = e;
  
-const installBtn = document.getElementById('installAppBtn');
+ const installBtn = document.getElementById('installAppBtn');
  if (installBtn) {
  installBtn.classList.remove('hidden');
  updateIcons(installBtn);
@@ -1470,30 +2767,41 @@ const installBtn = document.getElementById('installAppBtn');
 async function installPWA() {
  if (!deferredPrompt) return;
  
-deferredPrompt.prompt();
+ deferredPrompt.prompt();
  
-const { outcome } = await deferredPrompt.userChoice;
+ const { outcome } = await deferredPrompt.userChoice;
  if (outcome === 'accepted') {
  showToast('Установка пошла');
  }
  
-deferredPrompt = null;
+ deferredPrompt = null;
  document.getElementById('installAppBtn').classList.add('hidden');
  closeModals();
 }
 
 if ('serviceWorker' in navigator) { 
-window.addEventListener('load', () => { 
-navigator.serviceWorker.register('sw.js').then((reg) => {
+ window.addEventListener('load', () => { 
+ navigator.serviceWorker.register('sw.js').then((reg) => {
  reg.update();
  }).catch(() => { }); 
-}); 
+ }); 
 }
 
-updateShareButtonVisibility(); updateUndoButton();
+updateShareButtonVisibility(); 
+updateUndoRedoButtons();
+initBubblePosition();
+
 const pending = loadSessionRaw();
 if(pending && pending.zones && pending.zones.length){
- window.__pendingSession = pending; document.getElementById('stepResume').classList.remove('hidden'); document.getElementById('stepResume').classList.add('fade-in');
+ window.__pendingSession = pending;
+ const resumeInfo = document.getElementById('resumeInfo');
+ if (resumeInfo) {
+ const activeCount = pending.zones.filter(z => (z.mode==='single' && z.active) || (z.mode==='multi' && z.occupants && z.occupants.length>0)).length;
+ resumeInfo.textContent = `Сохранено элементов: ${pending.zones.length}${activeCount > 0 ? ` (активных: ${activeCount})` : ''}. Вы можете восстановить работу или создать новую панель.`;
+ }
+ document.getElementById('stepResume').classList.remove('hidden'); 
+ document.getElementById('stepResume').classList.add('fade-in');
+ updateBubbleMode();
 } else {
  enterEditMode(); document.getElementById('editStep').classList.add('fade-in');
 }

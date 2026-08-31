@@ -1,14 +1,17 @@
-const CACHE_NAME = 'anytimer-v6'; // <--- ПОДНИМАЙ ВЕРСИЮ (v3, v4...) ПРИ КАЖДОМ ПУШЕ
+const CACHE_NAME = 'anytimer-v7';
 
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './icon.svg',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-512-maskable.png',
   './bg-music.mp3'
 ];
 
-// Установка: мгновенно активируем новый воркер
+// Установка Service Worker: кэшируем ключевые ресурсы
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
@@ -16,7 +19,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Активация: удаляем все старые версии кэша
+// Активация: удаляем старые версии кэша
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -31,7 +34,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Запросы: отдаем из кэша, но если нет — качаем из сети
+// Запросы: отдаём из кэша, если нет — пробуем сеть
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {

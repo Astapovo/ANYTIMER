@@ -1,9 +1,10 @@
 {
-  "name": "AnyTimer",
+  "name": "AnyTimer // Multi-Zone Timer & Stopwatch",
   "short_name": "AnyTimer",
-  "description": "Таймер для контроля зон",
+  "description": "Автономный PWA-таймер и секундомер для параллельного хронометража процессов, оборудования и зон",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#0d0d19",
   "theme_color": "#0d0d19",
   "icons": [
@@ -18,10 +19,15 @@
       "type": "image/png"
     },
     {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "maskable"
+      "type": "image/svg+xml"
     }
   ]
 }
