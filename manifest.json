@@ -1,5 +1,5 @@
 {
-  "name": "AnyTimer // Multi-Zone Timer & Stopwatch",
+  "name": "AnyTimer v7.11",
   "short_name": "AnyTimer",
   "description": "Автономный PWA-таймер и секундомер для параллельного хронометража процессов, оборудования и зон",
   "start_url": "./index.html",
@@ -29,5 +29,6 @@
       "sizes": "any",
       "type": "image/svg+xml"
     }
-  ]
+  ],
+  "version": "7.11"
 }

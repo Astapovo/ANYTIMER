@@ -1,4 +1,4 @@
-# AnyTimer ⏱️
+# AnyTimer ⏱️ v7.11
 
 **[🚀 Запустить онлайн (GitHub Pages)](https://astapovo.github.io/ANYTIMER/)**
 
@@ -82,6 +82,18 @@
 * **Frontend:** Чистый Vanilla JavaScript (ES6+), HTML5, CSS3 Glassmorphism (без тяжёлых фреймворков).
 * **Шрифты & Иконки:** [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono), [Lucide Icons](https://lucide.dev/).
 * **Web API:** Service Worker API, Cache Storage API, Web Speech API (распознавание речи), Web Audio API (звуковые сигналы и фоновая музыка), Vibration API, Screen Wake Lock API, Web Share API.
+
+---
+
+## 📦 Размещение на GitHub Pages
+
+1. Склонируйте репозиторий или загрузите архив в корень ветки `main`:
+   ```bash
+   git clone https://github.com/your-username/ANYTIMER.git
+   ```
+2. Перейдите в **Settings -> Pages** репозитория на GitHub.
+3. В разделе **Build and deployment** выберите Source: **Deploy from a branch** (`main` / `/root`).
+4. Приложение сразу станет доступно по ссылке `https://<ваш-логин>.github.io/ANYTIMER/`.
 
 ---
 
