@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#0d0d19" id="themeColorMeta">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<title>AnyTimer v7.14</title>
+<title>AnyTimer v7.15</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
@@ -868,6 +868,38 @@
  :root[data-theme="light"] .group-add-btn:hover {
  background: #0d9488;
  color: #fff;
+ }
+
+
+ /* Защита от выделения текста и системных меню Android/iOS при удержании пальца */
+ *, *::before, *::after {
+ -webkit-tap-highlight-color: transparent !important;
+ }
+
+ .tracker-btn, .tracker-btn *,
+ .zone-card, .zone-card *,
+ .constructor-card, .constructor-card *,
+ .constructor-group-card, .constructor-group-card *,
+ .unified-zones-grid, .unified-zones-grid *,
+ .summary-bar, .summary-bar *,
+ .bubble-container, .bubble-container *,
+ .topbar, .topbar *,
+ .screen-fixed-header, .screen-fixed-header *,
+ .note-zone-picker, .note-zone-picker * {
+ -webkit-user-select: none !important;
+ -moz-user-select: none !important;
+ -ms-user-select: none !important;
+ user-select: none !important;
+ -webkit-touch-callout: none !important;
+ touch-action: pan-y;
+ }
+
+ input, textarea, [contenteditable="true"] {
+ -webkit-user-select: text !important;
+ -moz-user-select: text !important;
+ -ms-user-select: text !important;
+ user-select: text !important;
+ -webkit-touch-callout: default !important;
  }
 
 </style>
@@ -2029,8 +2061,19 @@ function attachCardLongPress(element, zoneId, clickCallback) {
  let isLongPress = false;
  let startX = 0, startY = 0;
 
+ const clearSelection = () => {
+ try {
+ const sel = window.getSelection ? window.getSelection() : document.selection;
+ if (sel) {
+ if (sel.removeAllRanges) sel.removeAllRanges();
+ else if (sel.empty) sel.empty();
+ }
+ } catch(err) {}
+ };
+
  const startPress = (e) => {
  if (e.target.closest('button, input, .color-dot')) return;
+ clearSelection();
  isLongPress = false;
  startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
  startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
@@ -2039,6 +2082,7 @@ function attachCardLongPress(element, zoneId, clickCallback) {
  pressTimer = setTimeout(() => {
  isLongPress = true;
  element.classList.remove('card-pressing');
+ clearSelection();
  haptic(35, 'start');
  openNoteModalForZone(zoneId);
  }, 450);
@@ -2073,8 +2117,15 @@ function attachCardLongPress(element, zoneId, clickCallback) {
  }
  });
  element.addEventListener('pointercancel', cancelPress);
+ 
+ // Полный запрет контекстного меню и выделения при удержании карточки
  element.addEventListener('contextmenu', (e) => {
- if (isLongPress) e.preventDefault();
+ e.preventDefault();
+ return false;
+ });
+ element.addEventListener('selectstart', (e) => {
+ e.preventDefault();
+ return false;
  });
 }
 
@@ -3356,7 +3407,21 @@ function saveNoteConfirm() {
 }
 
 function openFullTableModal() { 
- updateShareButtonVisibility();
+ 
+// Глобальный запрет контекстного меню и выделения для интерактивных элементов интерфейса
+document.addEventListener('contextmenu', (e) => {
+ if (!e.target.closest('input, textarea')) {
+ e.preventDefault();
+ }
+}, { passive: false });
+
+document.addEventListener('selectstart', (e) => {
+ if (!e.target.closest('input, textarea')) {
+ e.preventDefault();
+ }
+});
+
+updateShareButtonVisibility();
  showModal('fullTableModal'); 
 }
 
@@ -3782,6 +3847,20 @@ if ('serviceWorker' in navigator) {
 }
 
 /* --- Инициализация при старте --- */
+
+// Глобальный запрет контекстного меню и выделения для интерактивных элементов интерфейса
+document.addEventListener('contextmenu', (e) => {
+ if (!e.target.closest('input, textarea')) {
+ e.preventDefault();
+ }
+}, { passive: false });
+
+document.addEventListener('selectstart', (e) => {
+ if (!e.target.closest('input, textarea')) {
+ e.preventDefault();
+ }
+});
+
 updateShareButtonVisibility(); 
 updateUndoRedoButtons();
 initBubblePosition();

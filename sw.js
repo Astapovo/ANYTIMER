@@ -1,4 +1,4 @@
-const CACHE_NAME = 'anytimer-v7.14';
+const CACHE_NAME = 'anytimer-v7.15';
 const ASSETS = [
   './',
   './index.html',
