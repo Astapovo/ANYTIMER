@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#0d0d19" id="themeColorMeta">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<title>AnyTimer</title>
+<title>AnyTimer v7.14</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
@@ -88,6 +88,7 @@
  padding: calc(8px + env(safe-area-inset-top)) 14px 8px; margin-bottom: 10px;
  background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
  border-bottom: 1px solid var(--border); border-radius: 0 0 var(--radius) var(--radius); margin-left: -12px; margin-right: -12px;
+ position: relative; overflow: hidden;
  }
  .topbar-spacer { width: 36px; }
  .topbar-title { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -172,23 +173,22 @@
  :root[data-theme="light"] .feed-item .feed-dur { color: rgba(13, 148, 136, 0.9); }
  
  .workspace-viewport { flex: 0 0 auto; max-height: 85vh; display: flex; flex-direction: column; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
- .log-action-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; height: 36px; }
- 
- .journal-header-btn {
- display: inline-flex; align-items: center; gap: 6px; background: transparent; border: none;
- color: rgba(79, 219, 200, 0.85); font-family: inherit; font-size: 13.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
- cursor: pointer; padding: 6px 8px; border-radius: 8px; margin: 0; transition: all 0.15s ease;
- }
- .journal-header-btn:hover { background: rgba(79, 219, 200, 0.08); color: var(--accent); }
- .journal-header-btn:active { transform: scale(0.96); }
- :root[data-theme="light"] .journal-header-btn { color: rgba(13, 148, 136, 0.9); }
 
- .workspace-scroll { overflow-y: auto; padding-right: 2px; }
+ .workspace-scroll { overflow-y: auto; padding-right: 2px; position: relative; }
  .workspace-scroll::-webkit-scrollbar { width: 4px; }
  .workspace-scroll::-webkit-scrollbar-thumb { background: rgba(139, 155, 180, 0.3); border-radius: 4px; }
 
- #singleArea { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
- #multiArea { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+ .unified-zones-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 10px;
+ margin-bottom: 24px;
+ position: relative;
+ }
+
+ .zone-card {
+ grid-column: 1 / -1 !important;
+ }
 
  .tracker-btn, .zone-card { 
  background-color: var(--surface);
@@ -222,6 +222,34 @@
  .tracker-btn:active { transform: scale(0.97); }
  .zone-card { padding: 16px; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
 
+ /* Плавное сжатие карточки при удержании (Long-Press) */
+ .card-pressing {
+ transform: scale(0.982) !important;
+ border-color: var(--accent) !important;
+ box-shadow: 0 0 18px rgba(79, 219, 200, 0.4) !important;
+ transition: transform 0.45s cubic-bezier(0.1, 0.9, 0.2, 1), box-shadow 0.45s ease !important;
+ }
+
+ /* Стильный бейдж номера панели */
+ .zone-id-tag {
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 11px;
+ font-weight: 800;
+ padding: 2px 7px;
+ border-radius: 6px;
+ background: rgba(255, 255, 255, 0.05);
+ border: 1px solid currentColor;
+ font-family: var(--font-mono);
+ letter-spacing: 0.02em;
+ flex-shrink: 0;
+ user-select: none;
+ -webkit-user-select: none;
+ line-height: 1.1;
+ }
+ .zone-num-sym { font-size: 9.5px; opacity: 0.75; margin-right: 1px; }
+
  .summary-bar {
  display: flex; gap: 8px; padding: 10px 14px; justify-content: space-between; align-items: center;
  background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
@@ -236,17 +264,9 @@
 
  /* КОНСТРУКТОР (#editStep) */
  .constructor-screen { display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative; }
- .constructor-top-bar { flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; height: 36px; }
- .constructor-workspace-scroll { flex: 1; overflow-y: auto; padding-right: 2px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+ .constructor-workspace-scroll { flex: 1; overflow-y: auto; padding-right: 2px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); position: relative; }
  .constructor-workspace-scroll::-webkit-scrollbar { width: 4px; }
  .constructor-workspace-scroll::-webkit-scrollbar-thumb { background: rgba(139, 155, 180, 0.3); border-radius: 4px; }
-
- .constructor-section-title {
- font-size: 12px; font-weight: 700; margin: 0 0 10px 0; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase;
- display: flex; align-items: center; justify-content: space-between;
- }
- .constructor-single-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
- .constructor-multi-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
 
  .constructor-card {
  background: var(--surface);
@@ -289,6 +309,7 @@
  border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px;
  display: flex; flex-direction: column; gap: 8px;
  box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+ grid-column: 1 / -1 !important;
  }
  :root[data-theme="light"] .constructor-group-card { background-image: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 100%); }
 
@@ -296,8 +317,36 @@
  .color-dot:active { transform: scale(0.85); }
  .edit-name-wrap { position: relative; flex: 1; min-width: 0; }
 
+ .constructor-card, .constructor-group-card {
+ touch-action: pan-y;
+ user-select: none;
+ -webkit-user-select: none;
+ }
+
+ .constructor-card.dragging-card, .constructor-group-card.dragging-card {
+ opacity: 0.92 !important;
+ box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 24px rgba(79, 219, 200, 0.5) !important;
+ border-color: var(--accent) !important;
+ z-index: 1000 !important;
+ cursor: grabbing !important;
+ }
+
+ .constructor-card.drop-target-card, .constructor-group-card.drop-target-card {
+ border: 2px dashed var(--accent) !important;
+ background-color: rgba(79, 219, 200, 0.12) !important;
+ transform: scale(0.96) !important;
+ transition: transform 0.15s ease, background-color 0.15s ease;
+ }
+
  /* ПЛАВАЮЩАЯ КНОПКА-БАБЛ (СКВЕРКЛ) */
- .bubble-container { position: fixed; z-index: 1200; touch-action: none; user-select: none; -webkit-user-select: none; transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease; }
+ .bubble-container { 
+ position: absolute !important; 
+ z-index: 1200; 
+ touch-action: none; 
+ user-select: none; 
+ -webkit-user-select: none; 
+ transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease; 
+ }
  .bubble-btn {
  width: 54px; height: 54px; border-radius: 16px;
  background: linear-gradient(135deg, rgba(79, 219, 200, 0.22) 0%, rgba(18, 22, 38, 0.95) 100%);
@@ -362,6 +411,63 @@
  }
  .bubble-action-subbtn:hover:not(:disabled) { background: var(--surface-hover); border-color: var(--accent); }
  .bubble-action-subbtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+ /* ВЫБОР ПАНЕЛИ В ОКНЕ ЗАМЕТОК (ЧИПЫ С НУМЕРАЦИЕЙ) */
+ .note-zone-picker {
+ display: flex;
+ gap: 6px;
+ overflow-x: auto;
+ padding: 4px 2px 8px;
+ scrollbar-width: thin;
+ -webkit-overflow-scrolling: touch;
+ }
+ .note-zone-picker::-webkit-scrollbar { height: 3px; }
+ .note-zone-picker::-webkit-scrollbar-thumb { background: rgba(139, 155, 180, 0.3); border-radius: 3px; }
+
+ .zone-chip-btn {
+ display: inline-flex;
+ align-items: center;
+ gap: 6px;
+ padding: 6px 12px;
+ border-radius: 8px;
+ background: var(--surface);
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
+ border: 1px solid var(--border);
+ color: var(--muted);
+ font-size: 12px;
+ font-weight: 600;
+ cursor: pointer;
+ white-space: nowrap;
+ transition: all 0.15s ease;
+ font-family: var(--font-ui);
+ flex-shrink: 0;
+ box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+ }
+ :root[data-theme="light"] .zone-chip-btn {
+ background: #ffffff;
+ border-color: rgba(0,0,0,0.1);
+ color: #64748b;
+ }
+ .zone-chip-btn:hover {
+ background: var(--surface-hover);
+ color: var(--text);
+ border-color: rgba(255,255,255,0.2);
+ }
+ .zone-chip-btn.active {
+ background: rgba(79, 219, 200, 0.14);
+ border-color: var(--accent);
+ color: var(--accent);
+ font-weight: 700;
+ box-shadow: 0 0 14px rgba(79, 219, 200, 0.25);
+ }
+ .zone-chip-num {
+ font-size: 10px;
+ font-weight: 800;
+ padding: 1px 5px;
+ border-radius: 4px;
+ background: rgba(255, 255, 255, 0.08);
+ font-family: var(--font-mono);
+ }
 
  /* МОДАЛЬНЫЕ ОКНА */
  .modal-overlay {
@@ -470,294 +576,15 @@
  background-color: #ffffff; background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border: 1.5px solid rgba(13, 148, 136, 0.35); box-shadow: 0 2px 8px rgba(0,0,0,0.06), inset 0 1px 0 #ffffff; color: #0f172a;
  }
 
- 
- :root[data-theme="light"]  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
- 
- .toast-icon-badge {
- width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
- background: rgba(79, 219, 200, 0.18); border: 1px solid rgba(79, 219, 200, 0.3); color: var(--accent);
- }
- :root[data-theme="light"] .toast-icon-badge { background: rgba(13, 148, 136, 0.15); border-color: rgba(13, 148, 136, 0.25); color: #0d9488; }
- 
- #toast.warn { border-color: rgba(239, 68, 68, 0.45); box-shadow: 0 12px 32px rgba(0,0,0,0.45), 0 0 16px rgba(239, 68, 68, 0.25); }
- #toast.warn .toast-icon-badge { background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4); color: var(--danger); }
- #toast.warn span { color: var(--danger); }
- :root[data-theme="light"] #toast.warn span { color: #dc2626; }
-
  .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); }
  table { width: 100%; border-collapse: collapse; min-width: 480px; }
  th, td { border-bottom: 1px solid var(--border); padding: 10px 12px; text-align: left; font-size: 12px; }
  th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
  .note-row td { background: rgba(79, 219, 200, 0.05); border-left: 3px solid var(--accent); }
 
- .header-action-btn {
- display: inline-flex;
- align-items: center;
- gap: 6px;
- background: var(--surface);
- background-image: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 100%);
- border: 1px solid var(--border);
- color: var(--text);
- font-family: inherit;
- font-size: 12.5px;
- font-weight: 700;
- letter-spacing: 0.02em;
- cursor: pointer;
- padding: 6px 12px;
- border-radius: 10px;
- box-shadow: 0 2px 6px rgba(0,0,0,0.12);
- transition: all 0.15s ease;
- }
- .header-action-btn:hover {
- background: var(--surface-hover);
- border-color: var(--accent);
- color: var(--accent);
- }
- .header-action-btn:active {
- transform: scale(0.96);
- }
- :root[data-theme="light"] .header-action-btn {
- background: #ffffff;
- border-color: rgba(0,0,0,0.1);
- box-shadow: 0 2px 6px rgba(0,0,0,0.04);
- color: #0f172a;
- }
-
- .header-launch-btn {
- display: inline-flex;
- align-items: center;
- gap: 6px;
- background: rgba(79, 219, 200, 0.16);
- border: 1.5px solid var(--accent);
- color: var(--accent);
- font-family: inherit;
- font-size: 12.5px;
- font-weight: 700;
- padding: 6px 14px;
- border-radius: 10px;
- cursor: pointer;
- box-shadow: 0 2px 10px rgba(79, 219, 200, 0.18);
- transition: all 0.15s ease;
- }
- .header-launch-btn:hover {
- background: var(--accent);
- color: #000;
- box-shadow: 0 4px 14px rgba(79, 219, 200, 0.35);
- }
- .header-launch-btn:active {
- transform: scale(0.96);
- }
- :root[data-theme="light"] .header-launch-btn {
- background: rgba(13, 148, 136, 0.14);
- border-color: #0d9488;
- color: #0d9488;
- }
- :root[data-theme="light"] .header-launch-btn:hover {
- background: #0d9488;
- color: #ffffff;
- }
-
-
- .header-action-pill-btn {
- display: inline-flex;
- align-items: center;
- gap: 5px;
- background: var(--surface);
- background-image: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 100%);
- border: 1px solid var(--border);
- color: var(--text);
- font-family: inherit;
- font-size: 11.5px;
- font-weight: 700;
- letter-spacing: 0.02em;
- cursor: pointer;
- padding: 5px 12px;
- border-radius: 8px;
- box-shadow: 0 2px 6px rgba(0,0,0,0.12);
- transition: all 0.15s ease;
- height: 28px;
- box-sizing: border-box;
- }
- .header-action-pill-btn:hover {
- background: var(--surface-hover);
- border-color: var(--accent);
- color: var(--accent);
- }
- .header-action-pill-btn:active {
- transform: scale(0.96);
- }
- :root[data-theme="light"] .header-action-pill-btn {
- background: #ffffff;
- border-color: rgba(0,0,0,0.1);
- box-shadow: 0 2px 6px rgba(0,0,0,0.04);
- color: #0f172a;
- }
-
- .header-action-pill-btn.active-launch {
- background: rgba(79, 219, 200, 0.14);
- border-color: var(--accent);
- color: var(--accent);
- }
- .header-action-pill-btn.active-launch:hover {
- background: var(--accent);
- color: #000;
- box-shadow: 0 2px 10px rgba(79, 219, 200, 0.3);
- }
- :root[data-theme="light"] .header-action-pill-btn.active-launch {
- background: rgba(13, 148, 136, 0.12);
- border-color: #0d9488;
- color: #0d9488;
- }
- :root[data-theme="light"] .header-action-pill-btn.active-launch:hover {
- background: #0d9488;
- color: #fff;
- }
-
-
- 
-
- .cyber-hud-toast {
- position: absolute;
- inset: 0;
- z-index: 100;
- background: linear-gradient(135deg, rgba(10, 15, 26, 0.98) 0%, rgba(13, 24, 33, 0.98) 100%);
- backdrop-filter: blur(20px);
- -webkit-backdrop-filter: blur(20px);
- border: 1px solid var(--accent);
- box-shadow: 0 0 20px rgba(79, 219, 200, 0.4), inset 0 0 14px rgba(79, 219, 200, 0.18);
- display: flex;
- align-items: center;
- justify-content: center;
- padding: 0 16px;
- opacity: 0;
- pointer-events: none;
- transform: scale(0.3);
- transform-origin: center center;
- clip-path: inset(45% 45% 45% 45% round 12px);
- transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.2), clip-path 0.32s cubic-bezier(0.16, 1, 0.3, 1);
- }
-
- :root[data-theme="light"] .cyber-hud-toast {
- background: linear-gradient(135deg, rgba(240, 253, 250, 0.98) 0%, rgba(204, 251, 241, 0.98) 100%);
- border-color: #0d9488;
- box-shadow: 0 4px 16px rgba(13, 148, 136, 0.25), inset 0 0 10px rgba(13, 148, 136, 0.12);
- }
-
- .cyber-hud-toast.show {
- opacity: 1;
- pointer-events: auto;
- transform: scale(1);
- clip-path: inset(0% 0% 0% 0% round 0px);
- }
-
- .cyber-hud-toast.warn {
- border-color: var(--danger);
- box-shadow: 0 0 22px rgba(255, 138, 128, 0.5), inset 0 0 16px rgba(255, 138, 128, 0.22);
- background: linear-gradient(135deg, rgba(28, 11, 15, 0.98) 0%, rgba(38, 14, 18, 0.98) 100%);
- }
- :root[data-theme="light"] .cyber-hud-toast.warn {
- background: linear-gradient(135deg, rgba(254, 242, 242, 0.98) 0%, rgba(254, 226, 226, 0.98) 100%);
- border-color: #ef4444;
- box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25);
- }
-
- .cyber-toast-content {
- display: flex;
- align-items: center;
- gap: 8px;
- max-width: 100%;
- z-index: 2;
- }
-
- .cyber-toast-icon {
- width: 24px;
- height: 24px;
- border-radius: 6px;
- background: rgba(79, 219, 200, 0.16);
- border: 1px solid rgba(79, 219, 200, 0.35);
- color: var(--accent);
- display: flex;
- align-items: center;
- justify-content: center;
- flex-shrink: 0;
- }
- .cyber-hud-toast.warn .cyber-toast-icon {
- background: rgba(239, 68, 68, 0.18);
- border-color: rgba(239, 68, 68, 0.4);
- color: var(--danger);
- }
-
- .cyber-toast-text-wrap {
- display: flex;
- align-items: baseline;
- gap: 6px;
- min-width: 0;
- overflow: hidden;
- text-overflow: ellipsis;
- white-space: nowrap;
- }
-
- .cyber-toast-prefix {
- font-family: var(--font-mono);
- font-size: 10px;
- font-weight: 800;
- letter-spacing: 0.08em;
- text-transform: uppercase;
- color: var(--accent);
- opacity: 0.85;
- flex-shrink: 0;
- }
- .cyber-hud-toast.warn .cyber-toast-prefix {
- color: var(--danger);
- }
-
- .cyber-toast-msg {
- font-family: var(--font-mono);
- font-size: 12.5px;
- font-weight: 700;
- letter-spacing: 0.02em;
- color: #ffffff;
- text-shadow: 0 0 8px rgba(79, 219, 200, 0.5);
- overflow: hidden;
- text-overflow: ellipsis;
- }
- :root[data-theme="light"] .cyber-toast-msg {
- color: #0f172a;
- text-shadow: none;
- }
- .cyber-hud-toast.warn .cyber-toast-msg {
- color: #ff8a80;
- text-shadow: 0 0 8px rgba(255, 138, 128, 0.6);
- }
- :root[data-theme="light"] .cyber-hud-toast.warn .cyber-toast-msg {
- color: #dc2626;
- text-shadow: none;
- }
-
- .cyber-corner-tl, .cyber-corner-tr, .cyber-corner-bl, .cyber-corner-br {
- position: absolute;
- width: 6px;
- height: 6px;
- pointer-events: none;
- border-color: var(--accent);
- }
- .cyber-hud-toast.warn .cyber-corner-tl, 
- .cyber-hud-toast.warn .cyber-corner-tr, 
- .cyber-hud-toast.warn .cyber-corner-bl, 
- .cyber-hud-toast.warn .cyber-corner-br {
- border-color: var(--danger);
- }
- .cyber-corner-tl { top: 4px; left: 6px; border-top: 2px solid; border-left: 2px solid; }
- .cyber-corner-tr { top: 4px; right: 6px; border-top: 2px solid; border-right: 2px solid; }
- .cyber-corner-bl { bottom: 4px; left: 6px; border-bottom: 2px solid; border-left: 2px solid; }
- .cyber-corner-br { bottom: 4px; right: 6px; border-bottom: 2px solid; border-right: 2px solid; }
-
- 
-
-
- /* =========================================================
-    СТРОКА КНОПОК ЗАГОЛОВКА В ОДИН РЯД (ГОРИЗОНТАЛЬНЫЙ FLEX)
-    ========================================================= */
+/* =========================================================
+ СТРОКА КНОПОК ЗАГОЛОВКА В ОДИН РЯД (ГОРИЗОНТАЛЬНЫЙ FLEX)
+ ========================================================= */
  .screen-fixed-header {
  flex-shrink: 0 !important;
  display: flex !important;
@@ -837,46 +664,47 @@
  }
 
 /* =========================================================
-    CYBERPUNK TOPBAR HUD NOTIFICATION (БЕЗ ОБРЕЗАНИЯ ТЕКСТА)
-    ========================================================= */
- .topbar {
- position: relative;
- overflow: hidden;
- }
-
- .cyber-hud-toast {
+ CYBERPUNK TOPBAR HUD NOTIFICATION (БЕЗ ОБРЕЗАНИЯ ТЕКСТА)
+ ========================================================= */
+  .cyber-hud-toast {
  position: absolute;
  inset: 0;
  z-index: 100;
- background: linear-gradient(135deg, rgba(10, 15, 26, 0.98) 0%, rgba(13, 24, 33, 0.98) 100%);
- backdrop-filter: blur(20px);
- -webkit-backdrop-filter: blur(20px);
- border: 1px solid var(--accent);
- box-shadow: 0 0 20px rgba(79, 219, 200, 0.4), inset 0 0 14px rgba(79, 219, 200, 0.18);
+ background: linear-gradient(135deg, rgba(13, 20, 32, 0.96) 0%, rgba(18, 28, 40, 0.96) 100%);
+ backdrop-filter: blur(25px);
+ -webkit-backdrop-filter: blur(25px);
+ border: none; /* Убрана грубая рамка */
+ box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 16px rgba(79, 219, 200, 0.15);
  display: flex;
  align-items: center;
  justify-content: center;
- padding: 0 10px;
+ padding: 0 12px;
  box-sizing: border-box;
  opacity: 0;
  pointer-events: none;
- transform: scale(0.3);
+ transform: scale(0.6) scaleY(0.1);
  transform-origin: center center;
- clip-path: inset(45% 45% 45% 45% round 12px);
- transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.2), clip-path 0.32s cubic-bezier(0.16, 1, 0.3, 1);
- }
-
- :root[data-theme="light"] .cyber-hud-toast {
- background: linear-gradient(135deg, rgba(240, 253, 250, 0.98) 0%, rgba(204, 251, 241, 0.98) 100%);
- border-color: #0d9488;
- box-shadow: 0 4px 16px rgba(13, 148, 136, 0.25), inset 0 0 10px rgba(13, 148, 136, 0.12);
+ filter: blur(4px);
+ transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
  }
 
  .cyber-hud-toast.show {
  opacity: 1;
  pointer-events: auto;
- transform: scale(1);
- clip-path: inset(0% 0% 0% 0% round 0px);
+ transform: scale(1) scaleY(1);
+ filter: blur(0px);
+ transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+ }
+
+ @keyframes hudGlitch {
+ 0%, 100% { opacity: 1; transform: translateX(0); }
+ 20% { opacity: 0.8; transform: translateX(-1px); text-shadow: 1px 0 #ff8a80; }
+ 40% { opacity: 0.9; transform: translateX(1px); text-shadow: -1px 0 #4fdbc8; }
+ 60% { opacity: 1; transform: translateX(0); }
+ }
+
+ .cyber-hud-toast.show .cyber-toast-prefix {
+ animation: hudGlitch 0.4s ease-out 1;
  }
 
  .cyber-hud-toast.warn {
@@ -991,28 +819,6 @@
  opacity: 0.6;
  }
 
- /* Единая сетка элементов (без разграничения одиночных и групп) */
- .unified-zones-grid {
- display: grid;
- grid-template-columns: repeat(2, 1fr);
- gap: 10px;
- margin-bottom: 24px;
- position: relative;
- }
-
- .zone-card {
- grid-column: 1 / -1 !important;
- }
-
- .constructor-group-card {
- grid-column: 1 / -1 !important;
- }
-
- 
-
- 
-
- /* Едва заметная пульсация кнопки Запустить */
  @keyframes launchSubtlePulse {
  0%, 100% {
  opacity: 0.85;
@@ -1031,40 +837,39 @@
  color: var(--accent) !important;
  }
 
- /* Бабл привязан к сетке и скроллится вместе с ней */
- .workspace-scroll, .constructor-workspace-scroll {
- position: relative;
+ /* Редизайн кнопки «Добавить» на групповой панели (аккуратный легкий бейдж) */
+ .group-add-btn {
+ display: inline-flex;
+ align-items: center;
+ gap: 5px;
+ background: rgba(79, 219, 200, 0.12);
+ border: 1px solid rgba(79, 219, 200, 0.35);
+ color: var(--accent);
+ padding: 5px 11px;
+ font-size: 11.5px;
+ font-weight: 700;
+ border-radius: 7px;
+ cursor: pointer;
+ transition: all 0.15s ease;
+ box-shadow: 0 2px 6px rgba(79, 219, 200, 0.1);
  }
- 
- .bubble-container {
- position: absolute !important;
- z-index: 1200;
- touch-action: none;
- user-select: none;
- -webkit-user-select: none;
- transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+ .group-add-btn:hover {
+ background: var(--accent);
+ color: #000;
+ border-color: var(--accent);
+ box-shadow: 0 3px 10px rgba(79, 219, 200, 0.3);
+ }
+ .group-add-btn:active { transform: scale(0.95); }
+ :root[data-theme="light"] .group-add-btn {
+ background: rgba(13, 148, 136, 0.1);
+ border-color: rgba(13, 148, 136, 0.3);
+ color: #0d9488;
+ }
+ :root[data-theme="light"] .group-add-btn:hover {
+ background: #0d9488;
+ color: #fff;
  }
 
-.constructor-card, .constructor-group-card {
- touch-action: pan-y;
- user-select: none;
- -webkit-user-select: none;
- }
-
- .constructor-card.dragging-card, .constructor-group-card.dragging-card {
- opacity: 0.92 !important;
- box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 24px rgba(79, 219, 200, 0.5) !important;
- border-color: var(--accent) !important;
- z-index: 1000 !important;
- cursor: grabbing !important;
- }
-
- .constructor-card.drop-target-card, .constructor-group-card.drop-target-card {
- border: 2px dashed var(--accent) !important;
- background-color: rgba(79, 219, 200, 0.12) !important;
- transform: scale(0.96) !important;
- transition: transform 0.15s ease, background-color 0.15s ease;
- }
 </style>
 </head>
 <body>
@@ -1087,10 +892,7 @@
  </div>
  </div>
  <div class="cyber-scanline"></div>
- <div class="cyber-corner-tl"></div>
- <div class="cyber-corner-tr"></div>
- <div class="cyber-corner-bl"></div>
- <div class="cyber-corner-br"></div>
+ 
  </div>
  </div>
 
@@ -1150,9 +952,6 @@
  </div>
  </div>
 
- <!-- Фиксированная разделительная линия -->
- <div class="screen-fixed-divider"></div>
-
  <!-- Рабочая зона конструктора с единым полем -->
  <div class="constructor-workspace-scroll">
  
@@ -1167,7 +966,7 @@
  </div>
  </div>
 
- <!-- Единое поле элементов (перетаскивание удержанием 0.5с) -->
+ <!-- Единое поле элементов (перетаскивание удержанием 0.45с) -->
  <div id="editZonesGrid" class="unified-zones-grid"></div>
 
  <div id="constructorEmptyPrompt" class="hidden" style="text-align:center; padding:36px 16px; background:var(--surface); border:1px dashed var(--border); border-radius:var(--radius); margin-top:12px;">
@@ -1179,7 +978,7 @@
  <div style="display:flex; gap:8px; justify-content:center;">
  <button class="action-btn small" onclick="editAddZone('single')" style="width:auto;"><i data-lucide="plus"></i> Одиночный</button>
  <button class="action-btn small" onclick="editAddZone('multi')" style="width:auto;"><i data-lucide="layers"></i> Групповой</button>
- </div>
+ </div> 
  </div>
  </div>
  </div>
@@ -1219,9 +1018,6 @@
  </div>
  </div>
 
- <!-- Фиксированная разделительная линия -->
- <div class="screen-fixed-divider"></div>
-
  <!-- Зона управления -->
  <div class="workspace-viewport" style="flex:1; overflow:hidden; display:flex; flex-direction:column;">
  <div class="workspace-scroll" id="mainWorkspaceScroll">
@@ -1236,8 +1032,8 @@
 </div> <!-- Конец .app-container -->
 
 <!-- =========================================================
-     ПЛАВАЮЩАЯ КНОПКА-БАБЛ (ПРИВЯЗАНА К СЕТКЕ И СКРОЛЛУ)
-     ========================================================= -->
+ ПЛАВАЮЩАЯ КНОПКА-БАБЛ (ПРИВЯЗАНА К СЕТКЕ И СКРОЛЛУ)
+ ========================================================= -->
 <div id="bubbleContainer" class="bubble-container">
  <!-- Раскрывающееся меню бабла -->
  <div id="bubbleMenu" class="bubble-menu hidden">
@@ -1282,7 +1078,7 @@
 
 <!-- МОДАЛКИ -->
 
-<!-- Модалка создания/редактирования заметок -->
+<!-- Модалка создания/редактирования заметок (ПЕРЕРАБОТАННАЯ КОМПОНОВКА С НУМЕРАЦИЕЙ ПАНЕЛЕЙ) -->
 <div id="noteModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
  <div class="modal-content">
  <div class="modal-header">
@@ -1298,37 +1094,48 @@
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
 
+ <!-- Кнопки нумерации созданных панелей (Чипы выбора) -->
+ <div style="margin-top: 4px;">
+ <div class="menu-section-eyebrow" style="margin: 4px 0 6px; display: flex; justify-content: space-between; align-items: center;">
+ <span style="display:flex; align-items:center; gap:4px;"><i data-lucide="tag" style="width:12px;height:12px;"></i> Привязка к панели</span>
+ <span id="selectedZoneLabel" style="font-size: 11px; text-transform: none; color: var(--accent); font-weight: 700;">Общая</span>
+ </div>
+ <div id="noteZonePicker" class="note-zone-picker">
+ <!-- Генерируется динамически: [★ Общая], [№1 Имя], [№2 Имя]... -->
+ </div>
+ </div>
+
  <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top:6px;">
- <button id="noteTabVoiceBtn" class="resume-btn resume-btn-secondary" style="height:42px; font-size:12px;" onclick="startVoiceNote()">
- <i data-lucide="mic" style="width:16px;height:16px; color:var(--danger);"></i> Голосовой ввод
+ <button id="noteTabVoiceBtn" class="resume-btn resume-btn-secondary" style="height:40px; font-size:12px;" onclick="startVoiceNote()">
+ <i data-lucide="mic" style="width:15px;height:15px; color:var(--danger);"></i> Голосовой ввод
  </button>
- <button id="noteTabKeyboardBtn" class="resume-btn resume-btn-secondary" style="height:42px; font-size:12px;" onclick="startTextNote()">
- <i data-lucide="keyboard" style="width:16px;height:16px; color:var(--warn);"></i> Клавиатура
+ <button id="noteTabKeyboardBtn" class="resume-btn resume-btn-secondary" style="height:40px; font-size:12px;" onclick="startTextNote()">
+ <i data-lucide="keyboard" style="width:15px;height:15px; color:var(--warn);"></i> Клавиатура
  </button>
  </div>
 
  <!-- Голосовой статус бокс -->
- <div id="noteVoiceBox" class="hidden" style="background:rgba(79, 219, 200, 0.06); border:1px dashed var(--accent); border-radius:14px; padding:16px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; margin-top:6px;">
+ <div id="noteVoiceBox" class="hidden" style="background:rgba(79, 219, 200, 0.06); border:1px dashed var(--accent); border-radius:14px; padding:14px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; margin-top:6px;">
  <div style="display:flex; align-items:center; gap:8px;">
  <i data-lucide="mic" id="voiceMicStatusIcon" class="mic-pulse" style="width:20px;height:20px; color:var(--danger);"></i>
  <b id="voiceStatusText" style="font-size:13px; color:var(--text);">Слушаю вас... Говорите</b>
  </div>
- <div style="display:flex; align-items:center; justify-content:center; gap:4px; height:24px;">
+ <div style="display:flex; align-items:center; justify-content:center; gap:4px; height:20px;">
  <span style="width:4px;height:8px;border-radius:2px;background:var(--accent);"></span>
  <span style="width:4px;height:16px;border-radius:2px;background:var(--accent);"></span>
- <span style="width:4px;height:22px;border-radius:2px;background:var(--accent);"></span>
- <span style="width:4px;height:14px;border-radius:2px;background:var(--accent);"></span>
  <span style="width:4px;height:20px;border-radius:2px;background:var(--accent);"></span>
+ <span style="width:4px;height:14px;border-radius:2px;background:var(--accent);"></span>
+ <span style="width:4px;height:18px;border-radius:2px;background:var(--accent);"></span>
  </div>
  <span style="font-size:10px; color:var(--muted); opacity:0.9;">🔇 Музыка автоматически на паузе для чистоты записи</span>
  </div>
 
  <!-- Текстовое поле -->
- <div style="display:flex; flex-direction:column; gap:4px; margin-top:8px;">
+ <div style="display:flex; flex-direction:column; gap:4px; margin-top:6px;">
  <div style="display:flex; justify-content:space-between; align-items:center;">
  <div class="menu-section-eyebrow" style="margin:0;"><i data-lucide="file-text" style="width:12px;height:12px;"></i> Текст записи</div>
- <button class="icon-btn small" id="voiceNoteAppendBtn" onclick="startVoiceNote()" title="Додиктовать голосом" style="padding:4px 8px; border-color:var(--accent); color:var(--accent); height:26px; font-size:11px;">
- <i data-lucide="mic" style="width:13px;height:13px;"></i> Додиктовать
+ <button class="icon-btn small" id="voiceNoteAppendBtn" onclick="startVoiceNote()" title="Додиктовать голосом" style="padding:3px 8px; border-color:var(--accent); color:var(--accent); height:24px; font-size:11px;">
+ <i data-lucide="mic" style="width:12px;height:12px;"></i> Додиктовать
  </button>
  </div>
  <textarea id="noteTextInput" placeholder="Текст заметки или комментарий к смене..." rows="3" style="margin:4px 0 8px;"></textarea>
@@ -1336,7 +1143,7 @@
 
  <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top: 4px;">
  <button class="resume-btn resume-btn-secondary" onclick="resetNoteModal()">Отмена</button>
- <button class="resume-btn resume-btn-primary" onclick="saveNoteConfirm()"><i data-lucide="send" style="width:16px;height:16px;"></i> Сохранить</button>
+ <button class="resume-btn resume-btn-primary" onclick="saveNoteConfirm()"><i data-lucide="plus" style="width:16px;height:16px;"></i> Добавить</button>
  </div>
  </div>
 </div>
@@ -1359,7 +1166,7 @@
 
  <div class="table-wrap" style="flex: 1; margin-top: 4px; max-height: calc(100% - 100px);">
  <table id="fullTable">
- <thead><tr><th>Событие / Элемент</th><th>№</th><th>Старт</th><th>Финиш</th><th>Время</th></tr></thead>
+ <thead><tr><th>Событие / Панель</th><th>№</th><th>Старт</th><th>Финиш</th><th>Время</th></tr></thead>
  <tbody id="logBody"></tbody>
  </table>
  </div>
@@ -1379,7 +1186,7 @@
 
  <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin:4px 0 10px;">
  <button class="resume-btn resume-btn-secondary help-tab-btn active" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('start')"><i data-lucide="rocket" style="width:13px;"></i> Старт</button>
- <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('bubble')"><i data-lucide="sparkles" style="width:13px;"></i> Бабл</button>
+ <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('bubble')"><i data-lucide="sparkles" style="width:13px;"></i> Бабл & Жесты</button>
  <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('timers')"><i data-lucide="timer" style="width:13px;"></i> Режимы</button>
  <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('journal')"><i data-lucide="terminal" style="width:13px;"></i> Журнал</button>
  <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('presets')"><i data-lucide="webhook" style="width:13px;"></i> Пресеты</button>
@@ -1399,7 +1206,7 @@
  <div class="menu-card-btn" style="cursor:default;">
  <div class="menu-card-left">
  <div class="menu-card-icon"><i data-lucide="sparkles"></i></div>
- <div class="menu-card-text"><b>Жесты скверкл-бабла</b><span>Удержание (≥0.5с) — голос, клик — меню быстрых действий</span></div>
+ <div class="menu-card-text"><b>Жесты скверкл-бабла и удержание панелей</b><span>Удержание панели (≥0.45с) — заметка к ней. Бабл: удержание — голос, клик — меню.</span></div>
  </div>
  </div>
  </div>
@@ -1415,7 +1222,7 @@
  <div class="menu-card-btn" style="cursor:default;">
  <div class="menu-card-left">
  <div class="menu-card-icon"><i data-lucide="table"></i></div>
- <div class="menu-card-text"><b>Журнал и экспорт</b><span>Живая лента, редактирование заметок и выгрузка в CSV (Excel)</span></div>
+ <div class="menu-card-text"><b>Журнал и экспорт</b><span>Живая лента, привязка заметок к номерам панелей и выгрузка в CSV</span></div>
  </div>
  </div>
  </div>
@@ -1692,9 +1499,19 @@
  <div class="menu-section-eyebrow">Список готовых шаблонов</div>
  <div id="presetsList" class="menu-card-list"></div>
  
- <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
- <button class="resume-btn resume-btn-secondary" onclick="exportPresetJSON()"><i data-lucide="download"></i> Экспорт JSON</button>
- <button class="resume-btn resume-btn-secondary" onclick="document.getElementById('importFileInput').click()"><i data-lucide="upload"></i> Импорт JSON</button>
+ <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border);">
+ <div class="menu-section-eyebrow" style="margin-top:0;">Работа с файлами конфигурации</div>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top:4px;">
+ <button class="resume-btn resume-btn-secondary" onclick="exportPresetJSON()" title="Скачать файл конфигураций на устройство">
+ <i data-lucide="download" style="width:14px;height:14px; color:var(--accent);"></i>
+ <span>Выгрузить файл</span>
+ </button>
+ <button class="resume-btn resume-btn-secondary" onclick="document.getElementById('importFileInput').click()" title="Загрузить ранее сохраненный JSON файл с устройства">
+ <i data-lucide="upload" style="width:14px;height:14px; color:var(--accent);"></i>
+ <span>Загрузить файл</span>
+ </button>
+ </div>
+ <span style="font-size:9.5px; color:var(--muted); opacity:0.8; display:block; text-align:center; margin-top:4px;">Выгрузка пресетов в файл .json или загрузка готового файла с устройства</span>
  </div>
  <input type="file" id="importFileInput" accept="application/json" class="hidden" onchange="importPresetJSON(this.files[0])">
  </div>
@@ -1743,141 +1560,144 @@ let tickHandle = null;
 let historyStack = []; 
 let redoStack = [];
 
+let selectedZoneIdForNote = null; // null = Общая заметка
+let editingNoteId = null;
+
 const SESSION_KEY = 'zonesPanel.session.v3'; 
 const PRESETS_KEY = 'zonesPanel.presets.v3'; 
 const WEBHOOK_KEY = 'zonesPanel.webhook.v2';
 const BUBBLE_POS_KEY = 'zonesPanel.bubblePos.v1';
 
 const palette = [
-  '#14b8a6','#3b82f6','#8b5cf6','#d946ef','#f43f5e','#f97316',
-  '#eab308','#84cc16','#06b6d4','#6366f1','#a855f7','#ec4899',
-  '#ef4444','#f59e0b','#10b981','#0ea5e9'
+ '#14b8a6','#3b82f6','#8b5cf6','#d946ef','#f43f5e','#f97316',
+ '#eab308','#84cc16','#06b6d4','#6366f1','#a855f7','#ec4899',
+ '#ef4444','#f59e0b','#10b981','#0ea5e9'
 ];
 
 function colorFor(id) { 
-  return palette[id % palette.length]; 
+ return palette[id % palette.length]; 
 }
 
 function escapeHtml(str) { 
-  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); 
+ return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); 
 }
 
-/* --- Async Confirm Dialog --- */
+/* --- Async Custom Confirm Dialog --- */
 let activeConfirmResolve = null;
 function customConfirm(message, okText = 'Да', isDanger = false) {
-  return new Promise((resolve) => {
-    const overlay = document.getElementById('confirmModal'); 
-    const msgEl = document.getElementById('confirmMessage'); 
-    const btnOk = document.getElementById('confirmOkBtn'); 
-    const btnCancel = document.getElementById('confirmCancelBtn');
-    msgEl.innerHTML = message; 
-    btnOk.textContent = okText;
-    if (isDanger) { 
-      btnOk.style.background = 'var(--danger)'; 
-      btnOk.style.color = '#fff'; 
-    } else { 
-      btnOk.style.background = 'var(--accent)'; 
-      btnOk.style.color = '#fff'; 
-      if (document.documentElement.getAttribute('data-theme') === 'dark') btnOk.style.color = '#000'; 
-    }
-    overlay.classList.add('show');
-    updateBubbleMode();
-    const cleanup = () => { 
-      overlay.classList.remove('show'); 
-      updateBubbleMode(); 
-      btnOk.removeEventListener('click', onOk); 
-      btnCancel.removeEventListener('click', onCancel); 
-      activeConfirmResolve = null; 
-    };
-    const onOk = () => { cleanup(); resolve(true); }; 
-    const onCancel = () => { cleanup(); resolve(false); };
-    btnOk.addEventListener('click', onOk); 
-    btnCancel.addEventListener('click', onCancel); 
-    activeConfirmResolve = onCancel;
-  });
+ return new Promise((resolve) => {
+ const overlay = document.getElementById('confirmModal'); 
+ const msgEl = document.getElementById('confirmMessage'); 
+ const btnOk = document.getElementById('confirmOkBtn'); 
+ const btnCancel = document.getElementById('confirmCancelBtn');
+ msgEl.innerHTML = message; 
+ btnOk.textContent = okText;
+ if (isDanger) { 
+ btnOk.style.background = 'var(--danger)'; 
+ btnOk.style.color = '#fff'; 
+ } else { 
+ btnOk.style.background = 'var(--accent)'; 
+ btnOk.style.color = '#fff'; 
+ if (document.documentElement.getAttribute('data-theme') === 'dark') btnOk.style.color = '#000'; 
+ }
+ overlay.classList.add('show');
+ updateBubbleMode();
+ const cleanup = () => { 
+ overlay.classList.remove('show'); 
+ updateBubbleMode(); 
+ btnOk.removeEventListener('click', onOk); 
+ btnCancel.removeEventListener('click', onCancel); 
+ activeConfirmResolve = null; 
+ };
+ const onOk = () => { cleanup(); resolve(true); }; 
+ const onCancel = () => { cleanup(); resolve(false); };
+ btnOk.addEventListener('click', onOk); 
+ btnCancel.addEventListener('click', onCancel); 
+ activeConfirmResolve = onCancel;
+ });
 }
 
 function closeConfirmOnDim(e) { 
-  if (e.target.id === 'confirmModal' && activeConfirmResolve) activeConfirmResolve(); 
+ if (e.target.id === 'confirmModal' && activeConfirmResolve) activeConfirmResolve(); 
 }
 
 /* --- Тема оформления --- */
 const THEME_KEY = 'zonesPanel.theme.v1';
 function getThemePref() { 
-  return localStorage.getItem(THEME_KEY) || 'dark'; 
+ return localStorage.getItem(THEME_KEY) || 'dark'; 
 }
 
 function resolveTheme(pref) { 
-  return pref === 'system' ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : pref; 
+ return pref === 'system' ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : pref; 
 }
 
 function applyTheme() {
-  const resolved = resolveTheme(getThemePref()); 
-  document.documentElement.setAttribute('data-theme', resolved); 
-  document.documentElement.style.colorScheme = resolved;
-  const meta = document.getElementById('themeColorMeta'); 
-  if (meta) meta.setAttribute('content', resolved === 'light' ? '#f4f6f9' : '#0d0d19');
+ const resolved = resolveTheme(getThemePref()); 
+ document.documentElement.setAttribute('data-theme', resolved); 
+ document.documentElement.style.colorScheme = resolved;
+ const meta = document.getElementById('themeColorMeta'); 
+ if (meta) meta.setAttribute('content', resolved === 'light' ? '#f4f6f9' : '#0d0d19');
 }
 
 function setThemePref(pref) { 
-  localStorage.setItem(THEME_KEY, pref); 
-  applyTheme(); 
-  showToast('Тема обновлена'); 
+ localStorage.setItem(THEME_KEY, pref); 
+ applyTheme(); 
+ showToast('Тема обновлена'); 
 }
 
 if (window.matchMedia) {
-  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { 
-    if (getThemePref() === 'system') applyTheme(); 
-  });
+ window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { 
+ if (getThemePref() === 'system') applyTheme(); 
+ });
 }
 
 /* --- Звук и Haptics --- */
 const ALERT_KEY = 'zonesPanel.alert.v2';
 function getAlertPref() { 
-  return localStorage.getItem(ALERT_KEY) || 'loud'; 
+ return localStorage.getItem(ALERT_KEY) || 'loud'; 
 }
 
 function setAlertPref(mode) { 
-  localStorage.setItem(ALERT_KEY, mode); 
-  showToast(mode === 'mute' ? 'Без звука' : (mode === 'vibro' ? 'Только вибро' : 'Звук + Вибро')); 
+ localStorage.setItem(ALERT_KEY, mode); 
+ showToast(mode === 'mute' ? 'Без звука' : (mode === 'vibro' ? 'Только вибро' : 'Звук + Вибро')); 
 }
 
 let audioCtx = null;
 function playTone(freq = 880, durationMs = 90) {
-  if (getAlertPref() !== 'loud') return;
-  try {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator(); 
-    const gain = audioCtx.createGain();
-    osc.type = 'sine'; 
-    osc.frequency.value = freq; 
-    gain.gain.setValueAtTime(0.15, audioCtx.currentTime); 
-    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durationMs / 1000);
-    osc.connect(gain); 
-    gain.connect(audioCtx.destination); 
-    osc.start(); 
-    osc.stop(audioCtx.currentTime + durationMs / 1000);
-  } catch(e) {}
+ if (getAlertPref() !== 'loud') return;
+ try {
+ if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+ if (audioCtx.state === 'suspended') audioCtx.resume();
+ const osc = audioCtx.createOscillator(); 
+ const gain = audioCtx.createGain();
+ osc.type = 'sine'; 
+ osc.frequency.value = freq; 
+ gain.gain.setValueAtTime(0.15, audioCtx.currentTime); 
+ gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durationMs / 1000);
+ osc.connect(gain); 
+ gain.connect(audioCtx.destination); 
+ osc.start(); 
+ osc.stop(audioCtx.currentTime + durationMs / 1000);
+ } catch(e) {}
 }
 
 function haptic(ms = 15, tone = 'start') { 
-  const pref = getAlertPref();
-  if (pref === 'mute') return;
-  try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e) {} 
-  if (pref === 'loud') playTone(tone === 'stop' ? 520 : 880, 90);
+ const pref = getAlertPref();
+ if (pref === 'mute') return;
+ try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e) {} 
+ if (pref === 'loud') playTone(tone === 'stop' ? 520 : 880, 90);
 }
 
 function playAlarm() {
-  const pref = getAlertPref();
-  if (pref !== 'mute' && navigator.vibrate) {
-    try { navigator.vibrate([200, 100, 200, 100, 400]); } catch(e) {}
-  }
-  if (pref === 'loud') {
-    playTone(880, 150);
-    setTimeout(() => playTone(880, 150), 200);
-    setTimeout(() => playTone(1100, 300), 400);
-  }
+ const pref = getAlertPref();
+ if (pref !== 'mute' && navigator.vibrate) {
+ try { navigator.vibrate([200, 100, 200, 100, 400]); } catch(e) {}
+ }
+ if (pref === 'loud') {
+ playTone(880, 150);
+ setTimeout(() => playTone(880, 150), 200);
+ setTimeout(() => playTone(1100, 300), 400);
+ }
 }
 
 /* --- Фоновая музыка и автопауза при голосе --- */
@@ -1888,152 +1708,152 @@ bgMusic.volume = 0.3;
 let wasMusicPlayingBeforeVoice = false;
 
 function getMusicPref() { 
-  return localStorage.getItem(MUSIC_KEY) === 'true'; 
+ return localStorage.getItem(MUSIC_KEY) === 'true'; 
 }
 
 function setMusicPref(state) { 
-  localStorage.setItem(MUSIC_KEY, state); 
+ localStorage.setItem(MUSIC_KEY, state); 
 }
 
 function toggleMusic(state) { 
-  setMusicPref(state); 
-  if (state) { 
-    bgMusic.play().catch(() => showToast('Ткни в экран для старта музыки', true)); 
-  } else { 
-    bgMusic.pause(); 
-  } 
+ setMusicPref(state); 
+ if (state) { 
+ bgMusic.play().catch(() => showToast('Ткни в экран для старта музыки', true)); 
+ } else { 
+ bgMusic.pause(); 
+ } 
 }
 
 document.addEventListener('pointerdown', () => { 
-  if (getMusicPref() && bgMusic.paused) { 
-    bgMusic.play().catch(()=>{}); 
-  } 
-}, { once: true });
+ if (getMusicPref() && bgMusic.paused) { 
+ bgMusic.play().catch(()=>{}); 
+ } 
+ }, { once: true });
 
 function pauseMusicForVoice() {
-  if (bgMusic && !bgMusic.paused) {
-    wasMusicPlayingBeforeVoice = true;
-    bgMusic.pause();
-  }
+ if (bgMusic && !bgMusic.paused) {
+ wasMusicPlayingBeforeVoice = true;
+ bgMusic.pause();
+ }
 }
 
 function resumeMusicAfterVoice() {
-  if (wasMusicPlayingBeforeVoice) {
-    wasMusicPlayingBeforeVoice = false;
-    if (getMusicPref() && bgMusic) {
-      bgMusic.play().catch(()=>{});
-    }
-  }
+ if (wasMusicPlayingBeforeVoice) {
+ wasMusicPlayingBeforeVoice = false;
+ if (getMusicPref() && bgMusic) {
+ bgMusic.play().catch(()=>{});
+ }
+ }
 }
 
 function syncMenuControls() { 
-  const pref = getThemePref(); 
-  const el = document.getElementById('theme' + pref.charAt(0).toUpperCase() + pref.slice(1)); 
-  if (el) el.checked = true; 
-  const alertPref = getAlertPref(); 
-  const alertEl = document.getElementById('alert' + alertPref.charAt(0).toUpperCase() + alertPref.slice(1)); 
-  if (alertEl) alertEl.checked = true; 
-  const musicEl = document.getElementById('musicToggle');
-  if (musicEl) musicEl.checked = getMusicPref();
+ const pref = getThemePref(); 
+ const el = document.getElementById('theme' + pref.charAt(0).toUpperCase() + pref.slice(1)); 
+ if (el) el.checked = true; 
+ const alertPref = getAlertPref(); 
+ const alertEl = document.getElementById('alert' + alertPref.charAt(0).toUpperCase() + alertPref.slice(1)); 
+ if (alertEl) alertEl.checked = true; 
+ const musicEl = document.getElementById('musicToggle');
+ if (musicEl) musicEl.checked = getMusicPref();
 }
 applyTheme();
 
 /* --- Wake Lock --- */
 let wakeLock = null;
 async function acquireWakeLock() { 
-  try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {} 
+ try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {} 
 }
 
 function releaseWakeLockIfIdle() { 
-  const anyActive = zones.some(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants.length > 0)); 
-  if (!anyActive && wakeLock) { 
-    try { wakeLock.release(); } catch(e) {} 
-    wakeLock = null; 
-  } 
+ const anyActive = zones.some(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants.length > 0)); 
+ if (!anyActive && wakeLock) { 
+ try { wakeLock.release(); } catch(e) {} 
+ wakeLock = null; 
+ } 
 }
 
 function refreshWakeLock() { 
-  const anyActive = zones.some(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants.length > 0)); 
-  if (anyActive && !wakeLock) acquireWakeLock(); 
-  if (!anyActive) releaseWakeLockIfIdle(); 
+ const anyActive = zones.some(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants.length > 0)); 
+ if (anyActive && !wakeLock) acquireWakeLock(); 
+ if (!anyActive) releaseWakeLockIfIdle(); 
 }
 
 document.addEventListener('visibilitychange', () => { 
-  if (document.visibilityState === 'visible') refreshWakeLock(); 
+ if (document.visibilityState === 'visible') refreshWakeLock(); 
 });
 
 function updateIcons(root = document) { 
-  lucide.createIcons({ root }); 
+ lucide.createIcons({ root }); 
 }
 
 /* --- Undo & Redo --- */
 function saveStateForUndo() { 
-  historyStack.push({ 
-    zones: JSON.parse(JSON.stringify(zones)), 
-    logs: JSON.parse(JSON.stringify(logs)), 
-    zoneIdCounter: zoneIdCounter, 
-    logIdCounter: logIdCounter 
-  }); 
-  if (historyStack.length > 50) historyStack.shift(); 
-  redoStack = [];
-  updateUndoRedoButtons(); 
+ historyStack.push({ 
+ zones: JSON.parse(JSON.stringify(zones)), 
+ logs: JSON.parse(JSON.stringify(logs)), 
+ zoneIdCounter: zoneIdCounter, 
+ logIdCounter: logIdCounter 
+ }); 
+ if (historyStack.length > 50) historyStack.shift(); 
+ redoStack = [];
+ updateUndoRedoButtons(); 
 }
 
 function updateUndoRedoButtons() { 
-  const undoBtn = document.getElementById('bubbleUndoBtn'); 
-  const redoBtn = document.getElementById('bubbleRedoBtn');
-  if (undoBtn) undoBtn.disabled = historyStack.length === 0; 
-  if (redoBtn) redoBtn.disabled = redoStack.length === 0;
+ const undoBtn = document.getElementById('bubbleUndoBtn'); 
+ const redoBtn = document.getElementById('bubbleRedoBtn');
+ if (undoBtn) undoBtn.disabled = historyStack.length === 0; 
+ if (redoBtn) redoBtn.disabled = redoStack.length === 0;
 }
 
 function undoLastAction() {
-  if (historyStack.length === 0) return; 
-  const currentState = { 
-    zones: JSON.parse(JSON.stringify(zones)), 
-    logs: JSON.parse(JSON.stringify(logs)), 
-    zoneIdCounter: zoneIdCounter, 
-    logIdCounter: logIdCounter 
-  };
-  redoStack.push(currentState);
-  const state = historyStack.pop(); 
-  zones = state.zones; 
-  logs = state.logs; 
-  zoneIdCounter = state.zoneIdCounter;
-  logIdCounter = state.logIdCounter || logIdCounter;
-  rebuildTableFromLogs();
-  if (!document.getElementById('step3').classList.contains('hidden')) { 
-    renderMainPanel(); 
-  } else if (!document.getElementById('editStep').classList.contains('hidden')) { 
-    renderEditList(); 
-  }
-  persistSession(); 
-  updateUndoRedoButtons(); 
-  showToast('Отменено ↶');
+ if (historyStack.length === 0) return; 
+ const currentState = { 
+ zones: JSON.parse(JSON.stringify(zones)), 
+ logs: JSON.parse(JSON.stringify(logs)), 
+ zoneIdCounter: zoneIdCounter, 
+ logIdCounter: logIdCounter 
+ };
+ redoStack.push(currentState);
+ const state = historyStack.pop(); 
+ zones = state.zones; 
+ logs = state.logs; 
+ zoneIdCounter = state.zoneIdCounter;
+ logIdCounter = state.logIdCounter || logIdCounter;
+ rebuildTableFromLogs();
+ if (!document.getElementById('step3').classList.contains('hidden')) { 
+ renderMainPanel(); 
+ } else if (!document.getElementById('editStep').classList.contains('hidden')) { 
+ renderEditList(); 
+ }
+ persistSession(); 
+ updateUndoRedoButtons(); 
+ showToast('Отменено ↶');
 }
 
 function redoLastAction() {
-  if (redoStack.length === 0) return; 
-  const currentState = { 
-    zones: JSON.parse(JSON.stringify(zones)), 
-    logs: JSON.parse(JSON.stringify(logs)), 
-    zoneIdCounter: zoneIdCounter, 
-    logIdCounter: logIdCounter 
-  };
-  historyStack.push(currentState);
-  const state = redoStack.pop();
-  zones = state.zones;
-  logs = state.logs;
-  zoneIdCounter = state.zoneIdCounter;
-  logIdCounter = state.logIdCounter || logIdCounter;
-  rebuildTableFromLogs();
-  if (!document.getElementById('step3').classList.contains('hidden')) { 
-    renderMainPanel(); 
-  } else if (!document.getElementById('editStep').classList.contains('hidden')) { 
-    renderEditList(); 
-  }
-  persistSession(); 
-  updateUndoRedoButtons(); 
-  showToast('Возвращено ↷');
+ if (redoStack.length === 0) return; 
+ const currentState = { 
+ zones: JSON.parse(JSON.stringify(zones)), 
+ logs: JSON.parse(JSON.stringify(logs)), 
+ zoneIdCounter: zoneIdCounter, 
+ logIdCounter: logIdCounter 
+ };
+ historyStack.push(currentState);
+ const state = redoStack.pop();
+ zones = state.zones;
+ logs = state.logs;
+ zoneIdCounter = state.zoneIdCounter;
+ logIdCounter = state.logIdCounter || logIdCounter;
+ rebuildTableFromLogs();
+ if (!document.getElementById('step3').classList.contains('hidden')) { 
+ renderMainPanel(); 
+ } else if (!document.getElementById('editStep').classList.contains('hidden')) { 
+ renderEditList(); 
+ }
+ persistSession(); 
+ updateUndoRedoButtons(); 
+ showToast('Возвращено ↷');
 }
 
 /* --- Storage & Webhook --- */
@@ -2042,611 +1862,688 @@ function setWebhook(url) { localStorage.setItem(WEBHOOK_KEY, url); }
 function openWebhookSettings() { document.getElementById('webhookInput').value = getWebhook(); showModal('webhookModal'); }
 
 function saveWebhookConfirm() {
-  const url = document.getElementById('webhookInput').value.trim();
-  if (url && !/^https?:\/\//i.test(url)) { showToast('Нужен адрес http:// или https://', true); return; }
-  setWebhook(url); 
-  closeModals(); 
-  showToast(url ? 'Вебхук сохранён' : 'Вебхук отключён');
+ const url = document.getElementById('webhookInput').value.trim();
+ if (url && !/^https?:\/\//i.test(url)) { showToast('Нужен адрес http:// или https://', true); return; }
+ setWebhook(url); 
+ closeModals(); 
+ showToast(url ? 'Вебхук сохранён' : 'Вебхук отключён');
 }
 
 function fireWebhook(payload) { 
-  const url = getWebhook(); 
-  if (!url) return; 
-  payload.timestamp = new Date().toISOString(); 
-  try { 
-    fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(()=>{}); 
-  } catch(e) {} 
+ const url = getWebhook(); 
+ if (!url) return; 
+ payload.timestamp = new Date().toISOString(); 
+ try { 
+ fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(()=>{}); 
+ } catch(e) {} 
 }
 
 function storageTest() { 
-  try { localStorage.setItem('__zt','1'); localStorage.removeItem('__zt'); return true; } catch(e) { return false; } 
+ try { localStorage.setItem('__zt','1'); localStorage.removeItem('__zt'); return true; } catch(e) { return false; } 
 }
 const storageOK = storageTest();
 
 function persistSession() { 
-  if (!storageOK) return; 
-  try { 
-    localStorage.setItem(SESSION_KEY, JSON.stringify({ zoneIdCounter, logIdCounter, zones, logs, savedAt: Date.now() })); 
-  } catch(e) { 
-    showToast('Память забита', true); 
-  } 
+ if (!storageOK) return; 
+ try { 
+ localStorage.setItem(SESSION_KEY, JSON.stringify({ zoneIdCounter, logIdCounter, zones, logs, savedAt: Date.now() })); 
+ } catch(e) { 
+ showToast('Память забита', true); 
+ } 
 }
 
 function loadSessionRaw() { 
-  if (!storageOK) return null; 
-  try { 
-    const raw = localStorage.getItem(SESSION_KEY); 
-    return raw ? JSON.parse(raw) : null; 
-  } catch(e) { return null; } 
+ if (!storageOK) return null; 
+ try { 
+ const raw = localStorage.getItem(SESSION_KEY); 
+ return raw ? JSON.parse(raw) : null; 
+ } catch(e) { return null; } 
 }
 
 function clearSession() { 
-  if (storageOK) localStorage.removeItem(SESSION_KEY); 
+ if (storageOK) localStorage.removeItem(SESSION_KEY); 
 }
 
 function getPresets() { 
-  if (!storageOK) return {}; 
-  try { return JSON.parse(localStorage.getItem(PRESETS_KEY) || '{}'); } catch(e) { return {}; } 
+ if (!storageOK) return {}; 
+ try { return JSON.parse(localStorage.getItem(PRESETS_KEY) || '{}'); } catch(e) { return {}; } 
 }
 
 function savePresetsObj(obj) { 
-  if (storageOK) try { localStorage.setItem(PRESETS_KEY, JSON.stringify(obj)); } catch(e) {} 
+ if (storageOK) try { localStorage.setItem(PRESETS_KEY, JSON.stringify(obj)); } catch(e) {} 
 }
 
 function ensureLogIds() { 
-  let maxId = -1; 
-  logs.forEach(e => { if (typeof e.id === 'number') maxId = Math.max(maxId, e.id); }); 
-  logs.forEach(e => { if (typeof e.id !== 'number') e.id = ++maxId; }); 
-  logIdCounter = Math.max(logIdCounter, maxId + 1); 
+ let maxId = -1; 
+ logs.forEach(e => { if (typeof e.id === 'number') maxId = Math.max(maxId, e.id); }); 
+ logs.forEach(e => { if (typeof e.id !== 'number') e.id = ++maxId; }); 
+ logIdCounter = Math.max(logIdCounter, maxId + 1); 
 }
 
 function restoreSessionAction() { 
-  const pending = window.__pendingSession; 
-  if (!pending) return; 
-  zoneIdCounter = pending.zoneIdCounter || 0; 
-  logIdCounter = pending.logIdCounter || 0; 
-  zones = pending.zones || []; 
-  logs = pending.logs || []; 
-  zones.forEach(z => {
-    z.countdown = z.countdown || false; 
-    z.limitMs = z.limitMs || 0;
-    z.limitAction = z.limitAction || 'alert'; 
-    z.multiLimitType = z.multiLimitType || 'individual'; 
-    z.size = z.size || 'compact';
-  });
-  ensureLogIds(); 
-  historyStack = []; 
-  redoStack = []; 
-  updateUndoRedoButtons(); 
-  document.getElementById('stepResume').classList.add('hidden'); 
-  document.getElementById('step3').classList.add('fade-in'); 
-  document.getElementById('step3').classList.remove('hidden'); 
-  rebuildTableFromLogs(); 
-  renderMainPanel(); 
-  startTicker(); 
-  refreshWakeLock(); 
-  updateBubbleMode(); 
-  showToast('Сессия восстановлена'); 
+ const pending = window.__pendingSession; 
+ if (!pending) return; 
+ zoneIdCounter = pending.zoneIdCounter || 0; 
+ logIdCounter = pending.logIdCounter || 0; 
+ zones = pending.zones || []; 
+ logs = pending.logs || []; 
+ zones.forEach(z => {
+ z.countdown = z.countdown || false; 
+ z.limitMs = z.limitMs || 0;
+ z.limitAction = z.limitAction || 'alert'; 
+ z.multiLimitType = z.multiLimitType || 'individual'; 
+ z.size = z.size || 'compact';
+ });
+ ensureLogIds(); 
+ historyStack = []; 
+ redoStack = []; 
+ updateUndoRedoButtons(); 
+ document.getElementById('stepResume').classList.add('hidden'); 
+ document.getElementById('step3').classList.add('fade-in'); 
+ document.getElementById('step3').classList.remove('hidden'); 
+ rebuildTableFromLogs(); 
+ renderMainPanel(); 
+ startTicker(); 
+ refreshWakeLock(); 
+ updateBubbleMode(); 
+ showToast('Сессия восстановлена'); 
 }
 
 function discardSessionAction() { 
-  clearSession(); 
-  window.__pendingSession = null; 
-  document.getElementById('stepResume').classList.add('hidden'); 
-  zones = []; 
-  logs = []; 
-  zoneIdCounter = 0; 
-  logIdCounter = 0; 
-  enterEditMode(); 
+ clearSession(); 
+ window.__pendingSession = null; 
+ document.getElementById('stepResume').classList.add('hidden'); 
+ zones = []; 
+ logs = []; 
+ zoneIdCounter = 0; 
+ logIdCounter = 0; 
+ enterEditMode(); 
 }
 
 let toastTimer = null;
 function showToast(msg, warn) {
-  const t = document.getElementById('toast');
-  if (!t) return;
-  const msgEl = document.getElementById('toastMsg');
-  if (msgEl) {
-    msgEl.textContent = msg;
-    if (msg.length > 34) {
-      msgEl.style.fontSize = '10px';
-    } else if (msg.length > 25) {
-      msgEl.style.fontSize = '11px';
-    } else {
-      msgEl.style.fontSize = '11.5px';
-    }
-  }
-  const prefix = document.getElementById('toastPrefix');
-  if (prefix) prefix.textContent = warn ? '[WARN] //' : '[OK] //';
-  t.classList.toggle('warn', !!warn);
-  
-  const iconWrap = document.getElementById('toastIconWrap');
-  if (iconWrap) {
-    iconWrap.innerHTML = `<i data-lucide="${warn ? 'alert-triangle' : 'check-circle-2'}" style="width:14px;height:14px;"></i>`;
-    updateIcons(iconWrap);
-  }
-  
-  t.classList.remove('show');
-  void t.offsetWidth;
-  t.classList.add('show');
-  
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    t.classList.remove('show');
-  }, 2600);
+ const t = document.getElementById('toast');
+ if (!t) return;
+ const msgEl = document.getElementById('toastMsg');
+ if (msgEl) {
+ msgEl.textContent = msg;
+ if (msg.length > 34) {
+ msgEl.style.fontSize = '10px';
+ } else if (msg.length > 25) {
+ msgEl.style.fontSize = '11px';
+ } else {
+ msgEl.style.fontSize = '11.5px';
+ }
+ }
+ const prefix = document.getElementById('toastPrefix');
+ if (prefix) prefix.textContent = warn ? '[WARN] //' : '[OK] //';
+ t.classList.toggle('warn', !!warn);
+ 
+ const iconWrap = document.getElementById('toastIconWrap');
+ if (iconWrap) {
+ iconWrap.innerHTML = `<i data-lucide="${warn ? 'alert-triangle' : 'check-circle-2'}" style="width:14px;height:14px;"></i>`;
+ updateIcons(iconWrap);
+ }
+ 
+ t.classList.remove('show');
+ void t.offsetWidth;
+ t.classList.add('show');
+ 
+ clearTimeout(toastTimer);
+ toastTimer = setTimeout(() => {
+ t.classList.remove('show');
+ }, 2600);
 }
 
 function isAnyModalOpen() {
-  return !!document.querySelector('.modal-overlay.show');
+ return !!document.querySelector('.modal-overlay.show');
 }
 
 function showModal(id) {
-  closeModals();
-  const el = document.getElementById(id);
-  if (el) {
-    el.classList.add('show');
-    updateBubbleMode();
-  }
+ closeModals();
+ const el = document.getElementById(id);
+ if (el) {
+ el.classList.add('show');
+ updateBubbleMode();
+ }
 }
 
 function openMenu() { 
-  syncMenuControls(); 
-  showModal('menuModal'); 
+ syncMenuControls(); 
+ showModal('menuModal'); 
 }
 
 function closeModals() { 
-  document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('show')); 
-  toggleBubbleMenu(false);
-  updateBubbleMode();
+ document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('show')); 
+ toggleBubbleMenu(false);
+ updateBubbleMode();
 }
 
 function closeModalsOnDim(e) { 
-  if (e.target.classList.contains('modal-overlay') && e.target.id !== 'confirmModal') closeModals(); 
+ if (e.target.classList.contains('modal-overlay') && e.target.id !== 'confirmModal') closeModals(); 
 }
 
-/* --- Отрисовка Дашборда (#step3) --- */
+/* --- Жест долгого нажатия (Long-Press) на карточки панелей --- */
+function attachCardLongPress(element, zoneId, clickCallback) {
+ let pressTimer = null;
+ let isLongPress = false;
+ let startX = 0, startY = 0;
+
+ const startPress = (e) => {
+ if (e.target.closest('button, input, .color-dot')) return;
+ isLongPress = false;
+ startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+ startY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+ element.classList.add('card-pressing');
+
+ pressTimer = setTimeout(() => {
+ isLongPress = true;
+ element.classList.remove('card-pressing');
+ haptic(35, 'start');
+ openNoteModalForZone(zoneId);
+ }, 450);
+ };
+
+ const movePress = (e) => {
+ if (!pressTimer) return;
+ const curX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+ const curY = e.clientY || (e.touches && e.touches[0].clientY) || 0;
+ if (Math.abs(curX - startX) > 10 || Math.abs(curY - startY) > 10) {
+ clearTimeout(pressTimer);
+ pressTimer = null;
+ element.classList.remove('card-pressing');
+ }
+ };
+
+ const cancelPress = () => {
+ if (pressTimer) {
+ clearTimeout(pressTimer);
+ pressTimer = null;
+ }
+ element.classList.remove('card-pressing');
+ };
+
+ element.addEventListener('pointerdown', startPress);
+ element.addEventListener('pointermove', movePress);
+ element.addEventListener('pointerup', (e) => {
+ cancelPress();
+ if (!isLongPress && clickCallback) {
+ if (e.target.closest('button') && e.target !== element) return;
+ clickCallback();
+ }
+ });
+ element.addEventListener('pointercancel', cancelPress);
+ element.addEventListener('contextmenu', (e) => {
+ if (isLongPress) e.preventDefault();
+ });
+}
+
+/* --- Отрисовка Дашборда (#step3) с Нумерацией Панелей --- */
 function renderMainPanel() {
-  const grid = document.getElementById('zonesGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  
-  zones.forEach(z => {
-    if (z.mode === 'single') {
-      const btn = document.createElement('button'); 
-      btn.id = `singleBtn_${z.id}`; 
-      btn.className = 'tracker-btn' + (z.active ? ' active' : ''); 
-      if (z.size === 'wide') {
-        btn.style.gridColumn = '1 / -1';
-      }
-      btn.onclick = () => toggleSingle(z.id);
-      btn.innerHTML = singleInnerHTML(z); 
-      grid.appendChild(btn);
-    } else {
-      grid.appendChild(renderMultiCard(z));
-    }
-  });
+ const grid = document.getElementById('zonesGrid');
+ if (!grid) return;
+ grid.innerHTML = '';
+ 
+ zones.forEach((z, index) => {
+ if (z.mode === 'single') {
+ const btn = document.createElement('div'); 
+ btn.id = `singleBtn_${z.id}`; 
+ btn.className = 'tracker-btn' + (z.active ? ' active' : ''); 
+ if (z.size === 'wide') {
+ btn.style.gridColumn = '1 / -1';
+ }
+ btn.style.setProperty('--zc', z.color);
+ btn.style.setProperty('--zc-rgb', hexToRgbStr(z.color));
+ btn.innerHTML = singleInnerHTML(z, index); 
+ 
+ attachCardLongPress(btn, z.id, () => toggleSingle(z.id));
+ grid.appendChild(btn);
+ } else {
+ const card = renderMultiCard(z, index);
+ grid.appendChild(card);
+ }
+ });
 
-  document.getElementById('editStep').classList.add('hidden'); 
-  document.getElementById('stepResume').classList.add('hidden'); 
-  document.getElementById('step3').classList.remove('hidden'); 
+ document.getElementById('editStep').classList.add('hidden'); 
+ document.getElementById('stepResume').classList.add('hidden'); 
+ document.getElementById('step3').classList.remove('hidden'); 
 
-  document.getElementById('summaryBar').innerHTML = '';
-  renderSummaryBar(); 
-  updateIcons(grid);
-  updateBubbleMode();
+ document.getElementById('summaryBar').innerHTML = '';
+ renderSummaryBar(); 
+ updateIcons(grid);
+ updateBubbleMode();
 }
 
-function singleInnerHTML(z) {
-  const now = Date.now();
-  let mainElapsedStr = z.active ? formatDuration(now - z.startTime) : formatDuration(z.totalMs);
-  
-  let countdownBadge = '';
-  if (z.active && z.countdown && z.limitMs > 0) {
-    const left = Math.max(0, z.limitMs - (now - z.startTime));
-    countdownBadge = `
-    <div style="font-size:10px; font-weight:700; color:var(--warn); margin-top:4px; display:flex; align-items:center; gap:4px; opacity:0.9;">
-      <span>⏳ Осталось: -${formatDuration(left)}</span>
-    </div>`;
-  }
+function singleInnerHTML(z, index) {
+ const now = Date.now();
+ let mainElapsedStr = z.active ? formatDuration(now - z.startTime) : formatDuration(z.totalMs);
+ 
+ let countdownBadge = '';
+ if (z.active && z.countdown && z.limitMs > 0) {
+ const left = Math.max(0, z.limitMs - (now - z.startTime));
+ countdownBadge = `
+ <div style="font-size:10px; font-weight:700; color:var(--warn); margin-top:4px; display:flex; align-items:center; gap:4px; opacity:0.9;">
+ <span>⏳ Осталось: -${formatDuration(left)}</span>
+ </div>`;
+ }
 
-  const statusBadge = z.active 
-    ? `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.2); color:inherit; display:flex; align-items:center; gap:4px;"><span style="width:4px;height:4px;border-radius:2px;background:#fff;" class="pulse-pip"></span> ИДЁТ</span>` 
-    : `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--surface); color:var(--muted); border:1px solid var(--border);">ГОТОВ</span>`;
+ const statusBadge = z.active 
+ ? `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(255,255,255,0.2); color:inherit; display:flex; align-items:center; gap:4px;"><span style="width:4px;height:4px;border-radius:2px;background:#fff;" class="pulse-pip"></span> ИДЁТ</span>` 
+ : `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--surface); color:var(--muted); border:1px solid var(--border);">ГОТОВ</span>`;
 
-  return `
-  <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start;">
-    <div style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
-      <span style="font-size:14px; font-weight:700; line-height:1.2;">${escapeHtml(z.name)}</span>
-      <div style="display:flex; align-items:center; gap:4px;">
-        <span style="width:6px;height:6px;border-radius:2px;background:${z.color};"></span>
-        <span style="font-size:10px; font-weight:600; color:var(--muted);">${z.active ? 'Активен' : `Визитов: ${z.triggerCount}`}</span>
-      </div>
-    </div>
-    ${statusBadge}
-  </div>
-  <div style="margin: 10px 0 0 0; width:100%; text-align:left; display:flex; flex-direction:column;">
-    <div style="font-size:20px; font-weight:700; letter-spacing: -0.02em;">${mainElapsedStr}</div>
-    ${countdownBadge}
-  </div>
-  `;
+ const displayNum = typeof index === 'number' ? index + 1 : (zones.findIndex(x => x.id === z.id) + 1);
+
+ return `
+ <div style="display:flex; justify-content:space-between; width:100%; align-items:flex-start; gap:6px;">
+ <div style="display:flex; align-items:flex-start; gap:8px;">
+ <span class="zone-id-tag" style="border-color:${z.color}; color:${z.color};"><span class="zone-num-sym">№</span>${displayNum}</span>
+ <div style="display:flex; flex-direction:column; align-items:flex-start; gap:2px;">
+ <span style="font-size:14px; font-weight:700; line-height:1.2;">${escapeHtml(z.name)}</span>
+ <div style="display:flex; align-items:center; gap:4px;">
+ <span style="width:6px;height:6px;border-radius:2px;background:${z.color};"></span>
+ <span style="font-size:10px; font-weight:600; color:var(--muted);">${z.active ? 'Активен' : `Визитов: ${z.triggerCount}`}</span>
+ </div>
+ </div>
+ </div>
+ ${statusBadge}
+ </div>
+ <div style="margin: 10px 0 0 0; width:100%; text-align:left; display:flex; flex-direction:column;">
+ <div style="font-size:20px; font-weight:700; letter-spacing: -0.02em;">${mainElapsedStr}</div>
+ ${countdownBadge}
+ </div>
+ `;
 }
 
 function hexToRgbStr(hex) {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
-  return m ? `${parseInt(m[1],16)}, ${parseInt(m[2],16)}, ${parseInt(m[3],16)}` : '79, 219, 200';
+ const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex || '');
+ return m ? `${parseInt(m[1],16)}, ${parseInt(m[2],16)}, ${parseInt(m[3],16)}` : '79, 219, 200';
 }
 
-function renderMultiCard(z) {
-  const card = document.createElement('div');
-  card.id = `multiCard_${z.id}`;
-  card.className = 'zone-card' + (z.occupants.length ? ' active' : '');
-  card.style.setProperty('--zc', z.color);
-  card.style.setProperty('--zc-rgb', hexToRgbStr(z.color));
-  card.innerHTML = multiCardInnerHTML(z);
-  return card;
+function renderMultiCard(z, index) {
+ const card = document.createElement('div');
+ card.id = `multiCard_${z.id}`;
+ card.className = 'zone-card' + (z.occupants.length ? ' active' : '');
+ card.style.setProperty('--zc', z.color);
+ card.style.setProperty('--zc-rgb', hexToRgbStr(z.color));
+ card.innerHTML = multiCardInnerHTML(z, index);
+ 
+ attachCardLongPress(card, z.id, null);
+ return card;
 }
 
-function multiCardInnerHTML(z) {
-  const now = Date.now();
-  const liveMs = z.occupants.reduce((sum, o) => sum + (now - o.startTime), 0);
-  const totalOccupiedMs = z.totalMs + liveMs;
-  const isBusy = z.occupants.length > 0;
-  
-  let groupBadge = '';
-  if (z.countdown && z.limitMs > 0 && z.multiLimitType === 'group' && isBusy) {
-    const earliest = Math.min(...z.occupants.map(o => o.startTime));
-    const left = Math.max(0, z.limitMs - (now - earliest));
-    groupBadge = `<span style="font-size:10px; font-weight:700; color:var(--warn); padding:2px 6px; border-radius:4px; background:rgba(251,191,36,0.15); margin-left:6px;">⏳ -${formatDuration(left)}</span>`;
-  }
+function multiCardInnerHTML(z, index) {
+ const now = Date.now();
+ const liveMs = z.occupants.reduce((sum, o) => sum + (now - o.startTime), 0);
+ const totalOccupiedMs = z.totalMs + liveMs;
+ const isBusy = z.occupants.length > 0;
+ 
+ let groupBadge = '';
+ if (z.countdown && z.limitMs > 0 && z.multiLimitType === 'group' && isBusy) {
+ const earliest = Math.min(...z.occupants.map(o => o.startTime));
+ const left = Math.max(0, z.limitMs - (now - earliest));
+ groupBadge = `<span style="font-size:10px; font-weight:700; color:var(--warn); padding:2px 6px; border-radius:4px; background:rgba(251,191,36,0.15); margin-left:6px;">⏳ -${formatDuration(left)}</span>`;
+ }
 
-  const statusBadge = isBusy
-    ? `<div style="display:flex; align-items:center;"><span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(${hexToRgbStr(z.color)},0.22); color:${z.color}; display:flex; align-items:center; gap:4px;"><span style="width:4px;height:4px;border-radius:2px;background:${z.color};" class="pulse-pip"></span> ЗАНЯТО · ${z.occupants.length}</span>${groupBadge}</div>`
-    : `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--surface); color:var(--muted); border:1px solid var(--border);">СВОБОДНО</span>`;
+ const statusBadge = isBusy
+ ? `<div style="display:flex; align-items:center;"><span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(${hexToRgbStr(z.color)},0.22); color:${z.color}; display:flex; align-items:center; gap:4px;"><span style="width:4px;height:4px;border-radius:2px;background:${z.color};" class="pulse-pip"></span> ЗАНЯТО · ${z.occupants.length}</span>${groupBadge}</div>`
+ : `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--surface); color:var(--muted); border:1px solid var(--border);">СВОБОДНО</span>`;
 
-  const occHtml = isBusy
-    ? z.occupants.map(o => {
-      let occTime = formatDuration(now - o.startTime);
-      if (z.countdown && z.limitMs > 0 && z.multiLimitType === 'individual') {
-        const left = Math.max(0, z.limitMs - (now - o.startTime));
-        occTime = formatDuration(now - o.startTime) + ` <span style="font-size:10px; opacity:0.8; color:var(--warn);">(-${formatDuration(left)})</span>`;
-      }
-      return `
-      <div style="display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:4px 4px 4px 10px; font-size:12px; font-weight:600;">
-        <span>№${o.localNum} · <b style="color:${z.color}; font-weight:700;">${occTime}</b></span>
-        <button class="danger-btn" onclick="event.stopPropagation(); multiDepart(${z.id}, ${o.localNum})" style="padding:4px 10px; font-size:11px; font-weight:700; border-radius:4px; margin:0; width:auto; box-shadow:none;">СТОП</button>
-      </div>`;
-    }).join('')
-    : `<span style="color:var(--muted); font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; opacity:0.8;">ПУСТО</span>`;
-    
-  return `
-  <div class="zone-card-head" style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:flex-start;">
-    <div style="display:flex; flex-direction:column; gap:4px;">
-      <span class="zone-card-title" style="font-size:15px; font-weight:700;">${escapeHtml(z.name)}</span>
-      <div style="display:flex; align-items:center; gap:4px;">
-        <span style="width:6px;height:6px;border-radius:2px;background:${z.color};"></span>
-        <span style="font-size:10px; font-weight:600; color:var(--muted);">Активно: <b style="color:var(--text);">${z.occupants.length}</b> | Всего визитов: ${z.triggerCount}</span>
-      </div>
-    </div>
-    ${statusBadge}
-  </div>
-  <div style="display:flex; justify-content:space-between; align-items:flex-end; margin: 6px 0 10px;">
-    <div>
-      <div style="font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:2px;">Занято всего</div>
-      <div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; color:${isBusy ? z.color : 'var(--text)'};">${formatDuration(totalOccupiedMs)}</div>
-    </div>
-    <button class="action-btn" onclick="multiArrive(${z.id})" style="width:auto; padding:6px 12px; font-size:12px; border-radius:6px;">+ Добавить</button>
-  </div>
-  <div style="display:flex; flex-wrap:wrap; gap:6px;">${occHtml}</div>`;
+ const occHtml = isBusy
+ ? z.occupants.map(o => {
+ let occTime = formatDuration(now - o.startTime);
+ if (z.countdown && z.limitMs > 0 && z.multiLimitType === 'individual') {
+ const left = Math.max(0, z.limitMs - (now - o.startTime));
+ occTime = formatDuration(now - o.startTime) + ` <span style="font-size:10px; opacity:0.8; color:var(--warn);">(-${formatDuration(left)})</span>`;
+ }
+ return `
+ <div style="display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:4px 4px 4px 10px; font-size:12px; font-weight:600;">
+ <span>№${o.localNum} · <b style="color:${z.color}; font-weight:700;">${occTime}</b></span>
+ <button class="danger-btn" onclick="event.stopPropagation(); multiDepart(${z.id}, ${o.localNum})" style="padding:4px 10px; font-size:11px; font-weight:700; border-radius:4px; margin:0; width:auto; box-shadow:none;">СТОП</button>
+ </div>`;
+ }).join('')
+ : `<span style="color:var(--muted); font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; opacity:0.8;">ПУСТО</span>`;
+ 
+ const displayNum = typeof index === 'number' ? index + 1 : (zones.findIndex(x => x.id === z.id) + 1);
+
+ return `
+ <div class="zone-card-head" style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:flex-start;">
+ <div style="display:flex; align-items:flex-start; gap:8px;">
+ <span class="zone-id-tag" style="border-color:${z.color}; color:${z.color};"><span class="zone-num-sym">№</span>${displayNum}</span>
+ <div style="display:flex; flex-direction:column; gap:2px;">
+ <span class="zone-card-title" style="font-size:15px; font-weight:700;">${escapeHtml(z.name)}</span>
+ <div style="display:flex; align-items:center; gap:4px;">
+ <span style="width:6px;height:6px;border-radius:2px;background:${z.color};"></span>
+ <span style="font-size:10px; font-weight:600; color:var(--muted);">Активно: <b style="color:var(--text);">${z.occupants.length}</b> | Всего: ${z.triggerCount}</span>
+ </div>
+ </div>
+ </div>
+ ${statusBadge}
+ </div>
+ <div style="display:flex; justify-content:space-between; align-items:flex-end; margin: 6px 0 10px;">
+ <div>
+ <div style="font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:2px;">Занято всего</div>
+ <div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; color:${isBusy ? z.color : 'var(--text)'};">${formatDuration(totalOccupiedMs)}</div>
+ </div>
+ <button class="group-add-btn" onclick="event.stopPropagation(); multiArrive(${z.id})"><i data-lucide="plus" style="width:12px;height:12px;"></i> Добавить</button>
+ </div>
+ <div style="display:flex; flex-wrap:wrap; gap:6px;">${occHtml}</div>`;
 }
 
 function renderSummaryBar() {
-  const bar = document.getElementById('summaryBar'); 
-  let totalMs = 0, activeCount = 0;
-  zones.forEach(z => {
-    totalMs += z.totalMs;
-    if (z.mode === 'single') { 
-      if (z.active) { totalMs += Date.now() - z.startTime; activeCount++; } 
-    } else { 
-      z.occupants.forEach(o => { totalMs += Date.now() - o.startTime; }); 
-      activeCount += z.occupants.length; 
-    }
-  });
+ const bar = document.getElementById('summaryBar'); 
+ let totalMs = 0, activeCount = 0;
+ zones.forEach(z => {
+ totalMs += z.totalMs;
+ if (z.mode === 'single') { 
+ if (z.active) { totalMs += Date.now() - z.startTime; activeCount++; } 
+ } else { 
+ z.occupants.forEach(o => { totalMs += Date.now() - o.startTime; }); 
+ activeCount += z.occupants.length; 
+ }
+ });
  
-  if (!bar.hasChildNodes()) {
-    bar.innerHTML = `
-    <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="layers" style="color:var(--accent); width:14px;"></i> <span>Элементов: <b id="sbZones">0</b></span></div>
-    <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="activity" style="color:var(--accent); width:14px;"></i> <span>Активно: <b id="sbActive">0</b></span></div>
-    <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="clock" style="color:var(--accent); width:14px;"></i> <span>Время: <b id="sbTime">0:00</b></span></div>
-    `;
-    updateIcons(bar);
-  }
+ if (!bar.hasChildNodes()) {
+ bar.innerHTML = `
+ <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="layers" style="color:var(--accent); width:14px;"></i> <span>Элементов: <b id="sbZones">0</b></span></div>
+ <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="activity" style="color:var(--accent); width:14px;"></i> <span>Активно: <b id="sbActive">0</b></span></div>
+ <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="clock" style="color:var(--accent); width:14px;"></i> <span>Время: <b id="sbTime">0:00</b></span></div>
+ `;
+ updateIcons(bar);
+ }
  
-  document.getElementById('sbZones').textContent = zones.length;
-  document.getElementById('sbActive').textContent = activeCount;
-  document.getElementById('sbTime').textContent = formatDuration(totalMs);
+ document.getElementById('sbZones').textContent = zones.length;
+ document.getElementById('sbActive').textContent = activeCount;
+ document.getElementById('sbTime').textContent = formatDuration(totalMs);
 }
 
 function checkCountdowns() {
-  const now = Date.now();
-  zones.forEach(z => {
-    if (!z.countdown || z.limitMs <= 0) return;
+ const now = Date.now();
+ zones.forEach(z => {
+ if (!z.countdown || z.limitMs <= 0) return;
  
-    if (z.mode === 'single' && z.active) {
-      const elapsed = now - z.startTime;
-      if (elapsed >= z.limitMs && !z.limitNotified) {
-        z.limitNotified = true;
-        executeLimitAction(z, null, now);
-      }
-    } else if (z.mode === 'multi' && z.occupants.length > 0) {
-      if (z.multiLimitType === 'group') {
-        const earliest = Math.min(...z.occupants.map(o => o.startTime));
-        if (now - earliest >= z.limitMs && !z.limitNotified) {
-          z.limitNotified = true;
-          executeLimitAction(z, null, now);
-        }
-      } else {
-        [...z.occupants].forEach(o => {
-          if (now - o.startTime >= z.limitMs && !o.limitNotified) {
-            o.limitNotified = true;
-            executeLimitAction(z, o, now);
-          }
-        });
-      }
-    }
-  });
+ if (z.mode === 'single' && z.active) {
+ const elapsed = now - z.startTime;
+ if (elapsed >= z.limitMs && !z.limitNotified) {
+ z.limitNotified = true;
+ executeLimitAction(z, null, now);
+ }
+ } else if (z.mode === 'multi' && z.occupants.length > 0) {
+ if (z.multiLimitType === 'group') {
+ const earliest = Math.min(...z.occupants.map(o => o.startTime));
+ if (now - earliest >= z.limitMs && !z.limitNotified) {
+ z.limitNotified = true;
+ executeLimitAction(z, null, now);
+ }
+ } else {
+ [...z.occupants].forEach(o => {
+ if (now - o.startTime >= z.limitMs && !o.limitNotified) {
+ o.limitNotified = true;
+ executeLimitAction(z, o, now);
+ }
+ });
+ }
+ }
+ });
 }
 
 function executeLimitAction(z, occupant, now) {
-  playAlarm();
-  const targetName = occupant ? `№${occupant.localNum} в «${z.name}»` : `«${z.name}»`;
+ playAlarm();
+ const targetName = occupant ? `№${occupant.localNum} в «${z.name}»` : `«${z.name}»`;
  
-  if (z.limitAction === 'alert') {
-    showToast(`Время вышло: ${targetName}!`, true);
-  } else if (z.limitAction === 'stop') {
-    showToast(`Авто-стоп: ${targetName}`, true);
-    if (z.mode === 'single') {
-      forceOffSingle(z, now);
-      renderSummaryBar();
-      const el = document.getElementById(`singleBtn_${z.id}`);
-      if (el) el.innerHTML = singleInnerHTML(z);
-    } else {
-      if (occupant) {
-        multiDepart(z.id, occupant.localNum, {skipConfirm: true});
-      } else {
-        [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, {skipConfirm: true}));
-      }
-    }
-  }
+ if (z.limitAction === 'alert') {
+ showToast(`Время вышло: ${targetName}!`, true);
+ } else if (z.limitAction === 'stop') {
+ showToast(`Авто-стоп: ${targetName}`, true);
+ if (z.mode === 'single') {
+ forceOffSingle(z, now);
+ renderSummaryBar();
+ const el = document.getElementById(`singleBtn_${z.id}`);
+ if (el) el.innerHTML = singleInnerHTML(z);
+ } else {
+ if (occupant) {
+ multiDepart(z.id, occupant.localNum, {skipConfirm: true});
+ } else {
+ [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, {skipConfirm: true}));
+ }
+ }
+ }
 }
 
 function startTicker() {
-  if (tickHandle) clearInterval(tickHandle);
-  tickHandle = setInterval(() => {
-    if (document.getElementById('step3').classList.contains('hidden')) return; 
-    checkCountdowns();
-    zones.forEach(z => {
-      if (z.mode === 'single') { 
-        if (z.active) { 
-          const el = document.getElementById(`singleBtn_${z.id}`); 
-          if (el) el.innerHTML = singleInnerHTML(z); 
-        } 
-      } else { 
-        const card = document.getElementById(`multiCard_${z.id}`); 
-        if (card && z.occupants.length) { 
-          card.innerHTML = multiCardInnerHTML(z); 
-        } 
-      }
-    });
-    renderSummaryBar(); 
-  }, 1000);
+ if (tickHandle) clearInterval(tickHandle);
+ tickHandle = setInterval(() => {
+ if (document.getElementById('step3').classList.contains('hidden')) return; 
+ checkCountdowns();
+ zones.forEach((z, index) => {
+ if (z.mode === 'single') { 
+ if (z.active) { 
+ const el = document.getElementById(`singleBtn_${z.id}`); 
+ if (el) el.innerHTML = singleInnerHTML(z, index); 
+ } 
+ } else { 
+ const card = document.getElementById(`multiCard_${z.id}`); 
+ if (card && z.occupants.length) { 
+ card.innerHTML = multiCardInnerHTML(z, index); 
+ } 
+ }
+ });
+ renderSummaryBar(); 
+ }, 1000);
 }
 
 /* --- Логика Управления таймерами --- */
 const LONG_TIMER_CONFIRM_MS = 30 * 60 * 1000; 
 
 async function toggleSingle(id) {
-  const z = zones.find(x => x.id === id); 
-  if (!z) return; 
-  const now = Date.now();
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
+ const now = Date.now();
  
-  if (!z.active && z.countdown && z.limitMs <= 0) {
-    openTimerSettings(id);
-    highlightTimeErrors();
-    showToast('Задайте время таймера!', true);
-    return;
-  }
+ if (!z.active && z.countdown && z.limitMs <= 0) {
+ openTimerSettings(id);
+ highlightTimeErrors();
+ showToast('Задайте время таймера!', true);
+ return;
+ }
 
-  if (z.active) {
-    const elapsed = now - z.startTime;
-    if (elapsed > LONG_TIMER_CONFIRM_MS && !(await customConfirm(`«${escapeHtml(z.name)}» работает уже ${formatDuration(elapsed)}.<br>Остановить?`, 'Остановить'))) return;
-  }
-  
-  saveStateForUndo();
-  if (!z.active) { 
-    z.active = true; 
-    z.triggerCount++; 
-    z.startTime = now; 
-    z.limitNotified = false; 
-    fireWebhook({ event: 'start', zoneId: z.id, zoneName: z.name }); 
-  } else { 
-    forceOffSingle(z, now); 
-  }
+ if (z.active) {
+ const elapsed = now - z.startTime;
+ if (elapsed > LONG_TIMER_CONFIRM_MS && !(await customConfirm(`«${escapeHtml(z.name)}» работает уже ${formatDuration(elapsed)}.<br>Остановить?`, 'Остановить'))) return;
+ }
  
-  const el = document.getElementById(`singleBtn_${id}`); 
-  if (el) {
-    el.className = 'tracker-btn' + (z.active ? ' active' : ''); 
-    el.innerHTML = singleInnerHTML(z);
-  }
-  haptic(15, z.active ? 'start' : 'stop'); 
-  renderSummaryBar(); 
-  persistSession(); 
-  refreshWakeLock();
+ saveStateForUndo();
+ const idx = zones.findIndex(x => x.id === z.id);
+ if (!z.active) { 
+ z.active = true; 
+ z.triggerCount++; 
+ z.startTime = now; 
+ z.limitNotified = false; 
+ fireWebhook({ event: 'start', zoneId: z.id, zoneName: z.name, panelNum: idx + 1 }); 
+ } else { 
+ forceOffSingle(z, now); 
+ }
+ 
+ const el = document.getElementById(`singleBtn_${id}`); 
+ if (el) {
+ el.className = 'tracker-btn' + (z.active ? ' active' : ''); 
+ el.innerHTML = singleInnerHTML(z, idx);
+ }
+ haptic(15, z.active ? 'start' : 'stop'); 
+ renderSummaryBar(); 
+ persistSession(); 
+ refreshWakeLock();
 }
 
 function forceOffSingle(z, offTime = Date.now()) {
-  if (!z.active) return; 
-  const durationMs = offTime - z.startTime; 
-  z.active = false; 
-  z.totalMs += durationMs;
-  fireWebhook({ event: 'stop', zoneId: z.id, zoneName: z.name, durationMs: durationMs });
-  const entry = { id: logIdCounter++, type: 'event', name: z.name, num: z.triggerCount, onTime: formatTime(z.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs) };
-  logs.push(entry); 
-  prependTableRow(entry);
+ if (!z.active) return; 
+ const durationMs = offTime - z.startTime; 
+ z.active = false; 
+ z.totalMs += durationMs;
+ const idx = zones.findIndex(x => x.id === z.id);
+ fireWebhook({ event: 'stop', zoneId: z.id, zoneName: z.name, panelNum: idx + 1, durationMs: durationMs });
+ const entry = { id: logIdCounter++, type: 'event', name: z.name, zoneNum: idx + 1, num: z.triggerCount, onTime: formatTime(z.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs) };
+ logs.push(entry); 
+ prependTableRow(entry);
 }
 
 function multiArrive(id) {
-  const z = zones.find(x => x.id === id); 
-  if (!z) return; 
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
 
-  if (z.countdown && z.limitMs <= 0) {
-    openTimerSettings(id);
-    highlightTimeErrors();
-    showToast('Задайте время таймера!', true);
-    return;
-  }
+ if (z.countdown && z.limitMs <= 0) {
+ openTimerSettings(id);
+ highlightTimeErrors();
+ showToast('Задайте время таймера!', true);
+ return;
+ }
 
-  saveStateForUndo(); 
-  const localNum = z.nextLocalNum++; 
-  if (z.occupants.length === 0) z.limitNotified = false;
-  z.occupants.push({ localNum: localNum, startTime: Date.now(), limitNotified: false });
-  fireWebhook({ event: 'arrive', zoneId: z.id, zoneName: z.name, localNum: localNum }); 
-  haptic(15, 'start'); 
-  refreshMultiCard(z); 
-  renderSummaryBar(); 
-  persistSession(); 
-  refreshWakeLock();
+ saveStateForUndo(); 
+ const localNum = z.nextLocalNum++; 
+ if (z.occupants.length === 0) z.limitNotified = false;
+ z.occupants.push({ localNum: localNum, startTime: Date.now(), limitNotified: false });
+ const idx = zones.findIndex(x => x.id === z.id);
+ fireWebhook({ event: 'arrive', zoneId: z.id, zoneName: z.name, panelNum: idx + 1, localNum: localNum }); 
+ haptic(15, 'start'); 
+ refreshMultiCard(z); 
+ renderSummaryBar(); 
+ persistSession(); 
+ refreshWakeLock();
 }
 
 async function multiDepart(id, localNum, opts = {}) {
-  const z = zones.find(x => x.id === id); 
-  if (!z) return;
-  const idx = z.occupants.findIndex(o => o.localNum === localNum); 
-  if (idx === -1) return;
-  const occ = z.occupants[idx]; 
-  const offTime = Date.now(); 
-  const durationMs = offTime - occ.startTime;
-  if (!opts.skipConfirm && durationMs > LONG_TIMER_CONFIRM_MS && !(await customConfirm(`№${localNum} в «${escapeHtml(z.name)}» уже ${formatDuration(durationMs)}.<br>Остановить?`, 'Стоп'))) return;
-  saveStateForUndo(); 
-  z.occupants.splice(idx, 1); 
-  z.triggerCount++; 
-  z.totalMs += durationMs;
-  fireWebhook({ event: 'depart', zoneId: z.id, zoneName: z.name, localNum: localNum, durationMs: durationMs });
-  const entry = { id: logIdCounter++, type: 'event', name: z.name, num: localNum, onTime: formatTime(occ.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs) };
-  logs.push(entry); 
-  prependTableRow(entry); 
-  haptic(15, 'stop'); 
-  refreshMultiCard(z); 
-  renderSummaryBar(); 
-  persistSession(); 
-  refreshWakeLock();
+ const z = zones.find(x => x.id === id); 
+ if (!z) return;
+ const idx = z.occupants.findIndex(o => o.localNum === localNum); 
+ if (idx === -1) return;
+ const occ = z.occupants[idx]; 
+ const offTime = Date.now(); 
+ const durationMs = offTime - occ.startTime;
+ if (!opts.skipConfirm && durationMs > LONG_TIMER_CONFIRM_MS && !(await customConfirm(`№${localNum} в «${escapeHtml(z.name)}» уже ${formatDuration(durationMs)}.<br>Остановить?`, 'Стоп'))) return;
+ saveStateForUndo(); 
+ z.occupants.splice(idx, 1); 
+ z.triggerCount++; 
+ z.totalMs += durationMs;
+ const zIdx = zones.findIndex(x => x.id === z.id);
+ fireWebhook({ event: 'depart', zoneId: z.id, zoneName: z.name, panelNum: zIdx + 1, localNum: localNum, durationMs: durationMs });
+ const entry = { id: logIdCounter++, type: 'event', name: z.name, zoneNum: zIdx + 1, num: localNum, onTime: formatTime(occ.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs) };
+ logs.push(entry); 
+ prependTableRow(entry); 
+ haptic(15, 'stop'); 
+ refreshMultiCard(z); 
+ renderSummaryBar(); 
+ persistSession(); 
+ refreshWakeLock();
 }
 
 function refreshMultiCard(z) { 
-  const card = document.getElementById(`multiCard_${z.id}`); 
-  if (card) { 
-    card.className = 'zone-card' + (z.occupants.length ? ' active' : ''); 
-    card.innerHTML = multiCardInnerHTML(z); 
-  } 
+ const card = document.getElementById(`multiCard_${z.id}`); 
+ if (card) { 
+ const idx = zones.findIndex(x => x.id === z.id);
+ card.className = 'zone-card' + (z.occupants.length ? ' active' : ''); 
+ card.innerHTML = multiCardInnerHTML(z, idx); 
+ updateIcons(card);
+ } 
 }
 
 /* --- Настройки отсчёта в Ч : М : С --- */
 let editingTsId = null;
 
 function msToHMS(ms) {
-  if (!ms || ms <= 0) return { h: 0, m: 0, s: 0 };
-  const totalSeconds = Math.floor(ms / 1000);
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = totalSeconds % 60;
-  return { h, m, s };
+ if (!ms || ms <= 0) return { h: 0, m: 0, s: 0 };
+ const totalSeconds = Math.floor(ms / 1000);
+ const h = Math.floor(totalSeconds / 3600);
+ const m = Math.floor((totalSeconds % 3600) / 60);
+ const s = totalSeconds % 60;
+ return { h, m, s };
 }
 
 function openTimerSettings(id) {
-  const z = zones.find(x => x.id === id); 
-  if (!z) return;
-  editingTsId = id;
-  clearTimeErrors();
+ const z = zones.find(x => x.id === id); 
+ if (!z) return;
+ editingTsId = id;
+ clearTimeErrors();
  
-  document.querySelector(`input[name="tsCountdown"][value="${z.countdown ? 'true' : 'false'}"]`).checked = true;
+ document.querySelector(`input[name="tsCountdown"][value="${z.countdown ? 'true' : 'false'}"]`).checked = true;
  
-  const { h, m, s } = msToHMS(z.limitMs);
-  document.getElementById('tsHours').value = String(h).padStart(2, '0');
-  document.getElementById('tsMinutes').value = String(m).padStart(2, '0');
-  document.getElementById('tsSeconds').value = String(s).padStart(2, '0');
+ const { h, m, s } = msToHMS(z.limitMs);
+ document.getElementById('tsHours').value = String(h).padStart(2, '0');
+ document.getElementById('tsMinutes').value = String(m).padStart(2, '0');
+ document.getElementById('tsSeconds').value = String(s).padStart(2, '0');
  
-  document.querySelector(`input[name="tsAction"][value="${z.limitAction || 'alert'}"]`).checked = true;
-  document.querySelector(`input[name="tsMultiType"][value="${z.multiLimitType || 'individual'}"]`).checked = true;
+ document.querySelector(`input[name="tsAction"][value="${z.limitAction || 'alert'}"]`).checked = true;
+ document.querySelector(`input[name="tsMultiType"][value="${z.multiLimitType || 'individual'}"]`).checked = true;
  
-  document.getElementById('tsMultiArea').classList.toggle('hidden', z.mode !== 'multi');
-  toggleTsCountdown(z.countdown);
+ document.getElementById('tsMultiArea').classList.toggle('hidden', z.mode !== 'multi');
+ toggleTsCountdown(z.countdown);
  
-  showModal('timerSettingsModal');
+ showModal('timerSettingsModal');
 }
 
 function toggleTsCountdown(isCountdown) {
-  document.getElementById('tsSettingsArea').classList.toggle('hidden', !isCountdown);
-  if (!isCountdown) clearTimeErrors();
+ document.getElementById('tsSettingsArea').classList.toggle('hidden', !isCountdown);
+ if (!isCountdown) clearTimeErrors();
 }
 
 function formatTimeInput(input) {
-  let val = parseInt(input.value) || 0;
-  if (val < 0) val = 0;
-  const max = parseInt(input.max) || 99;
-  if (val > max) val = max;
-  input.value = String(val).padStart(2, '0');
+ let val = parseInt(input.value) || 0;
+ if (val < 0) val = 0;
+ const max = parseInt(input.max) || 99;
+ if (val > max) val = max;
+ input.value = String(val).padStart(2, '0');
 }
 
 function clearTimeErrors() {
-  ['tsHours', 'tsMinutes', 'tsSeconds'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.remove('input-error');
-  });
+ ['tsHours', 'tsMinutes', 'tsSeconds'].forEach(id => {
+ const el = document.getElementById(id);
+ if (el) el.classList.remove('input-error');
+ });
 }
 
 function highlightTimeErrors() {
-  ['tsHours', 'tsMinutes', 'tsSeconds'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.add('input-error');
-  });
+ ['tsHours', 'tsMinutes', 'tsSeconds'].forEach(id => {
+ const el = document.getElementById(id);
+ if (el) el.classList.add('input-error');
+ });
 }
 
 function saveTimerSettings() {
-  const z = zones.find(x => x.id === editingTsId); 
-  if (!z) return;
+ const z = zones.find(x => x.id === editingTsId); 
+ if (!z) return;
  
-  const isCountdown = document.querySelector('input[name="tsCountdown"]:checked').value === 'true';
-  const h = parseInt(document.getElementById('tsHours').value) || 0;
-  const m = parseInt(document.getElementById('tsMinutes').value) || 0;
-  const s = parseInt(document.getElementById('tsSeconds').value) || 0;
-  const totalMs = (h * 3600 + m * 60 + s) * 1000;
+ const isCountdown = document.querySelector('input[name="tsCountdown"]:checked').value === 'true';
+ const h = parseInt(document.getElementById('tsHours').value) || 0;
+ const m = parseInt(document.getElementById('tsMinutes').value) || 0;
+ const s = parseInt(document.getElementById('tsSeconds').value) || 0;
+ const totalMs = (h * 3600 + m * 60 + s) * 1000;
 
-  if (isCountdown && totalMs <= 0) {
-    highlightTimeErrors();
-    showToast('Задайте время таймера больше 0!', true);
-    return;
-  }
+ if (isCountdown && totalMs <= 0) {
+ highlightTimeErrors();
+ showToast('Задайте время таймера больше 0!', true);
+ return;
+ }
 
-  saveStateForUndo();
-  z.countdown = isCountdown;
-  z.limitMs = isCountdown ? totalMs : 0;
-  z.limitAction = document.querySelector('input[name="tsAction"]:checked').value;
-  z.multiLimitType = document.querySelector('input[name="tsMultiType"]:checked').value;
+ saveStateForUndo();
+ z.countdown = isCountdown;
+ z.limitMs = isCountdown ? totalMs : 0;
+ z.limitAction = document.querySelector('input[name="tsAction"]:checked').value;
+ z.multiLimitType = document.querySelector('input[name="tsMultiType"]:checked').value;
  
-  z.limitNotified = false;
-  z.occupants.forEach(o => o.limitNotified = false);
+ z.limitNotified = false;
+ z.occupants.forEach(o => o.limitNotified = false);
  
-  persistSession(); 
-  if (!document.getElementById('editStep').classList.contains('hidden')) {
-    renderEditList();
-  } else {
-    renderMainPanel();
-  }
-  closeModals(); 
-  showToast('Настройки сохранены');
+ persistSession(); 
+ if (!document.getElementById('editStep').classList.contains('hidden')) {
+ renderEditList();
+ } else {
+ renderMainPanel();
+ }
+ closeModals(); 
+ showToast('Настройки сохранены');
 }
 
 /* =========================================================
-   ЛОГИКА КНОПКИ-БАБЛ (СКВЕРКЛ), МЕНЮ И ПЕРЕТАСКИВАНИЯ
-   ========================================================= */
+ ЛОГИКА КНОПКИ-БАБЛ (СКВЕРКЛ), МЕНЮ И ПЕРЕТАСКИВАНИЯ
+ ========================================================= */
 let isBubbleMenuOpen = false;
 let isHoldingBubble = false;
 let bubbleHoldTimer = null;
@@ -2657,1081 +2554,1231 @@ let isDraggingBubble = false;
 let currentBubbleCoords = null;
 
 function getDefaultBubbleCoords() {
-  const maxX = window.innerWidth - 72;
-  const maxY = window.innerHeight - 100;
-  return {
-    x: Math.max(10, maxX),
-    y: Math.max(60, maxY)
-  };
+ const maxX = window.innerWidth - 72;
+ const maxY = window.innerHeight - 100;
+ return {
+ x: Math.max(10, maxX),
+ y: Math.max(60, maxY)
+ };
 }
 
 function initBubblePosition() {
-  const saved = localStorage.getItem(BUBBLE_POS_KEY);
-  if (saved) {
-    try {
-      const pos = JSON.parse(saved);
-      if (typeof pos.x === 'number' && typeof pos.y === 'number' && pos.x > 0 && pos.y > 0) {
-        currentBubbleCoords = { x: pos.x, y: pos.y };
-        applyBubblePosition(pos.x, pos.y);
-        return;
-      }
-    } catch(e) {}
-  }
-  currentBubbleCoords = getDefaultBubbleCoords();
-  applyBubblePosition(currentBubbleCoords.x, currentBubbleCoords.y);
+ const saved = localStorage.getItem(BUBBLE_POS_KEY);
+ if (saved) {
+ try {
+ const pos = JSON.parse(saved);
+ if (typeof pos.x === 'number' && typeof pos.y === 'number' && pos.x > 0 && pos.y > 0) {
+ currentBubbleCoords = { x: pos.x, y: pos.y };
+ applyBubblePosition(pos.x, pos.y);
+ return;
+ }
+ } catch(e) {}
+ }
+ currentBubbleCoords = getDefaultBubbleCoords();
+ applyBubblePosition(currentBubbleCoords.x, currentBubbleCoords.y);
 }
 
 function applyBubblePosition(x, y) {
-  const bubbleContainer = document.getElementById('bubbleContainer');
-  if (!bubbleContainer) return;
+ const bubbleContainer = document.getElementById('bubbleContainer');
+ if (!bubbleContainer) return;
  
-  const maxX = window.innerWidth - 66;
-  const maxY = window.innerHeight - 66;
-  const clampedX = Math.max(10, Math.min(x, maxX));
-  const clampedY = Math.max(50, Math.min(y, maxY));
+ const maxX = window.innerWidth - 66;
+ const maxY = window.innerHeight - 66;
+ const clampedX = Math.max(10, Math.min(x, maxX));
+ const clampedY = Math.max(50, Math.min(y, maxY));
  
-  currentBubbleCoords = { x: clampedX, y: clampedY };
+ currentBubbleCoords = { x: clampedX, y: clampedY };
  
-  bubbleContainer.style.left = clampedX + 'px';
-  bubbleContainer.style.top = clampedY + 'px';
-  bubbleContainer.style.bottom = 'auto';
-  bubbleContainer.style.right = 'auto';
-  positionBubbleMenu();
+ bubbleContainer.style.left = clampedX + 'px';
+ bubbleContainer.style.top = clampedY + 'px';
+ bubbleContainer.style.bottom = 'auto';
+ bubbleContainer.style.right = 'auto';
+ positionBubbleMenu();
 }
 
 function saveBubblePosition(x, y) {
-  const maxX = window.innerWidth - 66;
-  const maxY = window.innerHeight - 66;
-  const clampedX = Math.max(10, Math.min(x, maxX));
-  const clampedY = Math.max(50, Math.min(y, maxY));
-  currentBubbleCoords = { x: clampedX, y: clampedY };
-  localStorage.setItem(BUBBLE_POS_KEY, JSON.stringify(currentBubbleCoords));
+ const maxX = window.innerWidth - 66;
+ const maxY = window.innerHeight - 66;
+ const clampedX = Math.max(10, Math.min(x, maxX));
+ const clampedY = Math.max(50, Math.min(y, maxY));
+ currentBubbleCoords = { x: clampedX, y: clampedY };
+ localStorage.setItem(BUBBLE_POS_KEY, JSON.stringify(currentBubbleCoords));
 }
 
 function positionBubbleMenu() {
-  const bubbleContainer = document.getElementById('bubbleContainer');
-  const menu = document.getElementById('bubbleMenu');
-  if (!bubbleContainer || !menu || !currentBubbleCoords) return;
+ const bubbleContainer = document.getElementById('bubbleContainer');
+ const menu = document.getElementById('bubbleMenu');
+ if (!bubbleContainer || !menu || !currentBubbleCoords) return;
  
-  const x = currentBubbleCoords.x;
-  const y = currentBubbleCoords.y;
+ const x = currentBubbleCoords.x;
+ const y = currentBubbleCoords.y;
  
-  if (y > window.innerHeight - 260) {
-    menu.style.bottom = '64px';
-    menu.style.top = 'auto';
-  } else {
-    menu.style.top = '64px';
-    menu.style.bottom = 'auto';
-  }
+ if (y > window.innerHeight - 260) {
+ menu.style.bottom = '64px';
+ menu.style.top = 'auto';
+ } else {
+ menu.style.top = '64px';
+ menu.style.bottom = 'auto';
+ }
  
-  if (x > window.innerWidth - 270) {
-    menu.style.right = '0px';
-    menu.style.left = 'auto';
-  } else {
-    menu.style.left = '0px';
-    menu.style.right = 'auto';
-  }
+ if (x > window.innerWidth - 270) {
+ menu.style.right = '0px';
+ menu.style.left = 'auto';
+ } else {
+ menu.style.left = '0px';
+ menu.style.right = 'auto';
+ }
 }
 
 function toggleBubbleMenu(forceState) {
-  const menu = document.getElementById('bubbleMenu');
-  isBubbleMenuOpen = (typeof forceState === 'boolean') ? forceState : menu.classList.contains('hidden');
-  if (isBubbleMenuOpen) {
-    positionBubbleMenu();
-    updateUndoRedoButtons();
-    menu.classList.remove('hidden');
-  } else {
-    menu.classList.add('hidden');
-  }
+ const menu = document.getElementById('bubbleMenu');
+ isBubbleMenuOpen = (typeof forceState === 'boolean') ? forceState : menu.classList.contains('hidden');
+ if (isBubbleMenuOpen) {
+ positionBubbleMenu();
+ updateUndoRedoButtons();
+ menu.classList.remove('hidden');
+ } else {
+ menu.classList.add('hidden');
+ }
 }
 
 function handleBubbleEdit() {
-  toggleBubbleMenu(false);
-  enterEditMode();
+ toggleBubbleMenu(false);
+ enterEditMode();
 }
 
 function handleBubbleNote() {
-  toggleBubbleMenu(false);
-  openNoteModal();
+ toggleBubbleMenu(false);
+ selectedZoneIdForNote = null;
+ openNoteModal();
 }
 
 function isEditScreenActive() {
-  const editStep = document.getElementById('editStep');
-  return editStep && !editStep.classList.contains('hidden');
+ const editStep = document.getElementById('editStep');
+ return editStep && !editStep.classList.contains('hidden');
 }
 
 function updateBubbleMode() {
-  const btn = document.getElementById('bubbleBtn');
-  const dragBadge = document.getElementById('bubbleDragBadge');
-  const mainIcon = document.getElementById('bubbleMainIcon');
-  const dragIcon = document.getElementById('bubbleDragIcon');
-  const container = document.getElementById('bubbleContainer');
-  const inEdit = isEditScreenActive();
+ const btn = document.getElementById('bubbleBtn');
+ const dragBadge = document.getElementById('bubbleDragBadge');
+ const mainIcon = document.getElementById('bubbleMainIcon');
+ const dragIcon = document.getElementById('bubbleDragIcon');
+ const container = document.getElementById('bubbleContainer');
+ const inEdit = isEditScreenActive();
  
-  const resumeStep = document.getElementById('stepResume');
-  const isResume = resumeStep && !resumeStep.classList.contains('hidden');
-  const anyModal = isAnyModalOpen();
+ const resumeStep = document.getElementById('stepResume');
+ const isResume = resumeStep && !resumeStep.classList.contains('hidden');
+ const anyModal = isAnyModalOpen();
  
-  if (container) {
-    if (isResume || anyModal) {
-      container.classList.add('hidden');
-      toggleBubbleMenu(false);
-    } else {
-      container.classList.remove('hidden');
-    }
-  }
+ if (container) {
+ if (isResume || anyModal) {
+ container.classList.add('hidden');
+ toggleBubbleMenu(false);
+ } else {
+ container.classList.remove('hidden');
+ }
+ }
  
-  if (btn) btn.classList.toggle('drag-mode', inEdit);
-  if (dragBadge) dragBadge.classList.toggle('hidden', !inEdit);
-  if (inEdit) {
-    if (mainIcon) mainIcon.classList.add('hidden');
-    if (dragIcon) dragIcon.classList.remove('hidden');
-  } else {
-    if (mainIcon) mainIcon.classList.remove('hidden');
-    if (dragIcon) dragIcon.classList.add('hidden');
-  }
+ if (btn) btn.classList.toggle('drag-mode', inEdit);
+ if (dragBadge) dragBadge.classList.toggle('hidden', !inEdit);
+ if (inEdit) {
+ if (mainIcon) mainIcon.classList.add('hidden');
+ if (dragIcon) dragIcon.classList.remove('hidden');
+ } else {
+ if (mainIcon) mainIcon.classList.remove('hidden');
+ if (dragIcon) dragIcon.classList.add('hidden');
+ }
 }
 
 const bubbleBtn = document.getElementById('bubbleBtn');
 
 bubbleBtn.addEventListener('pointerdown', (e) => {
-  e.preventDefault();
-  bubblePointerStart = { x: e.clientX, y: e.clientY };
+ e.preventDefault();
+ bubblePointerStart = { x: e.clientX, y: e.clientY };
  
-  if (!currentBubbleCoords) {
-    currentBubbleCoords = getDefaultBubbleCoords();
-  }
-  bubbleStartPos = { x: currentBubbleCoords.x, y: currentBubbleCoords.y };
+ if (!currentBubbleCoords) {
+ currentBubbleCoords = getDefaultBubbleCoords();
+ }
+ bubbleStartPos = { x: currentBubbleCoords.x, y: currentBubbleCoords.y };
  
-  hasMovedBubble = false;
-  isDraggingBubble = false;
-  isHoldingBubble = false;
+ hasMovedBubble = false;
+ isDraggingBubble = false;
+ isHoldingBubble = false;
  
-  if (isEditScreenActive()) {
-    isDraggingBubble = true;
-    bubbleBtn.setPointerCapture(e.pointerId);
-  } else {
-    bubbleBtn.classList.add('holding');
-    bubbleHoldTimer = setTimeout(() => {
-      isHoldingBubble = true;
-      bubbleBtn.classList.remove('holding');
-      haptic(30, 'start');
-      triggerVoiceNoteFromBubble();
-    }, 500);
-    bubbleBtn.setPointerCapture(e.pointerId);
-  }
+ if (isEditScreenActive()) {
+ isDraggingBubble = true;
+ bubbleBtn.setPointerCapture(e.pointerId);
+ } else {
+ bubbleBtn.classList.add('holding');
+ bubbleHoldTimer = setTimeout(() => {
+ isHoldingBubble = true;
+ bubbleBtn.classList.remove('holding');
+ haptic(30, 'start');
+ triggerVoiceNoteFromBubble();
+ }, 500);
+ bubbleBtn.setPointerCapture(e.pointerId);
+ }
 });
 
 bubbleBtn.addEventListener('pointermove', (e) => {
-  const dx = e.clientX - bubblePointerStart.x;
-  const dy = e.clientY - bubblePointerStart.y;
-  if (Math.hypot(dx, dy) > 8) {
-    hasMovedBubble = true;
-    if (bubbleHoldTimer) {
-      clearTimeout(bubbleHoldTimer);
-      bubbleHoldTimer = null;
-      bubbleBtn.classList.remove('holding');
-    }
-  }
+ const dx = e.clientX - bubblePointerStart.x;
+ const dy = e.clientY - bubblePointerStart.y;
+ if (Math.hypot(dx, dy) > 8) {
+ hasMovedBubble = true;
+ if (bubbleHoldTimer) {
+ clearTimeout(bubbleHoldTimer);
+ bubbleHoldTimer = null;
+ bubbleBtn.classList.remove('holding');
+ }
+ }
  
-  if (isDraggingBubble) {
-    applyBubblePosition(bubbleStartPos.x + dx, bubbleStartPos.y + dy);
-  }
+ if (isDraggingBubble) {
+ applyBubblePosition(bubbleStartPos.x + dx, bubbleStartPos.y + dy);
+ }
 });
 
 function endBubblePointer(e) {
-  if (bubbleHoldTimer) {
-    clearTimeout(bubbleHoldTimer);
-    bubbleHoldTimer = null;
-    bubbleBtn.classList.remove('holding');
-  }
+ if (bubbleHoldTimer) {
+ clearTimeout(bubbleHoldTimer);
+ bubbleHoldTimer = null;
+ bubbleBtn.classList.remove('holding');
+ }
  
-  if (isDraggingBubble) {
-    isDraggingBubble = false;
-    if (currentBubbleCoords) {
-      saveBubblePosition(currentBubbleCoords.x, currentBubbleCoords.y);
-    }
-    if (hasMovedBubble) {
-      showToast('Позиция кнопки сохранена');
-    }
-  } else if (!isHoldingBubble && !hasMovedBubble) {
-    toggleBubbleMenu();
-  }
-  isHoldingBubble = false;
+ if (isDraggingBubble) {
+ isDraggingBubble = false;
+ if (currentBubbleCoords) {
+ saveBubblePosition(currentBubbleCoords.x, currentBubbleCoords.y);
+ }
+ if (hasMovedBubble) {
+ showToast('Позиция кнопки сохранена');
+ }
+ } else if (!isHoldingBubble && !hasMovedBubble) {
+ toggleBubbleMenu();
+ }
+ isHoldingBubble = false;
 }
 
 bubbleBtn.addEventListener('pointerup', endBubblePointer);
 bubbleBtn.addEventListener('pointercancel', endBubblePointer);
 
 document.addEventListener('pointerdown', (e) => {
-  const container = document.getElementById('bubbleContainer');
-  if (isBubbleMenuOpen && !container.contains(e.target)) {
-    toggleBubbleMenu(false);
-  }
+ const container = document.getElementById('bubbleContainer');
+ if (isBubbleMenuOpen && !container.contains(e.target)) {
+ toggleBubbleMenu(false);
+ }
 });
 
 window.addEventListener('resize', () => {
-  if (currentBubbleCoords && currentBubbleCoords.x > 0 && currentBubbleCoords.y > 0) {
-    applyBubblePosition(currentBubbleCoords.x, currentBubbleCoords.y);
-  }
+ if (currentBubbleCoords && currentBubbleCoords.x > 0 && currentBubbleCoords.y > 0) {
+ applyBubblePosition(currentBubbleCoords.x, currentBubbleCoords.y);
+ }
 });
 
 /* --- Редактор элементов (Конструктор) --- */
 function enterEditMode() { 
-  closeModals(); 
-  document.getElementById('step3').classList.add('hidden'); 
-  document.getElementById('editStep').classList.remove('hidden'); 
-  document.getElementById('editStep').classList.add('fade-in'); 
-  renderEditList(); 
-  updateBubbleMode();
-  showToast('Режим конструктора: элементы на сетке');
+ closeModals(); 
+ document.getElementById('step3').classList.add('hidden'); 
+ document.getElementById('editStep').classList.remove('hidden'); 
+ document.getElementById('editStep').classList.add('fade-in'); 
+ renderEditList(); 
+ updateBubbleMode(); 
+ showToast('Режим конструктора: элементы на сетке');
 }
 
 function exitEditMode() {
-  if (zones.length === 0) { showToast('Добавьте хотя бы один элемент!', true); return; }
-  document.getElementById('editStep').classList.add('hidden'); 
-  document.getElementById('step3').classList.remove('hidden'); 
-  document.getElementById('step3').classList.add('fade-in');
-  renderMainPanel(); 
-  startTicker(); 
-  persistSession(); 
-  updateBubbleMode();
+ if (zones.length === 0) { showToast('Добавьте хотя бы один элемент!', true); return; }
+ document.getElementById('editStep').classList.add('hidden'); 
+ document.getElementById('step3').classList.remove('hidden'); 
+ document.getElementById('step3').classList.add('fade-in');
+ renderMainPanel(); 
+ startTicker(); 
+ persistSession(); 
+ updateBubbleMode();
 }
 
 function commitRename(id, val) { 
-  const z = zones.find(x => x.id === id); 
-  if (!z) return; 
-  const trimmed = (val || '').trim(); 
-  if (trimmed && z.name !== trimmed) { 
-    saveStateForUndo(); 
-    z.name = trimmed; 
-    persistSession(); 
-  } 
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
+ const trimmed = (val || '').trim(); 
+ if (trimmed && z.name !== trimmed) { 
+ saveStateForUndo(); 
+ z.name = trimmed; 
+ persistSession(); 
+ } 
 }
 
 function cycleColor(id) { 
-  const z = zones.find(x => x.id === id); 
-  if (!z) return; 
-  saveStateForUndo(); 
-  z.color = palette[(palette.indexOf(z.color) + 1) % palette.length]; 
-  renderEditList(); 
-  persistSession(); 
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
+ saveStateForUndo(); 
+ z.color = palette[(palette.indexOf(z.color) + 1) % palette.length]; 
+ renderEditList(); 
+ persistSession(); 
 }
 
 function setZoneMode(id, mode) { 
-  const z = zones.find(x => x.id === id); 
-  if (!z || z.mode === mode) return; 
-  saveStateForUndo(); 
-  if (z.mode === 'single' && z.active) forceOffSingle(z); 
-  if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, { skipConfirm: true })); 
-  z.mode = mode; 
-  z.active = false; 
-  z.startTime = null; 
-  z.occupants = []; 
-  z.nextLocalNum = 1; 
-  renderEditList(); 
-  persistSession(); 
-  showToast(mode === 'multi' ? 'Переключено в группу' : 'Переключено в одиночный');
+ const z = zones.find(x => x.id === id); 
+ if (!z || z.mode === mode) return; 
+ saveStateForUndo(); 
+ if (z.mode === 'single' && z.active) forceOffSingle(z); 
+ if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, { skipConfirm: true })); 
+ z.mode = mode; 
+ z.active = false; 
+ z.startTime = null; 
+ z.occupants = []; 
+ z.nextLocalNum = 1; 
+ renderEditList(); 
+ persistSession(); 
+ showToast(mode === 'multi' ? 'Переключено в группу' : 'Переключено в одиночный');
 }
 
 function toggleZoneMode(id) {
-  const z = zones.find(x => x.id === id);
-  if (!z) return;
-  setZoneMode(id, z.mode === 'single' ? 'multi' : 'single');
+ const z = zones.find(x => x.id === id);
+ if (!z) return;
+ setZoneMode(id, z.mode === 'single' ? 'multi' : 'single');
 }
 
 function editDeleteOne(id) { 
-  const z = zones.find(x => x.id === id); 
-  if (!z) return; 
-  saveStateForUndo(); 
-  if (z.mode === 'single' && z.active) forceOffSingle(z); 
-  if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, { skipConfirm: true })); 
-  zones = zones.filter(x => x.id !== id); 
-  renderEditList(); 
-  persistSession(); 
-  showToast('Элемент удалён');
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
+ saveStateForUndo(); 
+ if (z.mode === 'single' && z.active) forceOffSingle(z); 
+ if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, { skipConfirm: true })); 
+ zones = zones.filter(x => x.id !== id); 
+ renderEditList(); 
+ persistSession(); 
+ showToast('Элемент удалён');
 }
 
 function moveZone(id, direction) {
-  const idx = zones.findIndex(z => z.id === id);
-  if (idx === -1) return;
-  const targetIdx = idx + direction;
-  if (targetIdx < 0 || targetIdx >= zones.length) return;
-  saveStateForUndo();
-  const [removed] = zones.splice(idx, 1);
-  zones.splice(targetIdx, 0, removed);
-  renderEditList();
-  persistSession();
-  showToast(direction < 0 ? 'Перемещено выше ⬆️' : 'Перемещено ниже ⬇️');
+ const idx = zones.findIndex(z => z.id === id);
+ if (idx === -1) return;
+ const targetIdx = idx + direction;
+ if (targetIdx < 0 || targetIdx >= zones.length) return;
+ saveStateForUndo();
+ const [removed] = zones.splice(idx, 1);
+ zones.splice(targetIdx, 0, removed);
+ renderEditList();
+ persistSession();
+ showToast(direction < 0 ? 'Перемещено выше ⬆️' : 'Перемещено ниже ⬇️');
 }
 
 function toggleZoneSize(id) {
-  const z = zones.find(x => x.id === id);
-  if (!z) return;
-  saveStateForUndo();
-  z.size = (z.size === 'wide') ? 'compact' : 'wide';
-  renderEditList();
-  persistSession();
-  showToast(z.size === 'wide' ? 'Размер: 2x (Широкий)' : 'Размер: 1x (Компактный)');
+ const z = zones.find(x => x.id === id);
+ if (!z) return;
+ saveStateForUndo();
+ z.size = (z.size === 'wide') ? 'compact' : 'wide';
+ renderEditList();
+ persistSession();
+ showToast(z.size === 'wide' ? 'Размер: 2x (Широкий)' : 'Размер: 1x (Компактный)');
 }
 
 function editAddZone(preferMode = 'single') { 
-  saveStateForUndo(); 
-  const id = zoneIdCounter++; 
-  const isMulti = preferMode === 'multi';
-  zones.push({ 
-    id, 
-    name: isMulti ? `Группа ${id+1}` : `Элемент ${id+1}`, 
-    mode: isMulti ? 'multi' : 'single', 
-    color: colorFor(id), 
-    active: false, 
-    startTime: null, 
-    occupants: [], 
-    nextLocalNum: 1, 
-    triggerCount: 0, 
-    totalMs: 0, 
-    countdown: false, 
-    limitMs: 0, 
-    limitAction: 'alert', 
-    multiLimitType: 'individual',
-    size: 'compact'
-  }); 
-  renderEditList(); 
-  persistSession(); 
-  showToast(isMulti ? 'Группа добавлена' : 'Элемент добавлен');
+ saveStateForUndo(); 
+ const id = zoneIdCounter++; 
+ const isMulti = preferMode === 'multi';
+ const num = zones.length + 1;
+ zones.push({ 
+ id, 
+ name: isMulti ? `Группа ${num}` : `Элемент ${num}`, 
+ mode: isMulti ? 'multi' : 'single', 
+ color: colorFor(id), 
+ active: false, 
+ startTime: null, 
+ occupants: [], 
+ nextLocalNum: 1, 
+ triggerCount: 0, 
+ totalMs: 0, 
+ countdown: false, 
+ limitMs: 0, 
+ limitAction: 'alert', 
+ multiLimitType: 'individual',
+ size: 'compact'
+ }); 
+ renderEditList(); 
+ persistSession(); 
+ showToast(isMulti ? 'Группа добавлена' : 'Элемент добавлен');
 }
 
 function initCardDrag(cardEl, zoneId) {
-  let pressTimer = null;
-  let isDragging = false;
-  let startX = 0, startY = 0;
-  let currentTarget = null;
-  
-  function onPointerDown(e) {
-    if (e.target.closest('button, input, .color-dot')) return;
-    startX = e.clientX;
-    startY = e.clientY;
-    isDragging = false;
-    currentTarget = null;
-    
-    pressTimer = setTimeout(() => {
-      isDragging = true;
-      haptic(35, 'start');
-      cardEl.classList.add('dragging-card');
-      showToast('Перетащите на нужное место');
-      try {
-        cardEl.setPointerCapture(e.pointerId);
-      } catch(err) {}
-    }, 450);
-  }
+ let pressTimer = null;
+ let isDragging = false;
+ let startX = 0, startY = 0;
+ let currentTarget = null;
+ 
+ function onPointerDown(e) {
+ if (e.target.closest('button, input, .color-dot')) return;
+ startX = e.clientX;
+ startY = e.clientY;
+ isDragging = false;
+ currentTarget = null;
+ 
+ pressTimer = setTimeout(() => {
+ isDragging = true;
+ haptic(35, 'start');
+ cardEl.classList.add('dragging-card');
+ showToast('Перетащите на нужное место');
+ try {
+ cardEl.setPointerCapture(e.pointerId);
+ } catch(err) {}
+ }, 450);
+ }
 
-  function onPointerMove(e) {
-    if (!isDragging) {
-      if (Math.hypot(e.clientX - startX, e.clientY - startY) > 8) {
-        clearTimeout(pressTimer);
-      }
-      return;
-    }
-    
-    e.preventDefault();
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.05)`;
-    
-    const grid = document.getElementById('editZonesGrid');
-    if (!grid) return;
-    const cards = Array.from(grid.children).filter(c => c !== cardEl && c.getAttribute('data-zone-id'));
-    
-    let closest = null;
-    let minD = Infinity;
-    
-    cards.forEach(c => {
-      const rect = c.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
-      if (dist < minD && dist < Math.max(rect.width, rect.height) * 1.6) {
-        minD = dist;
-        closest = c;
-      }
-    });
-    
-    cards.forEach(c => c.classList.remove('drop-target-card'));
-    if (closest) {
-      closest.classList.add('drop-target-card');
-      currentTarget = closest;
-    } else {
-      currentTarget = null;
-    }
-  }
+ function onPointerMove(e) {
+ if (!isDragging) {
+ if (Math.hypot(e.clientX - startX, e.clientY - startY) > 8) {
+ clearTimeout(pressTimer);
+ }
+ return;
+ }
+ 
+ e.preventDefault();
+ const dx = e.clientX - startX;
+ const dy = e.clientY - startY;
+ cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.05)`;
+ 
+ const grid = document.getElementById('editZonesGrid');
+ if (!grid) return;
+ const cards = Array.from(grid.children).filter(c => c !== cardEl && c.getAttribute('data-zone-id'));
+ 
+ let closest = null;
+ let minD = Infinity;
+ 
+ cards.forEach(c => {
+ const rect = c.getBoundingClientRect();
+ const cx = rect.left + rect.width / 2;
+ const cy = rect.top + rect.height / 2;
+ const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+ if (dist < minD && dist < Math.max(rect.width, rect.height) * 1.6) {
+ minD = dist;
+ closest = c;
+ }
+ });
+ 
+ cards.forEach(c => c.classList.remove('drop-target-card'));
+ if (closest) {
+ closest.classList.add('drop-target-card');
+ currentTarget = closest;
+ } else {
+ currentTarget = null;
+ }
+ }
 
-  function onPointerUp(e) {
-    clearTimeout(pressTimer);
-    if (isDragging) {
-      isDragging = false;
-      cardEl.classList.remove('dragging-card');
-      cardEl.style.transform = '';
-      
-      const targetCard = currentTarget;
-      if (targetCard) {
-        targetCard.classList.remove('drop-target-card');
-        const targetId = parseInt(targetCard.getAttribute('data-zone-id'));
-        const fromIdx = zones.findIndex(z => z.id === zoneId);
-        const toIdx = zones.findIndex(z => z.id === targetId);
-        if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
-          saveStateForUndo();
-          const [moved] = zones.splice(fromIdx, 1);
-          zones.splice(toIdx, 0, moved);
-          renderEditList();
-          persistSession();
-          haptic(20, 'start');
-          showToast('Порядок изменён ↕️');
-          return;
-        }
-      }
-      renderEditList();
-    }
-  }
+ function onPointerUp(e) {
+ clearTimeout(pressTimer);
+ if (isDragging) {
+ isDragging = false;
+ cardEl.classList.remove('dragging-card');
+ cardEl.style.transform = '';
+ 
+ const targetCard = currentTarget;
+ if (targetCard) {
+ targetCard.classList.remove('drop-target-card');
+ const targetId = parseInt(targetCard.getAttribute('data-zone-id'));
+ const fromIdx = zones.findIndex(z => z.id === zoneId);
+ const toIdx = zones.findIndex(z => z.id === targetId);
+ if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
+ saveStateForUndo();
+ const [moved] = zones.splice(fromIdx, 1);
+ zones.splice(toIdx, 0, moved);
+ renderEditList();
+ persistSession();
+ haptic(20, 'start');
+ showToast('Порядок изменён ↕️');
+ return;
+ }
+ }
+ renderEditList();
+ }
+ }
 
-  cardEl.addEventListener('pointerdown', onPointerDown);
-  cardEl.addEventListener('pointermove', onPointerMove);
-  cardEl.addEventListener('pointerup', onPointerUp);
-  cardEl.addEventListener('pointercancel', onPointerUp);
+ cardEl.addEventListener('pointerdown', onPointerDown);
+ cardEl.addEventListener('pointermove', onPointerMove);
+ cardEl.addEventListener('pointerup', onPointerUp);
+ cardEl.addEventListener('pointercancel', onPointerUp);
 }
 
 function renderEditList() {
-  const grid = document.getElementById('editZonesGrid');
-  const emptyPrompt = document.getElementById('constructorEmptyPrompt');
-  const countBadge = document.getElementById('constructorZoneCount');
-  const launchBtn = document.getElementById('launchBtn');
+ const grid = document.getElementById('editZonesGrid');
+ const emptyPrompt = document.getElementById('constructorEmptyPrompt');
+ const countBadge = document.getElementById('constructorZoneCount');
+ const launchBtn = document.getElementById('launchBtn');
  
-  if (countBadge) countBadge.textContent = zones.length;
-  if (launchBtn) launchBtn.classList.toggle('can-launch', zones.length > 0);
-  if (grid) grid.innerHTML = '';
-  if (emptyPrompt) emptyPrompt.classList.toggle('hidden', zones.length > 0);
-  if (!grid) return;
+ if (countBadge) countBadge.textContent = zones.length;
+ if (launchBtn) launchBtn.classList.toggle('can-launch', zones.length > 0);
+ if (grid) grid.innerHTML = '';
+ if (emptyPrompt) emptyPrompt.classList.toggle('hidden', zones.length > 0);
+ if (!grid) return;
  
-  zones.forEach(z => {
-    if (z.mode === 'single') {
-      const card = document.createElement('div');
-      const isWide = z.size === 'wide';
-      card.className = 'constructor-card' + (isWide ? ' size-wide' : '');
-      card.setAttribute('data-zone-id', z.id);
-      const isTimerSet = z.countdown && z.limitMs > 0;
+ zones.forEach((z, index) => {
+ if (z.mode === 'single') {
+ const card = document.createElement('div');
+ const isWide = z.size === 'wide';
+ card.className = 'constructor-card' + (isWide ? ' size-wide' : '');
+ card.setAttribute('data-zone-id', z.id);
+ const isTimerSet = z.countdown && z.limitMs > 0;
  
-      card.innerHTML = `
-      <div class="constructor-card-header">
-        <div class="color-dot" style="background:${z.color}; width:22px; height:22px;" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
-        <div class="edit-name-wrap" style="flex:1;">
-          <input type="text" value="${escapeHtml(z.name)}" placeholder="Имя" onchange="commitRename(${z.id}, this.value)" style="padding:6px 8px; font-size:12px; margin:0;">
-        </div>
-        <button class="icon-btn danger-btn" onclick="editDeleteOne(${z.id})" title="Удалить" style="padding:4px; width:24px; height:24px; border-color:transparent; box-shadow:none; flex-shrink:0;">
-          <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
-        </button>
-      </div>
+ card.innerHTML = `
+ <div class="constructor-card-header">
+ <span class="zone-id-tag" style="border-color:${z.color}; color:${z.color};"><span class="zone-num-sym">№</span>${index + 1}</span>
+ <div class="color-dot" style="background:${z.color}; width:22px; height:22px;" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
+ <div class="edit-name-wrap" style="flex:1;">
+ <input type="text" value="${escapeHtml(z.name)}" placeholder="Имя" onchange="commitRename(${z.id}, this.value)" style="padding:6px 8px; font-size:12px; margin:0;">
+ </div>
+ <button class="icon-btn danger-btn" onclick="editDeleteOne(${z.id})" title="Удалить" style="padding:4px; width:24px; height:24px; border-color:transparent; box-shadow:none; flex-shrink:0;">
+ <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
  
-      <div class="constructor-card-subrow">
-        <span class="constructor-mode-badge">${isTimerSet ? `⏳ ${formatDuration(z.limitMs)}` : '⏱️ Секундомер'}</span>
-        <button class="icon-btn" onclick="toggleZoneSize(${z.id})" title="Ширина (1x / 2x)" style="padding:2px 6px; font-size:10px; height:22px; color:${isWide ? 'var(--accent)' : 'var(--muted)'}; border-color:${isWide ? 'var(--accent)' : 'var(--border)'};">
-          ${isWide ? '2x' : '1x'}
-        </button>
-      </div>
+ <div class="constructor-card-subrow">
+ <span class="constructor-mode-badge">${isTimerSet ? `⏳ ${formatDuration(z.limitMs)}` : '⏱️ Секундомер'}</span>
+ <button class="icon-btn" onclick="toggleZoneSize(${z.id})" title="Ширина (1x / 2x)" style="padding:2px 6px; font-size:10px; height:22px; color:${isWide ? 'var(--accent)' : 'var(--muted)'}; border-color:${isWide ? 'var(--accent)' : 'var(--border)'};">
+ ${isWide ? '2x' : '1x'}
+ </button>
+ </div>
 
-      <div class="constructor-card-footer">
-        <button class="constructor-toggle-btn" onclick="toggleZoneMode(${z.id})" title="Преобразовать в группу">
-          <i data-lucide="layers" style="width:11px;height:11px;"></i>
-          <span>В группу</span>
-        </button>
-        <button class="icon-btn" onclick="openTimerSettings(${z.id})" title="Настройки лимита" style="padding:4px 8px; height:24px; color:${isTimerSet ? 'var(--accent)' : 'inherit'};">
-          <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
-        </button>
-      </div>
-      `;
-      initCardDrag(card, z.id);
-      grid.appendChild(card);
-    } else {
-      const card = document.createElement('div');
-      card.className = 'constructor-group-card';
-      card.setAttribute('data-zone-id', z.id);
-      const isTimerSet = z.countdown && z.limitMs > 0;
+ <div class="constructor-card-footer">
+ <button class="constructor-toggle-btn" onclick="toggleZoneMode(${z.id})" title="Преобразовать в группу">
+ <i data-lucide="layers" style="width:11px;height:11px;"></i>
+ <span>В группу</span>
+ </button>
+ <button class="icon-btn" onclick="openTimerSettings(${z.id})" title="Настройки лимита" style="padding:4px 8px; height:24px; color:${isTimerSet ? 'var(--accent)' : 'inherit'};">
+ <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
+ `;
+ initCardDrag(card, z.id);
+ grid.appendChild(card);
+ } else {
+ const card = document.createElement('div');
+ card.className = 'constructor-group-card';
+ card.setAttribute('data-zone-id', z.id);
+ const isTimerSet = z.countdown && z.limitMs > 0;
  
-      card.innerHTML = `
-      <div class="constructor-card-header">
-        <div class="color-dot" style="background:${z.color}; width:24px; height:24px;" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
-        <div class="edit-name-wrap" style="flex:1;">
-          <input type="text" value="${escapeHtml(z.name)}" placeholder="Имя группы" onchange="commitRename(${z.id}, this.value)" style="font-weight:700; font-size:13px; margin:0; padding:6px 8px;">
-        </div>
-        <button class="icon-btn danger-btn" onclick="editDeleteOne(${z.id})" title="Удалить" style="padding:4px 6px; height:26px; width:26px; border-color:transparent; box-shadow:none;">
-          <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
-        </button>
-      </div>
+ card.innerHTML = `
+ <div class="constructor-card-header">
+ <span class="zone-id-tag" style="border-color:${z.color}; color:${z.color};"><span class="zone-num-sym">№</span>${index + 1}</span>
+ <div class="color-dot" style="background:${z.color}; width:24px; height:24px;" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
+ <div class="edit-name-wrap" style="flex:1;">
+ <input type="text" value="${escapeHtml(z.name)}" placeholder="Имя группы" onchange="commitRename(${z.id}, this.value)" style="font-weight:700; font-size:13px; margin:0; padding:6px 8px;">
+ </div>
+ <button class="icon-btn danger-btn" onclick="editDeleteOne(${z.id})" title="Удалить" style="padding:4px 6px; height:26px; width:26px; border-color:transparent; box-shadow:none;">
+ <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
 
-      <div class="constructor-card-footer" style="margin-top:4px;">
-        <button class="constructor-toggle-btn" onclick="toggleZoneMode(${z.id})" title="Преобразовать в одиночный">
-          <i data-lucide="timer" style="width:11px;height:11px;"></i>
-          <span>В одиночный</span>
-        </button>
-        <div style="display:flex; align-items:center; gap:6px;">
-          <span class="constructor-mode-badge">${isTimerSet ? `⏳ Лимит: ${formatDuration(z.limitMs)}` : '👥 Групповой счёт'}</span>
-          <button class="icon-btn" onclick="openTimerSettings(${z.id})" title="Настройки лимита" style="padding:4px 8px; height:24px; color:${isTimerSet ? 'var(--accent)' : 'inherit'};">
-            <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
-          </button>
-        </div>
-      </div>
-      `;
-      initCardDrag(card, z.id);
-      grid.appendChild(card);
-    }
-  });
+ <div class="constructor-card-footer" style="margin-top:4px;">
+ <button class="constructor-toggle-btn" onclick="toggleZoneMode(${z.id})" title="Преобразовать в одиночный">
+ <i data-lucide="timer" style="width:11px;height:11px;"></i>
+ <span>В одиночный</span>
+ </button>
+ <div style="display:flex; align-items:center; gap:6px;">
+ <span class="constructor-mode-badge">${isTimerSet ? `⏳ Лимит: ${formatDuration(z.limitMs)}` : '👥 Групповой счёт'}</span>
+ <button class="icon-btn" onclick="openTimerSettings(${z.id})" title="Настройки лимита" style="padding:4px 8px; height:24px; color:${isTimerSet ? 'var(--accent)' : 'inherit'};">
+ <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
+ </div>
+ `;
+ initCardDrag(card, z.id);
+ grid.appendChild(card);
+ }
+ });
 
-  updateIcons(document.getElementById('editStep'));
+ updateIcons(document.getElementById('editStep'));
 }
 
-/* --- Заметки (Создание, Голосовой ввод) --- */
+/* --- Заметки (Создание, Голосовой ввод, Выбор панели) --- */
 let recognition = null; 
-let editingNoteId = null;
+let isVoiceRecording = false;
+
+function renderNoteZonePicker() {
+ const container = document.getElementById('noteZonePicker');
+ if (!container) return;
+ container.innerHTML = '';
+
+ // Кнопка «Общая» (Компактный чип [★])
+ const generalChip = document.createElement('button');
+ generalChip.type = 'button';
+ generalChip.className = 'zone-chip-btn' + (selectedZoneIdForNote === null ? ' active' : '');
+ generalChip.innerHTML = `<i data-lucide="globe" style="width:11px;height:11px;margin-right:2px;"></i><span>★</span>`;
+ generalChip.title = 'Общая заметка (без привязки к панели)';
+ generalChip.onclick = () => selectZoneForNote(null);
+ container.appendChild(generalChip);
+
+ // Кнопки ТОЛЬКО с номерами панелей: [№1], [№2], [№3]...
+ zones.forEach((z, idx) => {
+ const isSelected = selectedZoneIdForNote === z.id;
+ const chip = document.createElement('button');
+ chip.type = 'button';
+ chip.className = 'zone-chip-btn' + (isSelected ? ' active' : '');
+ chip.title = `Привязать к №${idx + 1} «${z.name}»`;
+ if (isSelected) {
+ chip.style.borderColor = z.color;
+ chip.style.color = z.color;
+ chip.style.background = `rgba(${hexToRgbStr(z.color)}, 0.16)`;
+ chip.style.boxShadow = `0 0 10px rgba(${hexToRgbStr(z.color)}, 0.3)`;
+ } else {
+ chip.style.borderColor = '';
+ chip.style.color = '';
+ chip.style.background = '';
+ chip.style.boxShadow = '';
+ }
+ chip.innerHTML = `№${idx + 1}`;
+ chip.onclick = () => selectZoneForNote(z.id);
+ container.appendChild(chip);
+ });
+
+ updateSelectedZoneLabel();
+ updateIcons(container);
+}
+
+function selectZoneForNote(zoneId) {
+ selectedZoneIdForNote = zoneId;
+ renderNoteZonePicker();
+}
+
+function updateSelectedZoneLabel() {
+ const labelEl = document.getElementById('selectedZoneLabel');
+ if (!labelEl) return;
+ if (selectedZoneIdForNote === null) {
+ labelEl.textContent = 'Общая';
+ labelEl.style.color = 'var(--accent)';
+ } else {
+ const idx = zones.findIndex(x => x.id === selectedZoneIdForNote);
+ const z = zones[idx];
+ if (z) {
+ labelEl.textContent = `№${idx + 1} «${z.name}»`;
+ labelEl.style.color = z.color;
+ } else {
+ labelEl.textContent = 'Общая';
+ labelEl.style.color = 'var(--accent)';
+ }
+ }
+}
 
 function openNoteModal() {
-  closeModals();
-  resetNoteModal();
-  showModal('noteModal');
+ closeModals();
+ renderNoteZonePicker();
+ showModal('noteModal');
+}
+
+function openNoteModalForZone(zoneId) {
+ selectedZoneIdForNote = zoneId;
+ openNoteModal();
+ setTimeout(() => {
+ const activeChip = document.querySelector('#noteZonePicker .zone-chip-btn.active');
+ if (activeChip) activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+ document.getElementById('noteTextInput').focus();
+ }, 150);
 }
 
 function triggerVoiceNoteFromBubble() {
-  openNoteModal();
-  startVoiceNote();
+ selectedZoneIdForNote = null;
+ openNoteModal();
+ startVoiceNote();
 }
 
 function editNoteEntry(id) {
-  const entry = logs.find(e => e.id === id && e.type === 'note'); 
-  if (!entry) return; 
-  editingNoteId = id;
-  startTextNote();
-  document.getElementById('noteTextInput').value = entry.text; 
-  showModal('noteModal');
-  setTimeout(() => document.getElementById('noteTextInput').focus(), 100);
+ const entry = logs.find(e => e.id === id && e.type === 'note'); 
+ if (!entry) return; 
+ editingNoteId = id;
+ selectedZoneIdForNote = entry.zoneId || null;
+ startTextNote();
+ document.getElementById('noteTextInput').value = entry.text; 
+ openNoteModal();
+ setTimeout(() => document.getElementById('noteTextInput').focus(), 100);
 }
 
 async function deleteNoteEntry(id) {
-  const entry = logs.find(e => e.id === id && e.type === 'note'); 
-  if (!entry) return;
-  if (!(await customConfirm('Удалить эту заметку?', 'Удалить', true))) return;
-  saveStateForUndo(); 
-  logs = logs.filter(e => !(e.id === id && e.type === 'note')); 
-  rebuildTableFromLogs(); 
-  persistSession(); 
-  showToast('Заметка удалена');
+ const entry = logs.find(e => e.id === id && e.type === 'note'); 
+ if (!entry) return;
+ if (!(await customConfirm('Удалить эту заметку?', 'Удалить', true))) return;
+ saveStateForUndo(); 
+ logs = logs.filter(e => !(e.id === id && e.type === 'note')); 
+ rebuildTableFromLogs(); 
+ persistSession(); 
+ showToast('Заметка удалена');
 }
 
 function resetNoteModal() {
-  if (recognition) { 
-    try { recognition.stop(); } catch(e) {} 
-  } 
-  editingNoteId = null;
-  resumeMusicAfterVoice();
-  const voiceBox = document.getElementById('noteVoiceBox');
-  if (voiceBox) voiceBox.classList.add('hidden');
-  document.getElementById('noteTextInput').value = '';
-  const voiceBtn = document.getElementById('noteTabVoiceBtn');
-  const keyBtn = document.getElementById('noteTabKeyboardBtn');
-  if (voiceBtn) voiceBtn.classList.remove('active');
-  if (keyBtn) keyBtn.classList.remove('active');
+ if (recognition) { 
+ try { recognition.stop(); } catch(e) {} 
+ } 
+ editingNoteId = null;
+ selectedZoneIdForNote = null;
+ resumeMusicAfterVoice();
+ const voiceBox = document.getElementById('noteVoiceBox');
+ if (voiceBox) voiceBox.classList.add('hidden');
+ document.getElementById('noteTextInput').value = '';
+ const voiceBtn = document.getElementById('noteTabVoiceBtn');
+ const keyBtn = document.getElementById('noteTabKeyboardBtn');
+ if (voiceBtn) voiceBtn.classList.remove('active');
+ if (keyBtn) keyBtn.classList.remove('active');
+ closeModals();
 }
 
 function startTextNote() { 
-  if (recognition) { try { recognition.stop(); } catch(e) {} }
-  resumeMusicAfterVoice();
-  const voiceBox = document.getElementById('noteVoiceBox');
-  if (voiceBox) voiceBox.classList.add('hidden');
-  const voiceBtn = document.getElementById('noteTabVoiceBtn');
-  const keyBtn = document.getElementById('noteTabKeyboardBtn');
-  if (voiceBtn) voiceBtn.classList.remove('active');
-  if (keyBtn) keyBtn.classList.add('active');
-  const input = document.getElementById('noteTextInput');
-  if (input) input.focus();
+ if (recognition) { try { recognition.stop(); } catch(e) {} }
+ resumeMusicAfterVoice();
+ const voiceBox = document.getElementById('noteVoiceBox');
+ if (voiceBox) voiceBox.classList.add('hidden');
+ const voiceBtn = document.getElementById('noteTabVoiceBtn');
+ const keyBtn = document.getElementById('noteTabKeyboardBtn');
+ if (voiceBtn) voiceBtn.classList.remove('active');
+ if (keyBtn) keyBtn.classList.add('active');
+ const input = document.getElementById('noteTextInput');
+ if (input) input.focus();
 }
 
 function startVoiceNote() {
-  pauseMusicForVoice();
-  const voiceBox = document.getElementById('noteVoiceBox');
-  if (voiceBox) voiceBox.classList.remove('hidden');
-  const voiceBtn = document.getElementById('noteTabVoiceBtn');
-  const keyBtn = document.getElementById('noteTabKeyboardBtn');
-  if (voiceBtn) voiceBtn.classList.add('active');
-  if (keyBtn) keyBtn.classList.remove('active');
+ pauseMusicForVoice();
+ const voiceBox = document.getElementById('noteVoiceBox');
+ if (voiceBox) voiceBox.classList.remove('hidden');
+ const voiceBtn = document.getElementById('noteTabVoiceBtn');
+ const keyBtn = document.getElementById('noteTabKeyboardBtn');
+ if (voiceBtn) voiceBtn.classList.add('active');
+ if (keyBtn) keyBtn.classList.remove('active');
  
-  const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!Speech) { 
-    showToast('Диктовка не поддерживается в этом браузере', true); 
-    startTextNote(); 
-    return; 
-  }
-  try {
-    if (recognition) { try { recognition.stop(); } catch(e) {} }
-    recognition = new Speech(); 
-    recognition.lang = 'ru-RU'; 
-    recognition.interimResults = true; 
-    recognition.maxAlternatives = 1;
+ const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+ if (!Speech) { 
+ showToast('Диктовка не поддерживается в этом браузере', true); 
+ startTextNote(); 
+ return; 
+ }
+ try {
+ if (recognition) { try { recognition.stop(); } catch(e) {} }
+ recognition = new Speech(); 
+ recognition.lang = 'ru-RU'; 
+ recognition.interimResults = true; 
+ recognition.maxAlternatives = 1;
  
-    recognition.onstart = () => { 
-      const statusText = document.getElementById('voiceStatusText');
-      if (statusText) statusText.textContent = 'Слушаю вас... Говорите';
-      showToast('Слушаю... Говорите'); 
-    };
+ recognition.onstart = () => { 
+ const statusText = document.getElementById('voiceStatusText');
+ if (statusText) statusText.textContent = 'Слушаю вас... Говорите';
+ showToast('Слушаю... Говорите'); 
+ };
  
-    recognition.onresult = (e) => { 
-      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
-      const input = document.getElementById('noteTextInput');
-      if (input) input.value = transcript; 
-    };
+ recognition.onresult = (e) => { 
+ const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+ const input = document.getElementById('noteTextInput');
+ if (input) input.value = transcript; 
+ };
  
-    recognition.onerror = () => { 
-      const statusText = document.getElementById('voiceStatusText');
-      if (statusText) statusText.textContent = 'Ошибка микрофона или распознавания';
-      showToast('Ошибка микрофона', true); 
-      resumeMusicAfterVoice();
-    };
+ recognition.onerror = () => { 
+ const statusText = document.getElementById('voiceStatusText');
+ if (statusText) statusText.textContent = 'Ошибка микрофона или распознавания';
+ showToast('Ошибка микрофона', true); 
+ resumeMusicAfterVoice();
+ };
  
-    recognition.onend = () => { 
-      const statusText = document.getElementById('voiceStatusText');
-      if (statusText) statusText.textContent = 'Диктовка завершена (нажмите сохранить)';
-    };
+ recognition.onend = () => { 
+ const statusText = document.getElementById('voiceStatusText');
+ if (statusText) statusText.textContent = 'Диктовка завершена (нажмите Добавить)';
+ };
  
-    recognition.start();
-  } catch(e) { 
-    showToast('Нет доступа к микрофону', true); 
-    startTextNote(); 
-  }
+ recognition.start();
+ } catch(e) { 
+ showToast('Нет доступа к микрофону', true); 
+ startTextNote(); 
+ }
 }
 
 function saveNoteConfirm() {
-  const text = document.getElementById('noteTextInput').value.trim(); 
-  if (!text) { showToast('Заметка пуста', true); return; }
-  saveStateForUndo();
-  if (editingNoteId !== null) { 
-    const entry = logs.find(e => e.id === editingNoteId && e.type === 'note'); 
-    if (entry) { 
-      entry.text = text; 
-      rebuildTableFromLogs(); 
-      showToast('Заметка обновлена'); 
-    } 
-    editingNoteId = null; 
-  } else { 
-    const entry = { id: logIdCounter++, type: 'note', text: text, onTime: formatTime(Date.now()) }; 
-    logs.push(entry); 
-    prependTableRow(entry); 
-    fireWebhook({ event: 'note', text: text }); 
-    showToast('Заметка сохранена'); 
-  }
-  closeModals(); 
-  resetNoteModal(); 
-  persistSession();
+ const text = document.getElementById('noteTextInput').value.trim(); 
+ if (!text) { showToast('Заметка пуста', true); return; }
+ saveStateForUndo();
+ const now = Date.now();
+
+ if (editingNoteId !== null) { 
+ const entry = logs.find(e => e.id === editingNoteId && e.type === 'note'); 
+ if (entry) { 
+ entry.text = text; 
+ if (selectedZoneIdForNote !== null) {
+ const zIdx = zones.findIndex(x => x.id === selectedZoneIdForNote);
+ const z = zones[zIdx];
+ if (z) {
+ entry.zoneId = z.id;
+ entry.zoneName = z.name;
+ entry.zoneNum = zIdx + 1;
+ entry.zoneColor = z.color;
+ }
+ } else {
+ entry.zoneId = null;
+ entry.zoneName = 'Общая';
+ entry.zoneNum = null;
+ entry.zoneColor = null;
+ }
+ rebuildTableFromLogs(); 
+ showToast('Заметка обновлена'); 
+ } 
+ editingNoteId = null; 
+ } else { 
+ let entry;
+ if (selectedZoneIdForNote !== null) {
+ const zIdx = zones.findIndex(x => x.id === selectedZoneIdForNote);
+ const z = zones[zIdx];
+ if (z) {
+ entry = { 
+ id: logIdCounter++, 
+ type: 'note', 
+ text: text, 
+ zoneId: z.id, 
+ zoneName: z.name, 
+ zoneNum: zIdx + 1, 
+ zoneColor: z.color, 
+ onTime: formatTime(now) 
+ };
+ fireWebhook({ 
+ event: 'note', 
+ zoneId: z.id, 
+ zoneName: z.name, 
+ panelNum: zIdx + 1, 
+ text: text 
+ });
+ showToast(`Заметка добавлена к №${zIdx + 1} ${z.name}`);
+ } else {
+ entry = { id: logIdCounter++, type: 'note', text: text, zoneId: null, zoneName: 'Общая', zoneNum: null, zoneColor: null, onTime: formatTime(now) };
+ fireWebhook({ event: 'note', zoneName: 'Общая', text: text });
+ showToast('Заметка добавлена в журнал');
+ }
+ } else {
+ entry = { id: logIdCounter++, type: 'note', text: text, zoneId: null, zoneName: 'Общая', zoneNum: null, zoneColor: null, onTime: formatTime(now) };
+ fireWebhook({ event: 'note', zoneName: 'Общая', text: text });
+ showToast('Заметка добавлена в журнал');
+ }
+ logs.push(entry); 
+ prependTableRow(entry); 
+ }
+ closeModals(); 
+ resetNoteModal(); 
+ persistSession();
 }
 
 function openFullTableModal() { 
-  updateShareButtonVisibility();
-  showModal('fullTableModal'); 
+ updateShareButtonVisibility();
+ showModal('fullTableModal'); 
 }
 
 /* --- Журнал и Экспорт (Feed + Table) --- */
 function formatTime(ms) { return new Date(ms).toTimeString().split(' ')[0]; }
 
 function formatDuration(ms) { 
-  const totalSeconds = Math.floor(ms / 1000); 
-  const h = Math.floor(totalSeconds / 3600); 
-  const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2,'0'); 
-  const s = (totalSeconds % 60).toString().padStart(2,'0'); 
-  return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`; 
+ const totalSeconds = Math.floor(ms / 1000); 
+ const h = Math.floor(totalSeconds / 3600); 
+ const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2,'0'); 
+ const s = (totalSeconds % 60).toString().padStart(2,'0'); 
+ return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`; 
 }
 
 function getFeedItemHTML(entry) {
-  if (entry.type === 'note') {
-    return `
-    <div class="feed-item">
-      <div style="display:flex; gap:6px; align-items:center; min-width:0; flex:1;">
-        <span class="feed-time">${entry.onTime}</span>
-        <span style="display:inline-flex; align-items:center; gap:3px; color:var(--accent); font-weight:700; font-size:10.5px; flex-shrink:0;"><i data-lucide="pen-tool" style="width:11px;height:11px;"></i> Заметка</span>
-        <span class="feed-name" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(entry.text)}</span>
-      </div>
-    </div>`;
-  }
-  return `
-  <div class="feed-item">
-    <div style="display:flex; gap:6px; align-items:center; min-width:0; flex:1;">
-      <span class="feed-time">${entry.onTime}</span>
-      <span class="feed-num">№${entry.num}</span>
-      <span class="feed-name" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(entry.name)}</span>
-    </div>
-    <div style="display:flex; gap:6px; align-items:center; flex-shrink:0;">
-      <span class="feed-dur">${entry.duration}</span>
-    </div>
-  </div>`;
+ if (entry.type === 'note') {
+ const isBound = entry.zoneName && entry.zoneName !== 'Общая';
+ return `
+ <div class="feed-item" style="border-left: 3px solid ${isBound ? (entry.zoneColor || 'var(--accent)') : 'var(--accent)'};">
+ <div style="display:flex; justify-content:space-between; align-items:center; width:100%; min-width:0;">
+ <span style="display:inline-flex; align-items:center; gap:4px; color:${isBound ? (entry.zoneColor || 'var(--accent)') : 'var(--accent)'}; font-weight:700; font-size:10.5px; flex-shrink:0;">
+ <i data-lucide="pen-tool" style="width:11px;height:11px;"></i>
+ ${isBound ? `<span style="background:rgba(255,255,255,0.08); padding:1px 4px; border-radius:3px; font-family:var(--font-mono);">№${entry.zoneNum}</span> <span>${escapeHtml(entry.zoneName)}</span>` : '<span>Общая</span>'}
+ </span>
+ <span class="feed-time">${entry.onTime}</span>
+ </div>
+ <div class="feed-name" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; margin-top:2px;">${escapeHtml(entry.text)}</div>
+ </div>`;
+ }
+ return `
+ <div class="feed-item">
+ <div style="display:flex; gap:6px; align-items:center; min-width:0; flex:1;">
+ <span class="feed-time">${entry.onTime}</span>
+ ${entry.zoneNum ? `<span style="color:var(--accent); font-weight:800; font-size:11px; font-family:var(--font-mono);">[№${entry.zoneNum}]</span>` : ''}
+ <span class="feed-num">#${entry.num}</span>
+ <span class="feed-name" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(entry.name)}</span>
+ </div>
+ <div style="display:flex; gap:6px; align-items:center; flex-shrink:0;">
+ <span class="feed-dur">${entry.duration}</span>
+ </div>
+ </div>`;
 }
 
 function getTableRowHTML(entry) {
-  if (entry.type === 'note') {
-    return `<tr class="note-row"><td colspan="5"><div class="note-content" style="flex-direction:row; align-items:center; justify-content:space-between; gap:12px; display:flex;">
-    <div style="display:flex; flex-direction:column; gap:4px;"><b><i data-lucide="pen-tool" style="width:14px;height:14px;display:inline-block;vertical-align:bottom;"></i> Заметка [${entry.onTime}]:</b><span>${escapeHtml(entry.text)}</span></div>
-    <div style="display:flex; gap:6px; flex-shrink:0;">
-    <button class="icon-btn" style="padding:8px;" onclick="editNoteEntry(${entry.id}); closeModals();"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
-    <button class="icon-btn" style="padding:8px; color:var(--danger); background:rgba(239, 68, 68, 0.1);" onclick="deleteNoteEntry(${entry.id})"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
-    </div></div></td></tr>`;
-  }
-  return `<tr><td>${escapeHtml(entry.name)}</td><td class="mono">${entry.num}</td><td class="mono">${entry.onTime}</td><td class="mono">${entry.offTime}</td><td class="mono" style="color:var(--accent); font-weight:700;">${entry.duration}</td></tr>`;
+ if (entry.type === 'note') {
+ const isBound = entry.zoneName && entry.zoneName !== 'Общая';
+ return `<tr class="note-row"><td colspan="5" style="border-left: 3px solid ${isBound ? (entry.zoneColor || 'var(--accent)') : 'var(--accent)'};"><div class="note-content" style="flex-direction:row; align-items:center; justify-content:space-between; gap:12px; display:flex;">
+ <div style="display:flex; flex-direction:column; gap:4px;">
+ <div style="display:flex; align-items:center; gap:6px; font-size:11px;">
+ <b style="color:${isBound ? (entry.zoneColor || 'var(--accent)') : 'var(--accent)'}; display:flex; align-items:center; gap:4px;">
+ <i data-lucide="pen-tool" style="width:13px;height:13px;"></i>
+ ${isBound ? `<span style="background:rgba(255,255,255,0.08); padding:1px 5px; border-radius:3px; font-family:var(--font-mono);">№${entry.zoneNum}</span> ${escapeHtml(entry.zoneName)}` : 'Общая заметка'}
+ </b>
+ <span style="color:var(--muted); font-size:11px;">[${entry.onTime}]</span>
+ </div>
+ <span style="font-size:13px; font-weight:500;">${escapeHtml(entry.text)}</span>
+ </div>
+ <div style="display:flex; gap:6px; flex-shrink:0;">
+ <button class="icon-btn" style="padding:8px;" onclick="editNoteEntry(${entry.id}); closeModals();"><i data-lucide="pencil" style="width:14px;height:14px;"></i></button>
+ <button class="icon-btn" style="padding:8px; color:var(--danger); background:rgba(239, 68, 68, 0.1);" onclick="deleteNoteEntry(${entry.id})"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+ </div></div></td></tr>`;
+ }
+ return `<tr><td>${entry.zoneNum ? `<b style="font-family:var(--font-mono); color:var(--accent); margin-right:4px;">№${entry.zoneNum}</b> ` : ''}${escapeHtml(entry.name)}</td><td class="mono">${entry.num}</td><td class="mono">${entry.onTime}</td><td class="mono">${entry.offTime}</td><td class="mono" style="color:var(--accent); font-weight:700;">${entry.duration}</td></tr>`;
 }
 
 function prependTableRow(entry) { 
-  const tbody = document.getElementById('logBody'); 
-  tbody.insertAdjacentHTML('afterbegin', getTableRowHTML(entry)); 
-  updateIcons(tbody.firstElementChild); 
-  const feed = document.getElementById('logFeed'); 
-  feed.insertAdjacentHTML('beforeend', getFeedItemHTML(entry)); 
-  updateIcons(feed.lastElementChild);
-  while (feed.children.length > 3) feed.removeChild(feed.firstChild);
-  requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+ const tbody = document.getElementById('logBody'); 
+ tbody.insertAdjacentHTML('afterbegin', getTableRowHTML(entry)); 
+ updateIcons(tbody.firstElementChild); 
+ const feed = document.getElementById('logFeed'); 
+ feed.insertAdjacentHTML('beforeend', getFeedItemHTML(entry)); 
+ updateIcons(feed.lastElementChild);
+ while (feed.children.length > 3) feed.removeChild(feed.firstChild);
+ requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
 }
 
 function rebuildTableFromLogs() { 
-  const tbody = document.getElementById('logBody'); 
-  tbody.innerHTML = ''; 
-  const feed = document.getElementById('logFeed'); 
-  feed.innerHTML = '';
-  for (let i = logs.length - 1; i >= 0; i--) { 
-    tbody.insertAdjacentHTML('beforeend', getTableRowHTML(logs[i])); 
-  }
-  const feedLogs = logs.slice(-3);
-  for (let i = 0; i < feedLogs.length; i++) { 
-    feed.insertAdjacentHTML('beforeend', getFeedItemHTML(feedLogs[i])); 
-  }
-  updateIcons(tbody); 
-  updateIcons(feed);
-  requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+ const tbody = document.getElementById('logBody'); 
+ tbody.innerHTML = ''; 
+ const feed = document.getElementById('logFeed'); 
+ feed.innerHTML = '';
+ for (let i = logs.length - 1; i >= 0; i--) { 
+ tbody.insertAdjacentHTML('beforeend', getTableRowHTML(logs[i])); 
+ }
+ const feedLogs = logs.slice(-3);
+ for (let i = 0; i < feedLogs.length; i++) { 
+ feed.insertAdjacentHTML('beforeend', getFeedItemHTML(feedLogs[i])); 
+ }
+ updateIcons(tbody); 
+ updateIcons(feed);
+ requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
 }
 
 function buildCSV() {
-  const header = "\uFEFF" + "Событие/Элемент,№,Старт,Финиш,Текст/Длительность\n";
-  let rows = [];
-  logs.forEach(r => {
-    if (r.type === 'note') {
-      rows.push(`ЗАМЕТКА,,-,${r.onTime},"${r.text.replace(/"/g, '""')}"`);
-    } else {
-      rows.push(`"${r.name}",${r.num},${r.onTime},${r.offTime},${r.duration}`);
-    }
-  });
-  let summary = "\nСводка\nНазвание,Тип,Запусков,Суммарное время\n";
-  let sumRows = [];
-  zones.forEach(z => {
-    let total = z.totalMs;
-    if (z.mode === 'single' && z.active) total += Date.now() - z.startTime;
-    if (z.mode === 'multi') z.occupants.forEach(o => { total += Date.now() - o.startTime; });
-    sumRows.push(`"${z.name}",${z.mode === 'single' ? 'Одиночный' : 'Множественный'},${z.triggerCount},${formatDuration(total)}`);
-  });
-  return header + rows.join("\n") + "\n" + summary + sumRows.join("\n");
+ const header = "\uFEFF" + "Событие/Панель,Текст заметки / №,Старт,Финиш,Длительность\n";
+ let rows = [];
+ logs.forEach(r => {
+ if (r.type === 'note') {
+ const panelName = (r.zoneName && r.zoneName !== 'Общая')
+ ? (r.zoneNum ? `№${r.zoneNum} ${r.zoneName}` : r.zoneName)
+ : 'Общая';
+ const noteText = `"${(r.text || '').replace(/"/g, '""')}"`;
+ rows.push(`"${panelName.replace(/"/g, '""')}",${noteText},${r.onTime},-, -`);
+ } else {
+ const panelName = r.zoneNum ? `№${r.zoneNum} ${r.name}` : r.name;
+ rows.push(`"${panelName.replace(/"/g, '""')}",${r.num},${r.onTime},${r.offTime},${r.duration}`);
+ }
+ });
+ let summary = "\nСводка по панелям\n№,Панель,Тип,Запусков/Визитов,Суммарное время\n";
+ let sumRows = [];
+ zones.forEach((z, idx) => {
+ let total = z.totalMs;
+ if (z.mode === 'single' && z.active) total += Date.now() - z.startTime;
+ if (z.mode === 'multi') z.occupants.forEach(o => { total += Date.now() - o.startTime; });
+ sumRows.push(`${idx + 1},"${z.name}",${z.mode === 'single' ? 'Одиночный' : 'Групповой'},${z.triggerCount},${formatDuration(total)}`);
+ });
+ return header + rows.join("\n") + "\n" + summary + sumRows.join("\n");
 }
 
 function exportCSV() {
-  if (logs.length === 0 && zones.every(z => z.totalMs === 0)) { showToast('Лог пустой', true); return; } 
-  const blob = new Blob([buildCSV()], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob); 
-  const link = document.createElement('a'); 
-  link.href = url; 
-  link.download = `timers_log_${new Date().toISOString().slice(0,10)}.csv`; 
-  document.body.appendChild(link); 
-  link.click(); 
-  document.body.removeChild(link); 
-  URL.revokeObjectURL(url);
+ if (logs.length === 0 && zones.every(z => z.totalMs === 0)) { showToast('Лог пустой', true); return; } 
+ const blob = new Blob([buildCSV()], {type:'text/csv;charset=utf-8;'});
+ const url = URL.createObjectURL(blob); 
+ const link = document.createElement('a'); 
+ link.href = url; 
+ link.download = `anytimer_log_${new Date().toISOString().slice(0,10)}.csv`; 
+ document.body.appendChild(link); 
+ link.click(); 
+ document.body.removeChild(link); 
+ URL.revokeObjectURL(url);
 }
 
 async function shareCSV() {
-  if (logs.length === 0 && zones.every(z => z.totalMs === 0)) { showToast('Лог пустой', true); return; } 
-  const csv = buildCSV(); 
-  const file = new File([csv], `timers_log_${new Date().toISOString().slice(0,10)}.csv`, {type:'text/csv'});
-  try { 
-    if (navigator.canShare && navigator.canShare({ files: [file] })) { 
-      await navigator.share({ files: [file], title: 'Журнал таймеров' }); 
-    } else { 
-      showToast('Общий доступ не поддерживается', true); 
-    } 
-  } catch(e) {}
+ if (logs.length === 0 && zones.every(z => z.totalMs === 0)) { showToast('Лог пустой', true); return; } 
+ const csv = buildCSV(); 
+ const file = new File([csv], `anytimer_log_${new Date().toISOString().slice(0,10)}.csv`, {type:'text/csv'});
+ try { 
+ if (navigator.canShare && navigator.canShare({ files: [file] })) { 
+ await navigator.share({ files: [file], title: 'Журнал AnyTimer' }); 
+ } else { 
+ showToast('Общий доступ не поддерживается', true); 
+ } 
+ } catch(e) {}
 }
 
 function updateShareButtonVisibility() { 
-  const btn = document.getElementById('shareBtnMenu'); 
-  if (btn) btn.style.display = !!(navigator.share) ? 'flex' : 'none'; 
+ const btn = document.getElementById('shareBtnMenu'); 
+ if (btn) btn.style.display = !!(navigator.share) ? 'flex' : 'none'; 
 }
 
 /* --- Управление сессией --- */
 async function actionStopAll() {
-  closeModals(); 
-  const anyActive = zones.some(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants.length > 0)); 
-  if (!anyActive) { showToast('Все элементы уже свободны'); return; }
-  if (!(await customConfirm('Остановить отсчёт во всех элементах?', 'Остановить всех', true))) return;
-  saveStateForUndo(); 
-  const now = Date.now();
-  zones.forEach(z => { 
-    if (z.mode === 'single' && z.active) forceOffSingle(z, now); 
-    if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, {skipConfirm:true})); 
-  });
-  renderMainPanel(); 
-  renderSummaryBar(); 
-  persistSession(); 
-  refreshWakeLock(); 
-  showToast('Все элементы остановлены');
+ closeModals(); 
+ const anyActive = zones.some(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants.length > 0)); 
+ if (!anyActive) { showToast('Все элементы уже свободны'); return; }
+ if (!(await customConfirm('Остановить отсчёт во всех элементах?', 'Остановить всех', true))) return;
+ saveStateForUndo(); 
+ const now = Date.now();
+ zones.forEach(z => { 
+ if (z.mode === 'single' && z.active) forceOffSingle(z, now); 
+ if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, {skipConfirm:true})); 
+ });
+ renderMainPanel(); 
+ renderSummaryBar(); 
+ persistSession(); 
+ refreshWakeLock(); 
+ showToast('Все элементы остановлены');
 }
 
 async function actionReset() {
-  closeModals(); 
-  if (logs.length > 0 && await customConfirm('Скачать логи перед сбросом данных?', 'Скачать')) exportCSV();
-  if (!(await customConfirm('Сбросить все счётчики?', 'Сбросить', true))) return;
-  saveStateForUndo();
-  zones.forEach(z => { 
-    if (z.mode === 'single' && z.active) forceOffSingle(z); 
-    if (z.mode === 'multi') [...z.occupants].forEach(o => { 
-      const idx = z.occupants.findIndex(x => x.localNum === o.localNum); 
-      if (idx !== -1) z.occupants.splice(idx, 1); 
-    }); 
-  });
-  logs = []; 
-  document.getElementById('logBody').innerHTML = ''; 
-  document.getElementById('logFeed').innerHTML = ''; 
-  zones.forEach(z => { z.triggerCount = 0; z.totalMs = 0; z.nextLocalNum = 1; });
-  renderMainPanel(); 
-  persistSession();
+ closeModals(); 
+ if (logs.length > 0 && await customConfirm('Скачать логи перед сбросом данных?', 'Скачать')) exportCSV();
+ if (!(await customConfirm('Сбросить все счётчики?', 'Сбросить', true))) return;
+ saveStateForUndo();
+ zones.forEach(z => { 
+ if (z.mode === 'single' && z.active) forceOffSingle(z); 
+ if (z.mode === 'multi') [...z.occupants].forEach(o => { 
+ const idx = z.occupants.findIndex(x => x.localNum === o.localNum); 
+ if (idx !== -1) z.occupants.splice(idx, 1); 
+ }); 
+ });
+ logs = []; 
+ document.getElementById('logBody').innerHTML = ''; 
+ document.getElementById('logFeed').innerHTML = ''; 
+ zones.forEach(z => { z.triggerCount = 0; z.totalMs = 0; z.nextLocalNum = 1; });
+ renderMainPanel(); 
+ persistSession();
 }
 
 async function actionNewTimer() {
-  closeModals(); 
-  if (logs.length > 0 && await customConfirm('Скачать логи перед созданием новой панели?', 'Скачать')) exportCSV();
-  if (!(await customConfirm('Создать новую панель?', 'Создать', true))) return;
-  clearSession(); 
-  historyStack = []; 
-  redoStack = []; 
-  updateUndoRedoButtons();
-  zones = []; 
-  logs = []; 
-  zoneIdCounter = 0; 
-  logIdCounter = 0;
-  document.getElementById('step3').classList.add('hidden'); 
-  enterEditMode();
+ closeModals(); 
+ if (logs.length > 0 && await customConfirm('Скачать логи перед созданием новой панели?', 'Скачать')) exportCSV();
+ if (!(await customConfirm('Создать новую панель?', 'Создать', true))) return;
+ clearSession(); 
+ historyStack = []; 
+ redoStack = []; 
+ updateUndoRedoButtons();
+ zones = []; 
+ logs = []; 
+ zoneIdCounter = 0; 
+ logIdCounter = 0;
+ document.getElementById('step3').classList.add('hidden'); 
+ enterEditMode();
 }
 
 async function actionExit() {
-  closeModals(); 
-  if (!(await customConfirm('Завершить работу приложения?', 'Завершить', true))) return;
-  if (logs.length > 0 && await customConfirm('Скачать логи напоследок?', 'Скачать')) exportCSV();
-  bgMusic.pause();
-  if (tickHandle) clearInterval(tickHandle); 
-  document.body.innerHTML = '<div style="text-align:center; padding-top:40vh; color:var(--muted);"><i data-lucide="check-circle" style="width:56px;height:56px;margin-bottom:16px;color:var(--accent);"></i><h2>Работа завершена</h2><p>Данные сохранены локально.</p></div>'; 
-  updateIcons();
+ closeModals(); 
+ if (!(await customConfirm('Завершить работу приложения?', 'Завершить', true))) return;
+ if (logs.length > 0 && await customConfirm('Скачать логи напоследок?', 'Скачать')) exportCSV();
+ bgMusic.pause();
+ if (tickHandle) clearInterval(tickHandle); 
+ document.body.innerHTML = '<div style="text-align:center; padding-top:40vh; color:var(--muted);"><i data-lucide="check-circle" style="width:56px;height:56px;margin-bottom:16px;color:var(--accent);"></i><h2>Работа завершена</h2><p>Данные сохранены локально.</p></div>'; 
+ updateIcons();
 }
 
 /* --- Пресеты --- */
 function openPresetsOverlay() { 
-  closeModals(); 
-  renderPresetsList(); 
-  showModal('presetsOverlay'); 
+ closeModals(); 
+ renderPresetsList(); 
+ showModal('presetsOverlay'); 
 }
 
 function renderPresetsList() {
-  const presets = getPresets(); 
-  const list = document.getElementById('presetsList'); 
-  const names = Object.keys(presets);
-  list.innerHTML = names.length ? '' : '<div style="text-align:center; padding:20px 10px; color:var(--muted); font-size:12px;">Сохранённых панелей пока нет.<br>Введите название выше и нажмите сохранить.</div>';
-  names.forEach(name => {
-    const p = presets[name]; 
-    const row = document.createElement('div'); 
-    row.className = 'menu-card-btn';
-    row.innerHTML = `
-    <div class="menu-card-left">
-      <div class="menu-card-icon" style="background:rgba(59, 130, 246, 0.15); border-color:rgba(59, 130, 246, 0.3); color:#60a5fa;">
-        <i data-lucide="layers" style="width:18px;height:18px;"></i>
-      </div>
-      <div class="menu-card-text">
-        <b>${escapeHtml(name)}</b>
-        <span>${p.zones.length} элементов</span>
-      </div>
-    </div>
-    <div style="display:flex; gap:6px; flex-shrink:0;">
-      <button class="action-btn small" style="width:auto; padding:6px 12px; height:34px; font-size:11px;" onclick="loadPreset('${escapeHtml(name.replace(/'/g,"\'"))}')"><i data-lucide="download-cloud" style="width:13px;height:13px;"></i> Загрузить</button>
-      <button class="icon-btn danger-btn" style="padding:6px; width:34px; height:34px; border-color:transparent; box-shadow:none;" onclick="deletePreset('${escapeHtml(name.replace(/'/g,"\'"))}')"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
-    </div>`;
-    list.appendChild(row);
-  });
-  updateIcons(list);
+ const presets = getPresets(); 
+ const list = document.getElementById('presetsList'); 
+ const names = Object.keys(presets);
+ list.innerHTML = names.length ? '' : '<div style="text-align:center; padding:20px 10px; color:var(--muted); font-size:12px;">Сохранённых панелей пока нет.<br>Введите название выше и нажмите сохранить.</div>';
+ names.forEach(name => {
+ const p = presets[name]; 
+ const row = document.createElement('div'); 
+ row.className = 'menu-card-btn';
+ row.innerHTML = `
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(59, 130, 246, 0.15); border-color:rgba(59, 130, 246, 0.3); color:#60a5fa;">
+ <i data-lucide="layers" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>${escapeHtml(name)}</b>
+ <span>${p.zones.length} элементов</span>
+ </div>
+ </div>
+ <div style="display:flex; gap:6px; flex-shrink:0;">
+ <button class="action-btn small" style="width:auto; padding:6px 12px; height:34px; font-size:11px;" onclick="loadPreset('${escapeHtml(name.replace(/'/g,"\\'"))}')"><i data-lucide="download-cloud" style="width:13px;height:13px;"></i> Загрузить</button>
+ <button class="icon-btn danger-btn" style="padding:6px; width:34px; height:34px; border-color:transparent; box-shadow:none;" onclick="deletePreset('${escapeHtml(name.replace(/'/g,"\\'"))}')"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+ </div>`;
+ list.appendChild(row);
+ });
+ updateIcons(list);
 }
 
 function saveCurrentAsPreset() {
-  if (zones.length === 0) { showToast('Нет элементов для сохранения', true); return; } 
-  const name = document.getElementById('presetNameInput').value.trim(); 
-  if (!name) { showToast('Введи название', true); return; }
-  const presets = getPresets(); 
-  presets[name] = { 
-    zones: zones.map(z => ({
-      name: z.name, 
-      mode: z.mode, 
-      color: z.color, 
-      countdown: z.countdown, 
-      limitMs: z.limitMs, 
-      limitAction: z.limitAction, 
-      multiLimitType: z.multiLimitType, 
-      size: z.size || 'compact'
-    })), 
-    savedAt: Date.now() 
-  };
-  savePresetsObj(presets); 
-  document.getElementById('presetNameInput').value = ''; 
-  renderPresetsList(); 
-  showToast('Сохранено');
+ if (zones.length === 0) { showToast('Нет элементов для сохранения', true); return; } 
+ const name = document.getElementById('presetNameInput').value.trim(); 
+ if (!name) { showToast('Введи название', true); return; }
+ const presets = getPresets(); 
+ presets[name] = { 
+ zones: zones.map(z => ({
+ name: z.name, 
+ mode: z.mode, 
+ color: z.color, 
+ countdown: z.countdown, 
+ limitMs: z.limitMs, 
+ limitAction: z.limitAction, 
+ multiLimitType: z.multiLimitType, 
+ size: z.size || 'compact'
+ })), 
+ savedAt: Date.now() 
+ };
+ savePresetsObj(presets); 
+ document.getElementById('presetNameInput').value = ''; 
+ renderPresetsList(); 
+ showToast('Сохранено');
 }
 
 function applyZonesConfig(zConf) {
-  saveStateForUndo(); 
-  zoneIdCounter = 0; 
-  logIdCounter = 0;
-  zones = zConf.map(zc => { 
-    const id = zoneIdCounter++; 
-    return { 
-      id, 
-      name: zc.name, 
-      mode: zc.mode, 
-      color: zc.color || colorFor(id), 
-      active: false, 
-      startTime: null, 
-      occupants: [], 
-      nextLocalNum: 1, 
-      triggerCount: 0, 
-      totalMs: 0, 
-      countdown: zc.countdown || false, 
-      limitMs: zc.limitMs || 0, 
-      limitAction: zc.limitAction || 'alert', 
-      multiLimitType: zc.multiLimitType || 'individual', 
-      size: zc.size || 'compact' 
-    }; 
-  });
-  logs = []; 
-  document.getElementById('logBody').innerHTML = ''; 
-  document.getElementById('logFeed').innerHTML = ''; 
-  closeModals();
-  document.getElementById('editStep').classList.add('hidden'); 
-  document.getElementById('stepResume').classList.add('hidden');
-  document.getElementById('step3').classList.add('fade-in'); 
-  document.getElementById('step3').classList.remove('hidden');
-  renderMainPanel(); 
-  startTicker(); 
-  persistSession(); 
-  refreshWakeLock(); 
-  updateBubbleMode();
+ saveStateForUndo(); 
+ zoneIdCounter = 0; 
+ logIdCounter = 0;
+ zones = zConf.map(zc => { 
+ const id = zoneIdCounter++; 
+ return { 
+ id, 
+ name: zc.name, 
+ mode: zc.mode, 
+ color: zc.color || colorFor(id), 
+ active: false, 
+ startTime: null, 
+ occupants: [], 
+ nextLocalNum: 1, 
+ triggerCount: 0, 
+ totalMs: 0, 
+ countdown: zc.countdown || false, 
+ limitMs: zc.limitMs || 0, 
+ limitAction: zc.limitAction || 'alert', 
+ multiLimitType: zc.multiLimitType || 'individual', 
+ size: zc.size || 'compact' 
+ }; 
+ });
+ logs = []; 
+ document.getElementById('logBody').innerHTML = ''; 
+ document.getElementById('logFeed').innerHTML = ''; 
+ closeModals();
+ document.getElementById('editStep').classList.add('hidden'); 
+ document.getElementById('stepResume').classList.add('hidden');
+ document.getElementById('step3').classList.add('fade-in'); 
+ document.getElementById('step3').classList.remove('hidden');
+ renderMainPanel(); 
+ startTicker(); 
+ persistSession(); 
+ refreshWakeLock(); 
+ updateBubbleMode();
 }
 
 async function loadPreset(name) {
-  const p = getPresets()[name]; 
-  if (!p) return; 
-  const hasLive = logs.length > 0 || zones.some(z => z.active || z.occupants.length);
-  if (hasLive && !(await customConfirm('Текущая панель будет заменена. Логи удалятся. Продолжить?', 'Заменить', true))) return;
-  applyZonesConfig(p.zones); 
-  showToast(`Загружено: ${name}`);
+ const p = getPresets()[name]; 
+ if (!p) return; 
+ const hasLive = logs.length > 0 || zones.some(z => z.active || z.occupants.length);
+ if (hasLive && !(await customConfirm('Текущая панель будет заменена. Логи удалятся. Продолжить?', 'Заменить', true))) return;
+ applyZonesConfig(p.zones); 
+ showToast(`Загружено: ${name}`);
 }
 
 async function deletePreset(name) { 
-  if (!(await customConfirm(`Удалить панель «${escapeHtml(name)}»?`, 'Удалить', true))) return; 
-  const p = getPresets(); 
-  delete p[name]; 
-  savePresetsObj(p); 
-  renderPresetsList(); 
-}
+ if (!(await customConfirm(`Удалить панель «${escapeHtml(name)}»?`, 'Удалить', true))) return; 
+ const p = getPresets(); 
+ delete p[name]; 
+ savePresetsObj(p); 
+ renderPresetsList(); 
+ }
 
 function exportPresetJSON() {
-  if (zones.length === 0) return; 
-  const blob = new Blob([JSON.stringify({
-    zones: zones.map(z => ({
-      name: z.name, 
-      mode: z.mode, 
-      color: z.color, 
-      countdown: z.countdown, 
-      limitMs: z.limitMs, 
-      limitAction: z.limitAction, 
-      multiLimitType: z.multiLimitType, 
-      size: z.size || 'compact'
-    }))
-  }, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob); 
-  const link = document.createElement('a'); 
-  link.href = url; 
-  link.download = `preset_${new Date().toISOString().slice(0,10)}.json`; 
-  document.body.appendChild(link); 
-  link.click(); 
-  document.body.removeChild(link); 
-  URL.revokeObjectURL(url);
+ if (zones.length === 0) return; 
+ const blob = new Blob([JSON.stringify({
+ zones: zones.map(z => ({
+ name: z.name, 
+ mode: z.mode, 
+ color: z.color, 
+ countdown: z.countdown, 
+ limitMs: z.limitMs, 
+ limitAction: z.limitAction, 
+ multiLimitType: z.multiLimitType, 
+ size: z.size || 'compact'
+ }))
+ }, null, 2)], {type:'application/json'});
+ const url = URL.createObjectURL(blob); 
+ const link = document.createElement('a'); 
+ link.href = url; 
+ link.download = `preset_${new Date().toISOString().slice(0,10)}.json`; 
+ document.body.appendChild(link); 
+ link.click(); 
+ document.body.removeChild(link); 
+ URL.revokeObjectURL(url);
 }
 
 function importPresetJSON(file) {
-  if (!file) return; 
-  const reader = new FileReader();
-  reader.onload = async () => {
-    try {
-      const data = JSON.parse(reader.result); 
-      if (!data.zones || !Array.isArray(data.zones)) throw new Error('bad fmt');
-      const hasLive = logs.length > 0 || zones.some(z => z.active || z.occupants.length);
-      if (hasLive && !(await customConfirm('Текущая панель будет заменена. Продолжить?', 'Заменить', true))) return;
-      applyZonesConfig(data.zones); 
-      showToast('Импортировано');
-    } catch(e) { 
-      showToast('Ошибка файла', true); 
-    }
-  };
-  reader.readAsText(file);
+ if (!file) return; 
+ const reader = new FileReader();
+ reader.onload = async () => {
+ try {
+ const data = JSON.parse(reader.result); 
+ if (!data.zones || !Array.isArray(data.zones)) throw new Error('bad fmt');
+ const hasLive = logs.length > 0 || zones.some(z => z.active || z.occupants.length);
+ if (hasLive && !(await customConfirm('Текущая панель будет заменена. Продолжить?', 'Заменить', true))) return;
+ applyZonesConfig(data.zones); 
+ showToast('Импортировано');
+ } catch(e) { 
+ showToast('Ошибка файла', true); 
+ }
+ };
+ reader.readAsText(file);
 }
 
 /* --- Справка и руководство --- */
 function openHelpModal() {
-  closeModals();
-  switchHelpTab('start');
-  showModal('helpModal');
+ closeModals();
+ switchHelpTab('start');
+ showModal('helpModal');
 }
 
 function switchHelpTab(tabKey) {
-  document.querySelectorAll('.help-tab-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelectorAll('.help-tab-pane').forEach(pane => pane.classList.add('hidden'));
+ document.querySelectorAll('.help-tab-btn').forEach(btn => btn.classList.remove('active'));
+ document.querySelectorAll('.help-tab-pane').forEach(pane => pane.classList.add('hidden'));
  
-  const targetBtn = document.querySelector(`.help-tab-btn[onclick*="${tabKey}"]`);
-  const targetPane = document.getElementById(`helpSection_${tabKey}`);
+ const targetBtn = document.querySelector(`.help-tab-btn[onclick*="${tabKey}"]`);
+ const targetPane = document.getElementById(`helpSection_${tabKey}`);
  
-  if (targetBtn) targetBtn.classList.add('active');
-  if (targetPane) targetPane.classList.remove('hidden');
+ if (targetBtn) targetBtn.classList.add('active');
+ if (targetPane) targetPane.classList.remove('hidden');
  
-  const scrollArea = document.getElementById('helpContentScroll');
-  if (scrollArea) scrollArea.scrollTop = 0;
-  updateIcons(document.getElementById('helpModal'));
+ const scrollArea = document.getElementById('helpContentScroll');
+ if (scrollArea) scrollArea.scrollTop = 0;
+ updateIcons(document.getElementById('helpModal'));
 }
 
 /* --- PWA Установка --- */
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const installBtn = document.getElementById('installAppBtn');
-  if (installBtn) {
-    installBtn.classList.remove('hidden');
-    updateIcons(installBtn);
-  }
+ e.preventDefault();
+ deferredPrompt = e;
+ const installBtn = document.getElementById('installAppBtn');
+ if (installBtn) {
+ installBtn.classList.remove('hidden');
+ updateIcons(installBtn);
+ }
 });
 
 async function installPWA() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') showToast('Установка пошла');
-  deferredPrompt = null;
-  document.getElementById('installAppBtn').classList.add('hidden');
-  closeModals();
+ if (!deferredPrompt) return;
+ deferredPrompt.prompt();
+ const { outcome } = await deferredPrompt.userChoice;
+ if (outcome === 'accepted') showToast('Установка пошла');
+ deferredPrompt = null;
+ document.getElementById('installAppBtn').classList.add('hidden');
+ closeModals();
 }
 
 if ('serviceWorker' in navigator) { 
-  window.addEventListener('load', () => { 
-    navigator.serviceWorker.register('sw.js').then((reg) => {
-      reg.update();
-    }).catch(() => { }); 
-  }); 
+ window.addEventListener('load', () => { 
+ navigator.serviceWorker.register('sw.js').then((reg) => {
+ reg.update();
+ }).catch(() => { }); 
+ }); 
 }
 
 /* --- Инициализация при старте --- */
@@ -3741,17 +3788,19 @@ initBubblePosition();
 
 const pending = loadSessionRaw();
 if (pending && pending.zones && pending.zones.length) {
-  window.__pendingSession = pending;
-  const resumeInfo = document.getElementById('resumeInfo');
-  if (resumeInfo) {
-    const activeCount = pending.zones.filter(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants && z.occupants.length > 0)).length;
-    resumeInfo.textContent = `Сохранено элементов: ${pending.zones.length}${activeCount > 0 ? ` (активных: ${activeCount})` : ''}. Вы можете восстановить работу или создать новую панель.`;
-  }
-  document.getElementById('stepResume').classList.remove('hidden'); 
-  document.getElementById('stepResume').classList.add('fade-in'); 
-  updateBubbleMode();
+ window.__pendingSession = pending;
+ const resumeInfo = document.getElementById('resumeInfo');
+ if (resumeInfo) {
+ const activeCount = pending.zones.filter(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants && z.occupants.length > 0)).length;
+ resumeInfo.textContent = `Сохранено элементов: ${pending.zones.length}${activeCount > 0 ? ` (активных: ${activeCount})` : ''}. Вы можете восстановить работу или создать новую панель.`;
+ }
+ document.getElementById('stepResume').classList.remove('hidden'); 
+ document.getElementById('stepResume').classList.add('fade-in'); 
+ updateBubbleMode();
 } else {
-  enterEditMode(); 
-  document.getElementById('editStep').classList.add('fade-in');
+ enterEditMode(); 
+ document.getElementById('editStep').classList.add('fade-in');
 }
 </script>
+</body>
+</html>
