@@ -1,5 +1,5 @@
 {
-  "name": "AnyTimer v7.18",
+  "name": "AnyTimer v7.19",
   "short_name": "AnyTimer",
   "description": "Автономный PWA-таймер и секундомер для параллельного хронометража процессов, оборудования и зон",
   "id": "./index.html",
@@ -36,5 +36,5 @@
       "type": "image/svg+xml"
     }
   ],
-  "version": "7.18"
+  "version": "7.19"
 }
