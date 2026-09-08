@@ -1,0 +1,14 @@
+{
+  "zones": [
+    {
+      "name": "Элемент 1",
+      "mode": "single",
+      "color": "#14b8a6",
+      "countdown": false,
+      "limitMs": 0,
+      "limitAction": "alert",
+      "multiLimitType": "individual",
+      "size": "compact"
+    }
+  ]
+}
