@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#0d0d19" id="themeColorMeta">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<title>AnyTimer v8.0</title>
+<title>AnyTimer v8.01</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
@@ -737,7 +737,7 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div style="display:flex; gap:6px;">
  <button class="back-btn small" onclick="editAddZone('single')" title="Добавить одиночный таймер" style="padding:2px 8px; font-size:11px; height:24px; border-color:var(--accent); color:var(--accent); background:rgba(var(--shimmer-rgb),0.06);">+ Одиночный</button>
  <button class="back-btn small" onclick="editAddZone('multi')" title="Добавить группу" style="padding:2px 8px; font-size:11px; height:24px; border-color:var(--accent); color:var(--accent); background:rgba(var(--shimmer-rgb),0.06);">+ Группа</button>
- <button class="back-btn small" onclick="editAddZone('note')" title="Добавить элемент Заметка" style="padding:2px 8px; font-size:11px; height:24px; border-color:#38bdf8; color:#38bdf8; background:rgba(56,189,248,0.08);">+ Заметка</button>
+ <button class="back-btn small" onclick="editAddZone('note')" title="Добавить элемент Заметка" style="padding:2px 8px; font-size:11px; height:24px; border-color:#10b981; color:#10b981; background:rgba(16,185,129,0.1);"><i data-lucide="pen-tool" style="width:11px;height:11px;margin-right:2px;display:inline-block;vertical-align:middle;"></i>+ Заметка</button>
  </div>
  </div>
 
@@ -747,11 +747,11 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div style="display:flex; justify-content:space-between; align-items:center;">
  <div class="menu-section-eyebrow" style="margin:0; display:flex; align-items:center; gap:6px;">
  <i data-lucide="user-check" style="width:13px;height:13px; color:var(--accent);"></i>
- <span>Индикатор оператора / смены</span>
+ <span>Должность / Оператор / Смена</span>
  </div>
  <span style="font-size:10px; color:var(--muted);">Фиксируется в таблице и логах</span>
  </div>
- <input type="text" id="operatorIndicatorInput" placeholder="ФИО / Должность / Смена (например: Конышев С.В. — АСУ ТП)" style="margin:0; padding:7px 10px; font-size:12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); width:100%; box-sizing:border-box;" oninput="onOperatorIndicatorChange(this.value)">
+ <input type="text" id="operatorIndicatorInput" placeholder="Должность / ФИО / Смена (например: Инженер АСУ / Смена 1)" style="margin:0; padding:7px 10px; font-size:12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); width:100%; box-sizing:border-box;" oninput="onOperatorIndicatorChange(this.value)">
  </div>
 
  <div id="editZonesGrid" class="unified-zones-grid"></div>
@@ -765,7 +765,7 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
  <button class="action-btn small" onclick="editAddZone('single')" style="width:auto;"><i data-lucide="plus"></i> Одиночный</button>
  <button class="action-btn small" onclick="editAddZone('multi')" style="width:auto;"><i data-lucide="layers"></i> Групповой</button>
- <button class="action-btn small" onclick="editAddZone('note')" style="width:auto; border-color:#38bdf8; color:#38bdf8;"><i data-lucide="file-text"></i> Заметка</button>
+ <button class="action-btn small" onclick="editAddZone('note')" style="width:auto; border-color:#10b981; color:#10b981; background:rgba(16,185,129,0.1);"><i data-lucide="pen-tool"></i> Заметка</button>
  </div>
  </div>
  </div>
@@ -935,6 +935,11 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <button class="resume-btn resume-btn-secondary" onclick="resetNoteModal()">Отмена</button>
  <button class="resume-btn resume-btn-primary" onclick="saveNoteConfirm()"><i data-lucide="plus" style="width:16px;height:16px;"></i> Добавить</button>
  </div>
+ <div style="text-align:center; margin-top:8px;">
+ <button type="button" class="back-btn small" onclick="openColumnsConfigModal('noteModal')" style="padding:4px 10px; font-size:11px; height:auto; color:var(--muted); border-color:var(--border);">
+ <i data-lucide="sliders" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:4px;"></i> Настроить столбцы выгрузки (CSV / Excel)
+ </button>
+ </div>
  </div>
 </div>
 
@@ -948,28 +953,47 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
  
- <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin: 6px 0 10px;">
- <button class="resume-btn resume-btn-secondary" onclick="exportCSV()"><i data-lucide="download" style="width:16px;height:16px;"></i> Скачать CSV</button>
- <button class="resume-btn resume-btn-primary" id="shareBtnMenu" onclick="shareCSV()"><i data-lucide="share-2" style="width:16px;height:16px;"></i> Поделиться</button>
+ <div class="menu-grid-row" style="grid-template-columns: 1.1fr 1.1fr 1fr; margin: 6px 0 10px;">
+ <button class="resume-btn resume-btn-secondary" onclick="exportCSV()"><i data-lucide="download" style="width:15px;height:15px;"></i> Скачать CSV</button>
+ <button class="resume-btn resume-btn-primary" id="shareBtnMenu" onclick="shareCSV()"><i data-lucide="share-2" style="width:15px;height:15px;"></i> Поделиться</button>
+ <button class="resume-btn resume-btn-secondary" onclick="openColumnsConfigModal('fullTableModal')" style="border-color:#10b981; color:#10b981; background:rgba(16,185,129,0.08); font-weight:700;"><i data-lucide="sliders" style="width:15px;height:15px;"></i> Столбцы</button>
  </div>
 
  <div class="table-wrap" style="flex: 1; margin-top: 4px; max-height: calc(100% - 100px);">
  <table id="fullTable">
- <thead>
- <tr>
- <th>Оператор</th>
- <th>Событие / Элемент</th>
- <th>Текст заметки</th>
- <th>Элемент Примечание</th>
- <th>Старт</th>
- <th>Финиш</th>
- <th>Время</th>
- </tr>
- </thead>
+ <thead id="fullTableHead"></thead>
  <tbody id="logBody"></tbody>
  </table>
  </div>
  </div>
+</div>
+
+<!-- Модальное окно настройки столбцов вывода (CSV / Excel / Журнал) -->
+<div id="columnsConfigModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+  <div class="modal-content" style="max-width: 500px; max-height: 92vh; display:flex; flex-direction:column;">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i data-lucide="sliders" style="color:var(--accent); width:20px; height:20px;"></i>
+        <h3 style="margin:0; font-size:16px;">Настройка колонок вывода</h3>
+      </div>
+      <button class="icon-btn close-btn" onclick="closeColumnsConfigModal()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+    </div>
+
+    <p style="font-size:12px; color:var(--muted); margin:4px 0 10px; line-height:1.4;">
+      Отметьте необходимые столбцы и настройте их порядок стрелками <b>▲ / ▼</b>. Настройки применяются к Журналу, выгрузке в CSV/Excel и автозаписи на сетевой диск (диск P:).
+    </p>
+
+    <div id="columnsConfigList" style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:6px; margin-bottom:12px; max-height:50vh; padding-right:2px;"></div>
+
+    <div style="display:flex; gap:8px; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:10px; flex-wrap:wrap;">
+      <button class="resume-btn resume-btn-secondary" onclick="resetColumnsConfigToDefault()" style="width:auto; font-size:11px; padding:6px 10px;">
+        <i data-lucide="rotate-ccw" style="width:13px;height:13px;"></i> По умолчанию (v8.01)
+      </button>
+      <button class="resume-btn resume-btn-primary" onclick="saveAndApplyColumnsConfig()" style="width:auto; font-size:12px; padding:6px 18px;">
+        <i data-lucide="check" style="width:14px;height:14px;"></i> Применить
+      </button>
+    </div>
+  </div>
 </div>
 
 <div id="helpModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
@@ -977,7 +1001,7 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="modal-header">
  <div style="display:flex; align-items:center; gap:8px;">
  <i data-lucide="book-open" style="color:var(--accent); width:20px; height:20px;"></i>
- <h3 style="margin:0;">Справка AnyTimer <span style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v8.0</span></h3>
+ <h3 style="margin:0;">Справка AnyTimer <span style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v8.01</span></h3>
  </div>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
@@ -998,7 +1022,7 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-left">
  <div class="menu-card-icon"><i data-lucide="activity"></i></div>
  <div class="menu-card-text">
- <b>Быстрый старт за 3 шага (v8.0)</b>
+ <b>Быстрый старт за 3 шага (v8.01)</b>
  <span>1. Конструктор (таймеры, группы, заметки и оператор) → 2. Запуск панели → 3. Учёт смены и экспорт на диск P:\</span>
  </div>
  </div>
@@ -1079,7 +1103,7 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-left">
  <div class="menu-card-icon"><i data-lucide="table"></i></div>
  <div class="menu-card-text">
- <b>Журнал и экспорт (v8.0)</b>
+ <b>Журнал и экспорт (v8.01)</b>
  <span>Живая лента, фиксация оператора смены, раздельные колонки Старт / Финиш и сквозной столбец <b>«Элемент Примечание»</b> для быстрой сортировки.</span>
  </div>
  </div>
@@ -1122,7 +1146,7 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-icon"><i data-lucide="smartphone"></i></div>
  <div class="menu-card-text">
  <b>Офлайн PWA и надежность</b>
- <span>100% автономная работа без интернета (кэш Service Worker anytimer-v8.0), блокировка засыпания экрана (Wake Lock) и фоновая музыка с автопаузой при голосе.</span>
+ <span>100% автономная работа без интернета (кэш Service Worker anytimer-v8.01), блокировка засыпания экрана (Wake Lock) и фоновая музыка с автопаузой при голосе.</span>
  </div>
  </div>
  </div>
@@ -1133,7 +1157,7 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-left">
  <div class="menu-card-icon" style="background:rgba(var(--shimmer-rgb),0.15); color:var(--accent);"><i data-lucide="cpu"></i></div>
  <div class="menu-card-text">
- <b>AnyTimer <span class="app-version-display" style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v8.0</span></b>
+ <b>AnyTimer <span class="app-version-display" style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v8.01</span></b>
  <span>Enterprise & Industrial Filesystem Sync Release</span>
  </div>
  </div>
@@ -1141,11 +1165,11 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:14px;">
  <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
  <span style="color:var(--muted);">Текущая сборка:</span>
- <span class="version-badge-pill"><span class="pulse-pip" style="width:6px;height:6px;border-radius:50%;background:var(--accent);"></span><b class="app-version-display">v8.0</b></span>
+ <span class="version-badge-pill"><span class="pulse-pip" style="width:6px;height:6px;border-radius:50%;background:var(--accent);"></span><b class="app-version-display">v8.01</b></span>
  </div>
  <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
  <span style="color:var(--muted);">Service Worker кэш:</span>
- <b id="aboutCacheName" style="font-family:var(--font-mono); color:var(--text); font-size:11px;">anytimer-v8.0</b>
+ <b id="aboutCacheName" style="font-family:var(--font-mono); color:var(--text); font-size:11px;">anytimer-v8.01</b>
  </div>
  <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
  <span style="color:var(--muted);">Режим работы:</span>
@@ -1307,6 +1331,14 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-left">
  <div class="menu-card-icon" style="background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.3); color: #facc15;"><i data-lucide="webhook" style="width:18px;height:18px;"></i></div>
  <div class="menu-card-text"><b>Настройка Webhook</b><span>POST-события в Home Assistant и серверы</span></div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
+ </button>
+
+ <button class="menu-card-btn" onclick="openColumnsConfigModal('menuModal')">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #10b981;"><i data-lucide="sliders" style="width:18px;height:18px;"></i></div>
+ <div class="menu-card-text"><b>Настройка столбцов вывода</b><span>Выбор и порядок колонок (Дата, Старт, Стоп, Простой, Должность...)</span></div>
  </div>
  <i data-lucide="chevron-right" class="menu-card-chevron"></i>
  </button>
@@ -1545,6 +1577,17 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
       </label>
     </div>
 
+    <!-- Настройка столбцов сетевого файла -->
+    <div style="margin: 10px 0 12px; display:flex; flex-direction:column; gap:6px;">
+      <button class="resume-btn resume-btn-secondary" onclick="openColumnsConfigModal('fileSyncModal')" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; border-color:#10b981; color:#10b981; background:rgba(16,185,129,0.1); font-weight:700; padding:11px 16px; font-size:13.5px; border-radius:10px;">
+        <i data-lucide="sliders" style="width:17px;height:17px;"></i> Настроить столбцы таблицы (CSV / Excel)
+      </button>
+      <div style="display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--muted); padding:0 4px;">
+        <span>Столбцы выгрузки (v8.01):</span>
+        <span id="fsActiveColsPreview" style="color:var(--text); font-weight:600;">8 столбцов (Старт, Стоп, Простой, Должность...)</span>
+      </div>
+    </div>
+
     <!-- Подсказка для Excel -->
     <div style="font-size:11px; color:var(--muted); background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:8px 10px; line-height:1.4;">
       <b style="color:var(--text);">Формат для Excel (Windows 11):</b><br>
@@ -1555,7 +1598,7 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
 
 
 <script>
-const APP_VERSION = 'v8.0';
+const APP_VERSION = 'v8.01';
 
 function syncAppVersion() {
  document.querySelectorAll('.app-version-display').forEach(el => {
@@ -2014,30 +2057,127 @@ function getFormattedCurrentDate() {
   return `${day}.${month}.${year}`;
 }
 
-const FS_CSV_HEADER = '\uFEFFДата;Время;Оператор;Событие;№;Элемент;Примечание;Элемент Примечание;№ Визита;Длительность;Всего визитов\r\n';
+/* Конфигурация колонок вывода (CSV / Excel / Сеть) */
+const DEFAULT_COLUMN_CONFIG = [
+  { id: 'date', label: 'Дата', enabled: true },
+  { id: 'startTime', label: 'Время старта', enabled: true },
+  { id: 'stopTime', label: 'Время стопа', enabled: true },
+  { id: 'duration', label: 'Время простоя', enabled: true },
+  { id: 'element', label: 'Элемент', enabled: true },
+  { id: 'note', label: 'Примечание', enabled: true },
+  { id: 'combined', label: 'Элемент Примечание', enabled: true },
+  { id: 'operator', label: 'Должность', enabled: true },
+  { id: 'event', label: 'Событие', enabled: false },
+  { id: 'panelNum', label: '№ Зоны', enabled: false },
+  { id: 'visitNum', label: '№ Визита', enabled: false },
+  { id: 'totalVisits', label: 'Всего визитов', enabled: false }
+];
+
+function getColumnConfig() {
+  try {
+    const raw = localStorage.getItem('anytimer_export_columns_v8');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const existingIds = new Set(parsed.map(c => c.id));
+        DEFAULT_COLUMN_CONFIG.forEach(dc => {
+          if (!existingIds.has(dc.id)) {
+            parsed.push({ ...dc, enabled: false });
+          }
+        });
+        return parsed;
+      }
+    }
+  } catch(e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_COLUMN_CONFIG));
+}
+
+function saveColumnConfig(cfg) {
+  localStorage.setItem('anytimer_export_columns_v8', JSON.stringify(cfg));
+}
+
+function getActiveColumns() {
+  return getColumnConfig().filter(c => c.enabled);
+}
+
+function formatDurationHMS(ms) {
+  if (typeof ms !== 'number' || isNaN(ms) || ms < 0) return '00:00:00';
+  const totalSeconds = Math.floor(ms / 1000);
+  const h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+  const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+  const s = (totalSeconds % 60).toString().padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
+function ensureHMS(dur) {
+  if (!dur || dur === '-') return '00:00:00';
+  const str = String(dur).trim();
+  const parts = str.split(':');
+  if (parts.length === 2) {
+    const m = parts[0].padStart(2, '0');
+    const s = parts[1].padStart(2, '0');
+    return `00:${m}:${s}`;
+  }
+  if (parts.length === 3) {
+    const h = parts[0].padStart(2, '0');
+    const m = parts[1].padStart(2, '0');
+    const s = parts[2].padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+  return str;
+}
+
+function getRecordField(r, colId) {
+  const isNote = r.type === 'note' || r.event === 'ЗАМЕТКА';
+  const op = r.operator || getOperatorIndicator() || '';
+  const dt = r.date || getFormattedCurrentDate();
+
+  let elem = '';
+  if (r.name) elem = r.name;
+  else if (r.targetName) elem = r.targetName;
+  else if (isNote) elem = 'Общая';
+  else elem = '-';
+  elem = String(elem).replace(/^№\d+\s+/, '');
+
+  let note = '';
+  if (r.text) note = r.text;
+  else if (r.note && r.note !== '-') note = r.note;
+
+  const combined = (elem && note) ? `${elem} ${note}`.trim() : (note || elem);
+
+  let onT = r.startTime || r.onTime || r.time || '-';
+  let offT = r.stopTime || r.offTime || (isNote ? (r.time || '-') : '-');
+  let dur = r.duration ? ensureHMS(r.duration) : (isNote ? '00:00:00' : '-');
+
+  switch (colId) {
+    case 'date': return dt;
+    case 'startTime': return onT;
+    case 'stopTime': return offT;
+    case 'duration': return dur;
+    case 'element': return elem;
+    case 'note': return note;
+    case 'combined': return combined;
+    case 'operator': return op;
+    case 'event': return r.event || (isNote ? 'ЗАМЕТКА' : 'СТОП');
+    case 'panelNum': return r.panelNum ? String(r.panelNum) : (r.num ? `№${r.num}` : '-');
+    case 'visitNum': return r.visitNum || r.num || '-';
+    case 'totalVisits': return r.totalVisits || r.num || '-';
+    default: return '';
+  }
+}
+
+function getFSCSVHeader() {
+  const cols = getActiveColumns();
+  return '\uFEFF' + cols.map(c => c.label).join(';') + '\r\n';
+}
 
 function formatFSCSVRow(rec) {
   const clean = (val) => {
     if (val === null || val === undefined) return '""';
     return '"' + String(val).replace(/"/g, '""').replace(/[\r\n]+/g, ' ') + '"';
   };
-  const elem = rec.name || '-';
-  const note = rec.note || '';
-  const combined = (note && note !== '-') ? `${elem} ${note}`.trim() : elem;
-
-  return [
-    clean(rec.date || getFormattedCurrentDate()),
-    clean(rec.time || '-'),
-    clean(rec.operator || getOperatorIndicator() || ''),
-    clean(rec.event || '-'),
-    clean(rec.panelNum || '-'),
-    clean(elem),
-    clean(note),
-    clean(combined),
-    clean(rec.visitNum || '-'),
-    clean(rec.duration || '-'),
-    clean(rec.totalVisits || '-')
-  ].join(';') + '\r\n';
+  const cols = getActiveColumns();
+  return cols.map(c => clean(getRecordField(rec, c.id))).join(';') + '\r\n';
 }
 
 async function appendNetworkLogRecord(rec) {
@@ -2060,7 +2200,7 @@ async function flushNetworkLogQueue() {
     const file = await activeFSHandle.getFile();
     const isNew = file.size === 0;
 
-    let payload = isNew ? FS_CSV_HEADER : '';
+    let payload = isNew ? getFSCSVHeader() : '';
     while (fsQueue.length > 0) {
       const item = fsQueue.shift();
       payload += formatFSCSVRow(item);
@@ -4065,113 +4205,244 @@ function getFeedItemHTML(entry) {
  </div>`;
 }
 
+function renderFullTableHead() {
+  const thead = document.getElementById('fullTableHead');
+  if (!thead) return;
+  const cols = getActiveColumns();
+  thead.innerHTML = `<tr>${cols.map(c => `<th>${escapeHtml(c.label)}</th>`).join('')}</tr>`;
+}
+
 function getTableRowHTML(entry) {
- const opStr = escapeHtml(entry.operator || getOperatorIndicator() || '-');
- if (entry.type === 'note') {
- const tName = escapeHtml(entry.targetName || 'Общая');
- const noteRaw = entry.text || '';
- const combined = (tName + ' ' + noteRaw).trim();
- const durStr = (entry.duration && entry.duration !== '-') ? `<b>${entry.duration}</b>` : '-';
- return `<tr class="note-row">
- <td style="color:var(--muted); font-size:11px; font-weight:600;">${opStr}</td>
- <td><span style="color:var(--accent); font-weight:700;"><i data-lucide="pen-tool" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>${tName}</span></td>
- <td>
- <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
- <span style="font-size:12.5px; font-weight:600; color:var(--text); word-break:break-word;">${escapeHtml(noteRaw)}</span>
- <div style="display:flex; gap:4px; flex-shrink:0;">
- <button class="icon-btn" style="padding:4px; height:24px; width:24px;" onclick="editNoteEntry(${entry.id}); closeModals();" title="Редактировать"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
- <button class="icon-btn" style="padding:4px; height:24px; width:24px; color:var(--danger); background:rgba(239, 68, 68, 0.1);" onclick="deleteNoteEntry(${entry.id})" title="Удалить"><i data-lucide="trash-2" style="width:12px;height:12px;"></i></button>
- </div>
- </div>
- </td>
- <td><span style="font-size:12px; font-weight:600; color:var(--text); word-break:break-word;">${escapeHtml(combined)}</span></td>
- <td>${entry.onTime || entry.time || '-'}</td>
- <td>${entry.offTime || '-'}</td>
- <td>${durStr}</td>
- </tr>`;
- }
- const noteText = entry.note && entry.note !== '-' ? entry.note : '';
- const combined = noteText ? `${entry.name || ''} ${noteText}`.trim() : (entry.name || '');
- return `<tr>
- <td style="color:var(--muted); font-size:11px; font-weight:600;">${opStr}</td>
- <td><b>${escapeHtml(entry.name || '')}</b></td>
- <td style="color:var(--muted);">${escapeHtml(entry.note || '-')}</td>
- <td><span style="font-size:12px; font-weight:600; color:var(--text);">${escapeHtml(combined)}</span></td>
- <td>${entry.onTime || '-'}</td>
- <td>${entry.offTime || '-'}</td>
- <td><b>${entry.duration || '-'}</b></td>
- </tr>`;
+  const cols = getActiveColumns();
+  const isNote = entry.type === 'note';
+  const hasNoteCol = cols.some(x => x.id === 'note');
+
+  let cells = cols.map(c => {
+    const rawVal = getRecordField(entry, c.id);
+    const val = escapeHtml(rawVal || '-');
+
+    if (c.id === 'element') {
+      if (isNote) {
+        return `<td><span style="color:var(--accent); font-weight:700;"><i data-lucide="pen-tool" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>${val}</span></td>`;
+      }
+      return `<td><b>${val}</b></td>`;
+    }
+
+    if (c.id === 'note') {
+      if (isNote) {
+        return `<td>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+            <span style="font-size:12.5px; font-weight:600; color:var(--text); word-break:break-word;">${escapeHtml(rawVal || '')}</span>
+            <div style="display:flex; gap:3px; flex-shrink:0;">
+              <button class="icon-btn" style="padding:3px; height:22px; width:22px;" onclick="editNoteEntry(${entry.id}); closeModals();" title="Редактировать"><i data-lucide="pencil" style="width:11px;height:11px;"></i></button>
+              <button class="icon-btn" style="padding:3px; height:22px; width:22px; color:var(--danger); background:rgba(239, 68, 68, 0.1);" onclick="deleteNoteEntry(${entry.id})" title="Удалить"><i data-lucide="trash-2" style="width:11px;height:11px;"></i></button>
+            </div>
+          </div>
+        </td>`;
+      }
+      return `<td style="color:var(--muted);">${val}</td>`;
+    }
+
+    if (c.id === 'combined') {
+      if (isNote && !hasNoteCol) {
+        return `<td>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+            <span style="font-size:12px; font-weight:600; color:var(--text); word-break:break-word;">${val}</span>
+            <div style="display:flex; gap:3px; flex-shrink:0;">
+              <button class="icon-btn" style="padding:3px; height:22px; width:22px;" onclick="editNoteEntry(${entry.id}); closeModals();" title="Редактировать"><i data-lucide="pencil" style="width:11px;height:11px;"></i></button>
+              <button class="icon-btn" style="padding:3px; height:22px; width:22px; color:var(--danger); background:rgba(239, 68, 68, 0.1);" onclick="deleteNoteEntry(${entry.id})" title="Удалить"><i data-lucide="trash-2" style="width:11px;height:11px;"></i></button>
+            </div>
+          </div>
+        </td>`;
+      }
+      return `<td><span style="font-size:12px; font-weight:600; color:var(--text); word-break:break-word;">${val}</span></td>`;
+    }
+
+    if (c.id === 'duration') {
+      return `<td><b>${val}</b></td>`;
+    }
+
+    if (c.id === 'operator') {
+      return `<td style="color:var(--muted); font-size:11px; font-weight:600;">${val}</td>`;
+    }
+
+    return `<td>${val}</td>`;
+  }).join('');
+
+  return `<tr class="${isNote ? 'note-row' : ''}">${cells}</tr>`;
 }
 
 function prependTableRow(entry) { 
- const tbody = document.getElementById('logBody'); 
- tbody.insertAdjacentHTML('afterbegin', getTableRowHTML(entry)); 
- updateIcons(tbody.firstElementChild); 
- const feed = document.getElementById('logFeed'); 
- feed.insertAdjacentHTML('beforeend', getFeedItemHTML(entry)); 
- updateIcons(feed.lastElementChild);
- while (feed.children.length > 3) feed.removeChild(feed.firstChild);
- requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+  const tbody = document.getElementById('logBody'); 
+  if (tbody) {
+    tbody.insertAdjacentHTML('afterbegin', getTableRowHTML(entry)); 
+    updateIcons(tbody.firstElementChild); 
+  }
+  const feed = document.getElementById('logFeed'); 
+  if (feed) {
+    feed.insertAdjacentHTML('beforeend', getFeedItemHTML(entry)); 
+    updateIcons(feed.lastElementChild);
+    while (feed.children.length > 3) feed.removeChild(feed.firstChild);
+    requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+  }
 }
 
 function rebuildTableFromLogs() { 
- const tbody = document.getElementById('logBody'); 
- tbody.innerHTML = ''; 
- const feed = document.getElementById('logFeed'); 
- feed.innerHTML = '';
- for (let i = logs.length - 1; i >= 0; i--) { 
- tbody.insertAdjacentHTML('beforeend', getTableRowHTML(logs[i])); 
- }
- const feedLogs = logs.slice(-3);
- for (let i = 0; i < feedLogs.length; i++) { 
- feed.insertAdjacentHTML('beforeend', getFeedItemHTML(feedLogs[i])); 
- }
- updateIcons(tbody); 
- updateIcons(feed);
- requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+  renderFullTableHead();
+  const tbody = document.getElementById('logBody'); 
+  if (tbody) {
+    tbody.innerHTML = ''; 
+    for (let i = logs.length - 1; i >= 0; i--) { 
+      tbody.insertAdjacentHTML('beforeend', getTableRowHTML(logs[i])); 
+    }
+    updateIcons(tbody); 
+  }
+  const feed = document.getElementById('logFeed'); 
+  if (feed) {
+    feed.innerHTML = '';
+    const feedLogs = logs.slice(-3);
+    for (let i = 0; i < feedLogs.length; i++) { 
+      feed.insertAdjacentHTML('beforeend', getFeedItemHTML(feedLogs[i])); 
+    }
+    updateIcons(feed);
+    requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+  }
 }
 
 /* Экспорт CSV */
 function buildCSV() {
- const delimiter = ';';
- const header = "\uFEFF" + ['Оператор', 'Событие / Элемент', 'Текст заметки', 'Элемент Примечание', 'Старт', 'Финиш', 'Время'].join(delimiter) + "\n";
- let rows = [];
- logs.forEach(r => {
- const op = `"${(r.operator || getOperatorIndicator() || '').replace(/"/g, '""')}"`;
- if (r.type === 'note') {
- const target = (r.targetName || 'Общая').replace(/^№\d+\s+/, '');
- const noteRaw = (r.text || '').replace(/"/g, '""');
- const noteText = `"${noteRaw}"`;
- const combined = `"${(target + ' ' + noteRaw).trim()}"`;
- const onT = r.onTime || r.time || '-';
- const offT = r.offTime || '-';
- const dur = r.duration || '-';
- rows.push([op, `"${target.replace(/"/g, '""')}"`, noteText, combined, onT, offT, dur].join(delimiter) + "\n");
- } else {
- const elemName = (r.name || '').replace(/"/g, '""');
- const noteVal = (r.note && r.note !== '-') ? r.note.replace(/"/g, '""') : '';
- const combined = noteVal ? `"${(elemName + ' ' + noteVal).trim()}"` : `"${elemName}"`;
- const onT = r.onTime || '-';
- const offT = r.offTime || '-';
- const dur = r.duration || '-';
- rows.push([op, `"${elemName}"`, `"${noteVal || '-'}"`, combined, onT, offT, dur].join(delimiter) + "\n");
- }
- });
+  const delimiter = ';';
+  const cols = getActiveColumns();
+  const header = "\uFEFF" + cols.map(c => c.label).join(delimiter) + "\n";
+  let rows = [];
+  logs.forEach(r => {
+    const clean = (val) => {
+      if (val === null || val === undefined) return '""';
+      return '"' + String(val).replace(/"/g, '""').replace(/[\r\n]+/g, ' ') + '"';
+    };
+    rows.push(cols.map(c => clean(getRecordField(r, c.id))).join(delimiter) + "\n");
+  });
 
- let summary = "\n--- СВОДКА ПО ПАНЕЛЯМ ---\n" + ['Панель', 'Визитов', 'Общее время'].join(delimiter) + "\n";
- let sumRows = [];
- const now = Date.now();
- zones.forEach(z => {
- let total = z.totalMs;
- if (z.mode === 'single' && z.active) total += now - z.startTime;
- if (z.mode === 'multi' && z.occupants.length > 0) {
- const groupStart = z.startTime || Math.min(...z.occupants.map(o => o.startTime));
- total += now - groupStart;
- }
- sumRows.push([`"${z.name.replace(/"/g, '""')}"`, z.triggerCount, formatDuration(total)].join(delimiter) + "\n");
- });
+  let summary = "\n--- СВОДКА ПО ПАНЕЛЯМ ---\n" + ['Панель', 'Визитов', 'Общее время'].join(delimiter) + "\n";
+  let sumRows = [];
+  const now = Date.now();
+  zones.forEach(z => {
+    let total = z.totalMs;
+    if (z.mode === 'single' && z.active) total += now - z.startTime;
+    if (z.mode === 'multi' && z.occupants.length > 0) {
+      const groupStart = z.startTime || Math.min(...z.occupants.map(o => o.startTime));
+      total += now - groupStart;
+    }
+    sumRows.push([`"${z.name.replace(/"/g, '""')}"`, z.triggerCount, formatDurationHMS(total)].join(delimiter) + "\n");
+  });
 
- return header + rows.join("") + summary + sumRows.join("");
+  return header + rows.join("") + summary + sumRows.join("");
+}
+
+/* Управление модальным окном настройки колонок */
+let columnsDraftConfig = [];
+let previousModalId = null;
+
+function openColumnsConfigModal(fromModalId) {
+  previousModalId = fromModalId || null;
+  columnsDraftConfig = JSON.parse(JSON.stringify(getColumnConfig()));
+  renderColumnsConfigList();
+  showModal('columnsConfigModal');
+}
+
+function closeColumnsConfigModal() {
+  if (previousModalId) {
+    showModal(previousModalId);
+  } else {
+    closeModals();
+  }
+}
+
+function renderColumnsConfigList() {
+  const listEl = document.getElementById('columnsConfigList');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+
+  columnsDraftConfig.forEach((col, idx) => {
+    const row = document.createElement('div');
+    row.className = 'column-item-row';
+    row.style.cssText = 'display:flex; align-items:center; justify-content:space-between; padding:8px 12px; background:var(--surface); border:1px solid var(--border); border-radius:8px; gap:8px;';
+
+    const isFirst = idx === 0;
+    const isLast = idx === columnsDraftConfig.length - 1;
+
+    row.innerHTML = `
+      <label style="display:flex; align-items:center; gap:10px; cursor:pointer; flex:1; margin:0; user-select:none;">
+        <input type="checkbox" ${col.enabled ? 'checked' : ''} onchange="toggleColumnDraft(${idx}, this.checked)" style="accent-color:var(--accent); width:17px; height:17px; cursor:pointer;">
+        <div style="display:flex; flex-direction:column;">
+          <span style="font-size:13px; font-weight:600; color:${col.enabled ? 'var(--text)' : 'var(--muted)'};">${escapeHtml(col.label)}</span>
+          <span style="font-size:10.5px; color:var(--muted);">${getColumnDesc(col.id)}</span>
+        </div>
+      </label>
+      <div style="display:flex; gap:4px; flex-shrink:0;">
+        <button class="icon-btn" onclick="moveColumnDraft(${idx}, -1)" title="Вверх" style="width:28px; height:28px; padding:2px; font-size:11px;" ${isFirst ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''}>▲</button>
+        <button class="icon-btn" onclick="moveColumnDraft(${idx}, 1)" title="Вниз" style="width:28px; height:28px; padding:2px; font-size:11px;" ${isLast ? 'disabled style="opacity:0.25; cursor:not-allowed;"' : ''}>▼</button>
+      </div>
+    `;
+    listEl.appendChild(row);
+  });
+  updateIcons(listEl);
+}
+
+function getColumnDesc(id) {
+  switch (id) {
+    case 'date': return 'Дата фиксации события (ДД.ММ.ГГГГ)';
+    case 'startTime': return 'Время начала / пуска таймера';
+    case 'stopTime': return 'Время остановки / финиша';
+    case 'duration': return 'Время простоя или работы (ЧЧ:ММ:СС)';
+    case 'element': return 'Наименование оборудования или зоны';
+    case 'note': return 'Текст комментария или заметки';
+    case 'combined': return 'Связка: [Элемент] [Примечание]';
+    case 'operator': return 'Должность, оператор или смена';
+    case 'event': return 'Тип события (СТОП, ЗАМЕТКА, ВЫХОД)';
+    case 'panelNum': return 'Номер зоны на панели (№1, №2)';
+    case 'visitNum': return 'Номер заезда / цикла';
+    case 'totalVisits': return 'Всего циклов зоны';
+    default: return '';
+  }
+}
+
+function toggleColumnDraft(idx, checked) {
+  if (columnsDraftConfig[idx]) {
+    columnsDraftConfig[idx].enabled = checked;
+    renderColumnsConfigList();
+  }
+}
+
+function moveColumnDraft(idx, dir) {
+  const targetIdx = idx + dir;
+  if (targetIdx < 0 || targetIdx >= columnsDraftConfig.length) return;
+  const item = columnsDraftConfig.splice(idx, 1)[0];
+  columnsDraftConfig.splice(targetIdx, 0, item);
+  renderColumnsConfigList();
+}
+
+function resetColumnsConfigToDefault() {
+  columnsDraftConfig = JSON.parse(JSON.stringify(DEFAULT_COLUMN_CONFIG));
+  renderColumnsConfigList();
+  showToast('Сброшено на параметры по умолчанию (v8.01)');
+}
+
+function saveAndApplyColumnsConfig() {
+  const active = columnsDraftConfig.filter(c => c.enabled);
+  if (active.length === 0) {
+    showToast('Выберите хотя бы один столбец', true);
+    return;
+  }
+  saveColumnConfig(columnsDraftConfig);
+  renderFullTableHead();
+  rebuildTableFromLogs();
+  showToast('Колонки сохранены и применены');
+  if (previousModalId) {
+    showModal(previousModalId);
+  } else {
+    closeModals();
+  }
 }
 
 function exportCSV() {
@@ -4482,6 +4753,7 @@ if ('serviceWorker' in navigator) {
 }
 
 /* Инициализация при старте */
+renderFullTableHead();
 updateShareButtonVisibility(); 
 updateUndoRedoButtons();
 initBottomButton();
