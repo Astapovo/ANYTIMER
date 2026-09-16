@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#0d0d19" id="themeColorMeta">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.svg">
-<title>AnyTimer v7.19</title>
+<title>AnyTimer v8.0</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
@@ -268,7 +268,7 @@ input.input-error { border-color: var(--danger) !important; box-shadow: 0 0 0 2p
  background-image: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 100%);
  box-shadow: 0 4px 12px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.6);
 }
-.tracker-btn { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; min-height: 96px; cursor: pointer; text-align: left; }
+.tracker-btn { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; min-height: 96px; cursor: pointer; text-align: left; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
 @keyframes shimmerSweep { 0% { background-position: 0% 50%; } 100% { background-position: 250% 50%; } }
 .tracker-btn.active, .zone-card.active {
@@ -737,7 +737,21 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div style="display:flex; gap:6px;">
  <button class="back-btn small" onclick="editAddZone('single')" title="Добавить одиночный таймер" style="padding:2px 8px; font-size:11px; height:24px; border-color:var(--accent); color:var(--accent); background:rgba(var(--shimmer-rgb),0.06);">+ Одиночный</button>
  <button class="back-btn small" onclick="editAddZone('multi')" title="Добавить группу" style="padding:2px 8px; font-size:11px; height:24px; border-color:var(--accent); color:var(--accent); background:rgba(var(--shimmer-rgb),0.06);">+ Группа</button>
+ <button class="back-btn small" onclick="editAddZone('note')" title="Добавить элемент Заметка" style="padding:2px 8px; font-size:11px; height:24px; border-color:#38bdf8; color:#38bdf8; background:rgba(56,189,248,0.08);">+ Заметка</button>
  </div>
+ </div>
+
+ 
+ <!-- Поле ввода индикатора оператора / смены -->
+ <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:10px 12px; margin-bottom:12px; display:flex; flex-direction:column; gap:6px;">
+ <div style="display:flex; justify-content:space-between; align-items:center;">
+ <div class="menu-section-eyebrow" style="margin:0; display:flex; align-items:center; gap:6px;">
+ <i data-lucide="user-check" style="width:13px;height:13px; color:var(--accent);"></i>
+ <span>Индикатор оператора / смены</span>
+ </div>
+ <span style="font-size:10px; color:var(--muted);">Фиксируется в таблице и логах</span>
+ </div>
+ <input type="text" id="operatorIndicatorInput" placeholder="ФИО / Должность / Смена (например: Конышев С.В. — АСУ ТП)" style="margin:0; padding:7px 10px; font-size:12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); width:100%; box-sizing:border-box;" oninput="onOperatorIndicatorChange(this.value)">
  </div>
 
  <div id="editZonesGrid" class="unified-zones-grid"></div>
@@ -748,9 +762,10 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  </div>
  <b style="font-size:14px; color:var(--text);">Панель пока пуста</b>
  <p style="font-size:12px; color:var(--muted); margin:4px 0 14px;">Добавьте одиночные или групповые таймеры для хронометража</p>
- <div style="display:flex; gap:8px; justify-content:center;">
+ <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
  <button class="action-btn small" onclick="editAddZone('single')" style="width:auto;"><i data-lucide="plus"></i> Одиночный</button>
  <button class="action-btn small" onclick="editAddZone('multi')" style="width:auto;"><i data-lucide="layers"></i> Групповой</button>
+ <button class="action-btn small" onclick="editAddZone('note')" style="width:auto; border-color:#38bdf8; color:#38bdf8;"><i data-lucide="file-text"></i> Заметка</button>
  </div>
  </div>
  </div>
@@ -881,6 +896,31 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <span style="font-size:10px; color:var(--muted); opacity:0.9;">🔇 Музыка автоматически на паузе для чистоты записи</span>
  </div>
 
+ 
+ <div style="display:flex; flex-direction:column; gap:6px; margin:6px 0; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:8px 10px;">
+ <div style="display:flex; align-items:center; justify-content:space-between;">
+ <div style="display:flex; align-items:center; gap:6px;">
+ <i data-lucide="clock" style="width:14px;height:14px; color:var(--accent);"></i>
+ <span style="font-size:11px; font-weight:600; color:var(--muted);">Время:</span>
+ <b id="noteTimeDisplay" style="font-size:11.5px; font-family:var(--font-mono); color:var(--text);">Авто (сейчас)</b>
+ </div>
+ <button type="button" class="back-btn small" id="noteTimeToggleBtn" onclick="toggleNoteCustomTime()" style="padding:2px 8px; font-size:10px; height:24px;">
+ Задать время
+ </button>
+ </div>
+
+ <div id="noteTimeInputsWrap" class="hidden" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding-top:6px; border-top:1px dashed var(--border);">
+ <div style="display:flex; flex-direction:column; gap:2px; flex:1;">
+ <span style="font-size:10px; color:var(--muted); font-weight:600;">Старт:</span>
+ <input type="time" step="1" id="noteStartTimeInput" style="height:28px; padding:2px 6px; font-size:11px; border-radius:6px; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:var(--font-mono); width:100%; box-sizing:border-box;" onchange="onNoteTimeInputsChange()">
+ </div>
+ <div style="display:flex; flex-direction:column; gap:2px; flex:1;">
+ <span style="font-size:10px; color:var(--muted); font-weight:600;">Финиш:</span>
+ <input type="time" step="1" id="noteEndTimeInput" placeholder="Авто (сейчас)" style="height:28px; padding:2px 6px; font-size:11px; border-radius:6px; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:var(--font-mono); width:100%; box-sizing:border-box;" onchange="onNoteTimeInputsChange()">
+ </div>
+ </div>
+ </div>
+
  <div style="display:flex; flex-direction:column; gap:4px; margin-top:8px;">
  <div style="display:flex; justify-content:space-between; align-items:center;">
  <div class="menu-section-eyebrow" style="margin:0;"><i data-lucide="file-text" style="width:12px;height:12px;"></i> Текст записи</div>
@@ -917,8 +957,10 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <table id="fullTable">
  <thead>
  <tr>
+ <th>Оператор</th>
  <th>Событие / Элемент</th>
  <th>Текст заметки</th>
+ <th>Элемент Примечание</th>
  <th>Старт</th>
  <th>Финиш</th>
  <th>Время</th>
@@ -935,7 +977,7 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="modal-header">
  <div style="display:flex; align-items:center; gap:8px;">
  <i data-lucide="book-open" style="color:var(--accent); width:20px; height:20px;"></i>
- <h3 style="margin:0;">Справка AnyTimer <span style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v7.19</span></h3>
+ <h3 style="margin:0;">Справка AnyTimer <span style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v8.0</span></h3>
  </div>
  <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
  </div>
@@ -950,12 +992,24 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('version')"><i data-lucide="info" style="width:13px;"></i> Версия</button>
  </div>
 
- <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px;" id="helpContentScroll">
+  <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px;" id="helpContentScroll">
  <div id="helpSection_start" class="help-tab-pane">
  <div class="menu-card-btn" style="cursor:default;">
  <div class="menu-card-left">
  <div class="menu-card-icon"><i data-lucide="activity"></i></div>
- <div class="menu-card-text"><b>Быстрый старт за 3 шага</b><span>1. Конструктор -> 2. Запуск панели -> 3. Учёт визитов и экспорт</span></div>
+ <div class="menu-card-text">
+ <b>Быстрый старт за 3 шага (v8.0)</b>
+ <span>1. Конструктор (таймеры, группы, заметки и оператор) → 2. Запуск панели → 3. Учёт смены и экспорт на диск P:\</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(56,189,248,0.15); color:#38bdf8;"><i data-lucide="file-text"></i></div>
+ <div class="menu-card-text">
+ <b>3 типа элементов на сетке</b>
+ <span><b>Одиночный</b> (прямой/обратный счёт), <b>Группа</b> (множество объектов в зоне) и <b>Заметка</b> (быстрая фиксация текста и голоса).</span>
+ </div>
  </div>
  </div>
  </div>
@@ -972,10 +1026,19 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  </div>
  <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
  <div class="menu-card-left">
- <div class="menu-card-icon" style="background:rgba(251,191,36,0.15); color:var(--warn);"><i data-lucide="touchpad"></i></div>
+ <div class="menu-card-icon" style="background:rgba(56,189,248,0.15); color:#38bdf8;"><i data-lucide="pen-tool"></i></div>
  <div class="menu-card-text">
- <b>Удержание карточки панели (≥0.45с)</b>
- <span>Открывает заметку с автоматической привязкой к имени элемента</span>
+ <b>Карточка «Заметка» на панели</b>
+ <span><b>Клик</b> — мгновенный ввод заметки с клавиатуры.<br><b>Удержание (≥0.45с)</b> — автоматический старт голосовой диктовки с микрофона.</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(251,191,36,0.15); color:var(--warn);"><i data-lucide="clock"></i></div>
+ <div class="menu-card-text">
+ <b>Задание времени заметки (Старт / Финиш)</b>
+ <span>Кнопка «Задать время» позволяет указать время начала и окончания события. Если финиш не указан, подставляется актуальное текущее время.</span>
  </div>
  </div>
  </div>
@@ -983,8 +1046,8 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-left">
  <div class="menu-card-icon" style="background:rgba(59,130,246,0.15); color:#60a5fa;"><i data-lucide="move"></i></div>
  <div class="menu-card-text">
- <b>Перетаскивание карточек в Конструкторе</b>
- <span>Удержание карточки на 0.5с позволяет свободно менять порядок зон на сетке</span>
+ <b>Перетаскивание в Конструкторе</b>
+ <span>Удержание карточки на 0.45с включает свободное перетаскивание на сетке для изменения порядка элементов.</span>
  </div>
  </div>
  </div>
@@ -994,7 +1057,19 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-btn" style="cursor:default;">
  <div class="menu-card-left">
  <div class="menu-card-icon"><i data-lucide="timer"></i></div>
- <div class="menu-card-text"><b>Секундомер vs Таймер</b><span>Прямой счёт от 00:00 или обратный отсчёт лимита ЧЧ:ММ:СС с сигналом или авто-стопом</span></div>
+ <div class="menu-card-text">
+ <b>Секундомер vs Таймер</b>
+ <span>Прямой счёт от 00:00 или обратный отсчёт лимита ЧЧ:ММ:СС со звуковым сигналом, вибро или авто-стопом.</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(16,185,129,0.15); color:#34d399;"><i data-lucide="clock"></i></div>
+ <div class="menu-card-text">
+ <b>Общее время активности смены</b>
+ <span>Счетчик времени в верхней строке учитывает фактическое время работы системы: он идёт, когда включен <b>хотя бы один</b> таймер, без ложного суммирования одновременно включенных элементов.</span>
+ </div>
  </div>
  </div>
  </div>
@@ -1003,7 +1078,19 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-btn" style="cursor:default;">
  <div class="menu-card-left">
  <div class="menu-card-icon"><i data-lucide="table"></i></div>
- <div class="menu-card-text"><b>Журнал и экспорт</b><span>Живая лента, привязка заметок к элементам и экспорт в CSV со сводкой по зонам</span></div>
+ <div class="menu-card-text">
+ <b>Журнал и экспорт (v8.0)</b>
+ <span>Живая лента, фиксация оператора смены, раздельные колонки Старт / Финиш и сквозной столбец <b>«Элемент Примечание»</b> для быстрой сортировки.</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(16,185,129,0.15); color:#34d399;"><i data-lucide="file-spreadsheet"></i></div>
+ <div class="menu-card-text">
+ <b>Сетевой диск P:\ (Excel / CSV)</b>
+ <span>Прямая потоковая запись на смонтированный сетевой диск через File System Access API. Формат UTF-8 BOM и разделитель «;» для открытия в Excel двойным кликом.</span>
+ </div>
  </div>
  </div>
  </div>
@@ -1011,8 +1098,20 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div id="helpSection_presets" class="help-tab-pane hidden">
  <div class="menu-card-btn" style="cursor:default;">
  <div class="menu-card-left">
- <div class="menu-card-icon"><i data-lucide="webhook"></i></div>
- <div class="menu-card-text"><b>Пресеты и Webhook</b><span>Сохранение конфигураций цехов, выгрузка/загрузка .json и отправка POST JSON в Home Assistant</span></div>
+ <div class="menu-card-icon"><i data-lucide="bookmark"></i></div>
+ <div class="menu-card-text">
+ <b>Пресеты (Шаблоны цехов)</b>
+ <span>Сохранение готовой разметки таймеров, экспорт и импорт файлов конфигураций .json.</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(234,179,8,0.15); color:#facc15;"><i data-lucide="webhook"></i></div>
+ <div class="menu-card-text">
+ <b>Интеграция Webhook</b>
+ <span>Автоматическая отправка POST-событий в формате JSON (старт, стоп, заметка) в Home Assistant, Node-RED и SCADA-системы.</span>
+ </div>
  </div>
  </div>
  </div>
@@ -1021,7 +1120,10 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-btn" style="cursor:default;">
  <div class="menu-card-left">
  <div class="menu-card-icon"><i data-lucide="smartphone"></i></div>
- <div class="menu-card-text"><b>Офлайн PWA</b><span>100% автономная работа без интернета, блокировка засыпания экрана и фоновая музыка</span></div>
+ <div class="menu-card-text">
+ <b>Офлайн PWA и надежность</b>
+ <span>100% автономная работа без интернета (кэш Service Worker anytimer-v8.0), блокировка засыпания экрана (Wake Lock) и фоновая музыка с автопаузой при голосе.</span>
+ </div>
  </div>
  </div>
  </div>
@@ -1031,27 +1133,32 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-left">
  <div class="menu-card-icon" style="background:rgba(var(--shimmer-rgb),0.15); color:var(--accent);"><i data-lucide="cpu"></i></div>
  <div class="menu-card-text">
- <b>AnyTimer <span class="app-version-display" style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v7.19</span></b>
- <span>Автономный PWA-хронометр параллельного контроля зон</span>
+ <b>AnyTimer <span class="app-version-display" style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v8.0</span></b>
+ <span>Enterprise & Industrial Filesystem Sync Release</span>
  </div>
  </div>
  </div>
  <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:14px;">
  <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
  <span style="color:var(--muted);">Текущая сборка:</span>
- <span class="version-badge-pill"><span class="pulse-pip" style="width:6px;height:6px;border-radius:50%;background:var(--accent);"></span><b class="app-version-display">v7.19</b></span>
+ <span class="version-badge-pill"><span class="pulse-pip" style="width:6px;height:6px;border-radius:50%;background:var(--accent);"></span><b class="app-version-display">v8.0</b></span>
  </div>
  <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
  <span style="color:var(--muted);">Service Worker кэш:</span>
- <b id="aboutCacheName" style="font-family:var(--font-mono); color:var(--text); font-size:11px;">anytimer-v7.19</b>
+ <b id="aboutCacheName" style="font-family:var(--font-mono); color:var(--text); font-size:11px;">anytimer-v8.0</b>
  </div>
  <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
  <span style="color:var(--muted);">Режим работы:</span>
- <b style="color:var(--accent);">100% Offline PWA</b>
+ <b style="color:var(--accent);">100% Offline PWA + FS API</b>
+ </div>
+ <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+ <span style="color:var(--muted);">Интеграция:</span>
+ <b style="color:#34d399;">Прямая запись на диск P:\</b>
  </div>
  <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
  <span style="color:var(--muted);">Нижняя панель:</span>
  <b style="color:var(--text);">Зеркальная рамка + Кнопка «A»</b>
+ </div>
  </div>
  </div>
  </div>
@@ -1200,6 +1307,14 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  <div class="menu-card-left">
  <div class="menu-card-icon" style="background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.3); color: #facc15;"><i data-lucide="webhook" style="width:18px;height:18px;"></i></div>
  <div class="menu-card-text"><b>Настройка Webhook</b><span>POST-события в Home Assistant и серверы</span></div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
+ </button>
+
+ <button class="menu-card-btn" onclick="openFileSyncModal()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399;"><i data-lucide="file-spreadsheet" style="width:18px;height:18px;"></i></div>
+ <div class="menu-card-text"><b>Сетевая таблица Excel (диск P:\)</b><span id="menuSyncStatusText">Автозапись событий в CSV/Excel на сетевом диске</span></div>
  </div>
  <i data-lucide="chevron-right" class="menu-card-chevron"></i>
  </button>
@@ -1357,8 +1472,90 @@ th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-s
  </div>
 </div>
 
+<!-- Модальное окно: Сетевая таблица Excel (диск P:\) через File System Access API -->
+<div id="fileSyncModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+  <div class="modal-content" style="max-width: 520px;">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i data-lucide="file-spreadsheet" style="color:#34d399; width:20px; height:20px;"></i>
+        <h3 style="margin:0;">Сетевая таблица Excel (диск P:\)</h3>
+      </div>
+      <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+    </div>
+
+    <!-- Карточка статуса -->
+    <div class="menu-card-btn" style="margin-top: 6px; cursor: default; flex-direction: column; align-items: stretch; gap: 8px;">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div id="fsStatusIcon" class="menu-card-icon" style="background:rgba(139, 155, 180, 0.15); color:var(--muted);">
+            <i data-lucide="hard-drive" style="width:18px;height:18px;"></i>
+          </div>
+          <div>
+            <b id="fsStatusTitle">Файл не привязан</b>
+            <span id="fsStatusSubtitle" style="display:block; font-size:11px; color:var(--muted);">Выберите файл на сетевом диске P: для автозаписи</span>
+          </div>
+        </div>
+        <span id="fsStatusBadge" class="panel-num-badge" style="background:rgba(139, 155, 180, 0.15); color:var(--muted); border:1px solid var(--border);">ОФФЛАЙН</span>
+      </div>
+
+      <div id="fsPathBox" style="background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font-family:var(--font-mono); font-size:10.5px; color:var(--muted); word-break:break-all;">
+        Пример: P:\Склад\101РОБОТЫ101\РОБОТЫ\АСУ\Очеты\KSM\TEST\anytimer_events.csv
+      </div>
+    </div>
+
+    <!-- Кнопки привязки -->
+    <div style="display: flex; flex-direction: column; gap: 8px; margin: 12px 0 6px;">
+      <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+        <button class="resume-btn resume-btn-primary" onclick="linkSaveNetworkFile()" style="background:#059669; color:#fff;">
+          <i data-lucide="plus-circle" style="width:16px;height:16px;"></i> Создать / Привязать
+        </button>
+        <button class="resume-btn resume-btn-secondary" onclick="linkOpenNetworkFile()">
+          <i data-lucide="folder-open" style="width:16px;height:16px;"></i> Открыть файл
+        </button>
+      </div>
+
+      <div id="fsConnectedActions" class="menu-grid-row hidden" style="grid-template-columns: 1fr 1fr;">
+        <button class="resume-btn resume-btn-secondary" onclick="testNetworkFileWrite()">
+          <i data-lucide="check-circle-2" style="width:15px;height:15px;"></i> Тест записи
+        </button>
+        <button class="resume-btn resume-btn-secondary" onclick="dumpAllLogsToNetworkFile()">
+          <i data-lucide="upload-cloud" style="width:15px;height:15px;"></i> Выгрузить смену
+        </button>
+      </div>
+
+      <button id="fsUnlinkBtn" class="resume-btn resume-btn-secondary hidden" onclick="unlinkNetworkFile()" style="color:var(--danger); border-color:rgba(239, 68, 68, 0.25);">
+        <i data-lucide="trash-2" style="width:14px;height:14px;"></i> Отвязать сетевой файл
+      </button>
+    </div>
+
+    <!-- Опции -->
+    <div class="menu-section-eyebrow" style="margin-top: 8px;">Параметры автозаписи</div>
+    <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px; font-size:12px;">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="fsAutoStopsCheck" onchange="toggleFSOption('autoStops', this.checked)" checked style="accent-color:#10b981; width:16px; height:16px;">
+        <span>Записывать остановку таймеров (Стоп / Финиш цикла)</span>
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="fsAutoNotesCheck" onchange="toggleFSOption('autoNotes', this.checked)" checked style="accent-color:#10b981; width:16px; height:16px;">
+        <span>Записывать текстовые и голосовые заметки</span>
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="fsAutoStartsCheck" onchange="toggleFSOption('autoStarts', this.checked)" style="accent-color:#10b981; width:16px; height:16px;">
+        <span>Записывать также моменты запуска (Старт / Вход)</span>
+      </label>
+    </div>
+
+    <!-- Подсказка для Excel -->
+    <div style="font-size:11px; color:var(--muted); background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:8px 10px; line-height:1.4;">
+      <b style="color:var(--text);">Формат для Excel (Windows 11):</b><br>
+      Файл пишется в формате CSV с разделителем «точка с запятой» и кодировкой UTF-8 BOM. Excel открывает его напрямую в виде таблицы без сбитой кодировки. Дескриптор файла сохраняется в браузере (Edge/Chrome) между сессиями.
+    </div>
+  </div>
+</div>
+
+
 <script>
-const APP_VERSION = 'v7.19';
+const APP_VERSION = 'v8.0';
 
 function syncAppVersion() {
  document.querySelectorAll('.app-version-display').forEach(el => {
@@ -1714,6 +1911,448 @@ function fireWebhook(payload) {
  } catch(e) {} 
 }
 
+
+/* =========================================================
+   Сетевая таблица Excel (CSV) через File System Access API
+   ========================================================= */
+
+const FS_DB_NAME = 'AnyTimerFS_v1';
+const FS_STORE_NAME = 'handles';
+const FS_HANDLE_KEY = 'activeSyncFile';
+
+const FS_PREF_NAME = 'zonesPanel.fs.name';
+const FS_PREF_AUTO_STOPS = 'zonesPanel.fs.autoStops';
+const FS_PREF_AUTO_NOTES = 'zonesPanel.fs.autoNotes';
+const FS_PREF_AUTO_STARTS = 'zonesPanel.fs.autoStarts';
+
+let activeFSHandle = null;
+let activeFSFileName = localStorage.getItem(FS_PREF_NAME) || '';
+let fsQueue = [];
+let fsIsWriting = false;
+
+function getFSOption(key, defaultVal) {
+  const val = localStorage.getItem(key);
+  return val === null ? defaultVal : val === 'true';
+}
+function setFSOption(key, boolVal) {
+  localStorage.setItem(key, boolVal ? 'true' : 'false');
+}
+function toggleFSOption(opt, val) {
+  if (opt === 'autoStops') setFSOption(FS_PREF_AUTO_STOPS, val);
+  if (opt === 'autoNotes') setFSOption(FS_PREF_AUTO_NOTES, val);
+  if (opt === 'autoStarts') setFSOption(FS_PREF_AUTO_STARTS, val);
+}
+
+function openFSDatabase() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) {
+      reject(new Error('IndexedDB не поддерживается'));
+      return;
+    }
+    const req = indexedDB.open(FS_DB_NAME, 1);
+    req.onupgradeneeded = () => {
+      req.result.createObjectStore(FS_STORE_NAME);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function saveFSHandleToDB(handle) {
+  const db = await openFSDatabase();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(FS_STORE_NAME, 'readwrite');
+    tx.objectStore(FS_STORE_NAME).put(handle, FS_HANDLE_KEY);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getFSHandleFromDB() {
+  try {
+    const db = await openFSDatabase();
+    return new Promise((resolve) => {
+      const tx = db.transaction(FS_STORE_NAME, 'readonly');
+      const req = tx.objectStore(FS_STORE_NAME).get(FS_HANDLE_KEY);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) {
+    return null;
+  }
+}
+
+async function removeFSHandleFromDB() {
+  try {
+    const db = await openFSDatabase();
+    return new Promise((resolve) => {
+      const tx = db.transaction(FS_STORE_NAME, 'readwrite');
+      tx.objectStore(FS_STORE_NAME).delete(FS_HANDLE_KEY);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    });
+  } catch(e) {}
+}
+
+async function verifyFSPermission(handle, readWrite = true) {
+  if (!handle) return false;
+  const opts = { mode: readWrite ? 'readwrite' : 'read' };
+  try {
+    if ((await handle.queryPermission(opts)) === 'granted') return true;
+    if ((await handle.requestPermission(opts)) === 'granted') return true;
+  } catch (e) {
+    console.warn('Permission query/request error:', e);
+  }
+  return false;
+}
+
+function getFormattedCurrentDate() {
+  const d = new Date();
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
+const FS_CSV_HEADER = '\uFEFFДата;Время;Оператор;Событие;№;Элемент;Примечание;Элемент Примечание;№ Визита;Длительность;Всего визитов\r\n';
+
+function formatFSCSVRow(rec) {
+  const clean = (val) => {
+    if (val === null || val === undefined) return '""';
+    return '"' + String(val).replace(/"/g, '""').replace(/[\r\n]+/g, ' ') + '"';
+  };
+  const elem = rec.name || '-';
+  const note = rec.note || '';
+  const combined = (note && note !== '-') ? `${elem} ${note}`.trim() : elem;
+
+  return [
+    clean(rec.date || getFormattedCurrentDate()),
+    clean(rec.time || '-'),
+    clean(rec.operator || getOperatorIndicator() || ''),
+    clean(rec.event || '-'),
+    clean(rec.panelNum || '-'),
+    clean(elem),
+    clean(note),
+    clean(combined),
+    clean(rec.visitNum || '-'),
+    clean(rec.duration || '-'),
+    clean(rec.totalVisits || '-')
+  ].join(';') + '\r\n';
+}
+
+async function appendNetworkLogRecord(rec) {
+  if (!activeFSHandle) return;
+  fsQueue.push(rec);
+  flushNetworkLogQueue();
+}
+
+async function flushNetworkLogQueue() {
+  if (fsIsWriting || fsQueue.length === 0 || !activeFSHandle) return;
+  fsIsWriting = true;
+  try {
+    const hasPerm = await verifyFSPermission(activeFSHandle, true);
+    if (!hasPerm) {
+      fsIsWriting = false;
+      updateFileSyncUI();
+      return;
+    }
+
+    const file = await activeFSHandle.getFile();
+    const isNew = file.size === 0;
+
+    let payload = isNew ? FS_CSV_HEADER : '';
+    while (fsQueue.length > 0) {
+      const item = fsQueue.shift();
+      payload += formatFSCSVRow(item);
+    }
+
+    const writable = await activeFSHandle.createWritable({ keepExistingData: true });
+    if (!isNew) {
+      await writable.seek(file.size);
+    }
+    await writable.write(new TextEncoder().encode(payload));
+    await writable.close();
+
+    updateFileSyncUI('active');
+  } catch (err) {
+    console.warn('Network file write error:', err);
+    updateFileSyncUI('error');
+  } finally {
+    fsIsWriting = false;
+    if (fsQueue.length > 0) {
+      setTimeout(flushNetworkLogQueue, 3000);
+    }
+  }
+}
+
+async function updateFileSyncUI(forcedState) {
+  const statusIcon = document.getElementById('fsStatusIcon');
+  const statusTitle = document.getElementById('fsStatusTitle');
+  const statusSub = document.getElementById('fsStatusSubtitle');
+  const statusBadge = document.getElementById('fsStatusBadge');
+  const pathBox = document.getElementById('fsPathBox');
+  const connectedActions = document.getElementById('fsConnectedActions');
+  const unlinkBtn = document.getElementById('fsUnlinkBtn');
+
+  const menuText = document.getElementById('menuSyncStatusText');
+  const journalPip = document.getElementById('journalSyncPip');
+  const journalText = document.getElementById('journalSyncText');
+  const sbDot = document.getElementById('sbNetSyncDot');
+  const sbText = document.getElementById('sbNetSyncText');
+
+  const autoStops = document.getElementById('fsAutoStopsCheck');
+  const autoNotes = document.getElementById('fsAutoNotesCheck');
+  const autoStarts = document.getElementById('fsAutoStartsCheck');
+
+  if (autoStops) autoStops.checked = getFSOption(FS_PREF_AUTO_STOPS, true);
+  if (autoNotes) autoNotes.checked = getFSOption(FS_PREF_AUTO_NOTES, true);
+  if (autoStarts) autoStarts.checked = getFSOption(FS_PREF_AUTO_STARTS, false);
+
+  if (!activeFSHandle) {
+    if (statusIcon) {
+      statusIcon.style.background = 'rgba(139, 155, 180, 0.15)';
+      statusIcon.style.color = 'var(--muted)';
+    }
+    if (statusTitle) statusTitle.textContent = 'Файл не привязан';
+    if (statusSub) statusSub.textContent = 'Выберите файл на сетевом диске P: для автозаписи';
+    if (statusBadge) {
+      statusBadge.textContent = 'ОФФЛАЙН';
+      statusBadge.style.background = 'rgba(139, 155, 180, 0.15)';
+      statusBadge.style.color = 'var(--muted)';
+      statusBadge.style.borderColor = 'var(--border)';
+    }
+    if (pathBox) pathBox.innerHTML = 'Пример пути: <b style="color:var(--text);">P:\\Склад\\101РОБОТЫ101\\РОБОТЫ\\АСУ\\Очеты\\KSM\\TEST\\anytimer_events.csv</b>';
+    if (connectedActions) connectedActions.classList.add('hidden');
+    if (unlinkBtn) unlinkBtn.classList.add('hidden');
+    if (menuText) menuText.textContent = 'Автозапись событий в CSV/Excel на сетевом диске';
+    if (journalPip) journalPip.style.background = '#8b9bb4';
+    if (journalText) journalText.textContent = 'Сетевой лог: не подключен';
+    if (sbDot) sbDot.style.background = '#8b9bb4';
+    if (sbText) sbText.textContent = 'Диск P: Выкл';
+    return;
+  }
+
+  const fName = activeFSHandle.name || activeFSFileName || 'log.csv';
+  if (connectedActions) connectedActions.classList.remove('hidden');
+  if (unlinkBtn) unlinkBtn.classList.remove('hidden');
+
+  let isGranted = false;
+  try {
+    isGranted = (await activeFSHandle.queryPermission({ mode: 'readwrite' })) === 'granted';
+  } catch(e) {}
+
+  if (forcedState === 'error') {
+    if (statusIcon) {
+      statusIcon.style.background = 'rgba(239, 68, 68, 0.15)';
+      statusIcon.style.color = 'var(--danger)';
+    }
+    if (statusTitle) statusTitle.textContent = `Ошибка записи: ${fName}`;
+    if (statusSub) statusSub.textContent = 'Файл может быть заблокирован в Excel. События в очереди.';
+    if (statusBadge) {
+      statusBadge.textContent = 'БЛОКИРОВКА';
+      statusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+      statusBadge.style.color = 'var(--danger)';
+      statusBadge.style.borderColor = 'var(--danger)';
+    }
+    if (journalPip) journalPip.style.background = 'var(--danger)';
+    if (journalText) journalText.textContent = `Сетевой лог: Ошибка (${fName})`;
+    if (sbDot) sbDot.style.background = 'var(--danger)';
+    if (sbText) sbText.textContent = 'Диск P: Ошибка';
+  } else if (!isGranted) {
+    if (statusIcon) {
+      statusIcon.style.background = 'rgba(245, 158, 11, 0.15)';
+      statusIcon.style.color = 'var(--warn)';
+    }
+    if (statusTitle) statusTitle.textContent = `Файл привязан: ${fName}`;
+    if (statusSub) statusSub.textContent = 'Нажмите «Тест записи» для подтверждения доступа браузера';
+    if (statusBadge) {
+      statusBadge.textContent = 'ОЖИДАЕТ ДОСТУП';
+      statusBadge.style.background = 'rgba(245, 158, 11, 0.2)';
+      statusBadge.style.color = 'var(--warn)';
+      statusBadge.style.borderColor = 'var(--warn)';
+    }
+    if (journalPip) journalPip.style.background = 'var(--warn)';
+    if (journalText) journalText.textContent = `Сетевой лог: Ожидание (${fName})`;
+    if (sbDot) sbDot.style.background = 'var(--warn)';
+    if (sbText) sbText.textContent = 'Диск P: Доступ';
+  } else {
+    if (statusIcon) {
+      statusIcon.style.background = 'rgba(16, 185, 129, 0.15)';
+      statusIcon.style.color = '#34d399';
+    }
+    if (statusTitle) statusTitle.textContent = `Подключен: ${fName}`;
+    if (statusSub) statusSub.textContent = 'Автозапись событий в таблицу активна в реальном времени';
+    if (statusBadge) {
+      statusBadge.textContent = 'АКТИВЕН';
+      statusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+      statusBadge.style.color = '#34d399';
+      statusBadge.style.borderColor = '#10b981';
+    }
+    if (journalPip) journalPip.style.background = '#10b981';
+    if (journalText) journalText.textContent = `Сетевой лог: ${fName}`;
+    if (sbDot) sbDot.style.background = '#10b981';
+    if (sbText) sbText.textContent = 'Диск P: Вкл';
+  }
+
+  if (pathBox) {
+    pathBox.innerHTML = `Подключенный файл: <b style="color:#34d399;">${escapeHtml(fName)}</b>${fsQueue.length ? ` <span style="color:var(--warn);">(В очереди: ${fsQueue.length})</span>` : ''}`;
+  }
+  if (menuText) {
+    menuText.textContent = `🟢 Подключен: ${fName}`;
+  }
+  updateIcons();
+}
+
+function openFileSyncModal() {
+  updateFileSyncUI();
+  showModal('fileSyncModal');
+}
+
+async function linkSaveNetworkFile() {
+  if (!('showSaveFilePicker' in window)) {
+    showToast('File System API доступен в Chrome / Edge на Windows 11', true);
+    return;
+  }
+  try {
+    const dStr = new Date().toISOString().slice(0, 10);
+    const handle = await window.showSaveFilePicker({
+      suggestedName: `AnyTimer_Events_${dStr}.csv`,
+      types: [{
+        description: 'Таблица Excel / CSV (*.csv)',
+        accept: { 'text/csv': ['.csv'], 'text/plain': ['.txt'] }
+      }]
+    });
+    if (!handle) return;
+    await saveFSHandleToDB(handle);
+    activeFSHandle = handle;
+    activeFSFileName = handle.name;
+    localStorage.setItem(FS_PREF_NAME, handle.name);
+
+    const file = await handle.getFile();
+    if (file.size === 0) {
+      const writable = await handle.createWritable();
+      await writable.write(new TextEncoder().encode(FS_CSV_HEADER));
+      await writable.close();
+    }
+
+    updateFileSyncUI('active');
+    showToast(`Файл привязан: ${handle.name}`);
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      console.warn('Link save file error:', err);
+      showToast('Ошибка привязки: ' + (err.message || err), true);
+    }
+  }
+}
+
+async function linkOpenNetworkFile() {
+  if (!('showOpenFilePicker' in window)) {
+    showToast('File System API доступен в Chrome / Edge на Windows 11', true);
+    return;
+  }
+  try {
+    const [handle] = await window.showOpenFilePicker({
+      multiple: false,
+      types: [{
+        description: 'Таблица Excel / CSV (*.csv, *.txt)',
+        accept: { 'text/csv': ['.csv'], 'text/plain': ['.txt'] }
+      }]
+    });
+    if (!handle) return;
+    await saveFSHandleToDB(handle);
+    activeFSHandle = handle;
+    activeFSFileName = handle.name;
+    localStorage.setItem(FS_PREF_NAME, handle.name);
+
+    updateFileSyncUI('active');
+    showToast(`Файл открыт: ${handle.name}`);
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      console.warn('Link open file error:', err);
+      showToast('Ошибка открытия: ' + (err.message || err), true);
+    }
+  }
+}
+
+async function unlinkNetworkFile() {
+  if (!(await customConfirm('Отвязать сетевой файл? Автозапись в него прекратится.', 'Отвязать', true))) return;
+  activeFSHandle = null;
+  activeFSFileName = '';
+  localStorage.removeItem(FS_PREF_NAME);
+  await removeFSHandleFromDB();
+  updateFileSyncUI();
+  showToast('Сетевой файл отвязан');
+}
+
+async function testNetworkFileWrite() {
+  if (!activeFSHandle) return;
+  const testRec = {
+    date: getFormattedCurrentDate(),
+    time: formatTime(Date.now()),
+    event: 'ТЕСТ',
+    panelNum: '-',
+    name: 'AnyTimer',
+    visitNum: '-',
+    duration: '-',
+    totalVisits: '-',
+    note: 'Проверка записи на сетевой диск (диск P:)'
+  };
+  await appendNetworkLogRecord(testRec);
+  showToast('Тестовая строка отправлена в файл');
+}
+
+async function dumpAllLogsToNetworkFile() {
+  if (!activeFSHandle) return;
+  if (logs.length === 0) {
+    showToast('Журнал смены пуст', true);
+    return;
+  }
+  if (!(await customConfirm(`Выгрузить все ${logs.length} записей смены в сетевой файл?`, 'Выгрузить'))) return;
+
+  const curDate = getFormattedCurrentDate();
+  logs.forEach(r => {
+    if (r.type === 'note') {
+      const target = (r.targetName || 'Общая').replace(/^№\d+\s+/, '');
+      fsQueue.push({
+        date: curDate,
+        time: r.onTime || r.time || '-',
+        event: 'ЗАМЕТКА',
+        panelNum: '-',
+        name: target,
+        visitNum: '-',
+        duration: '-',
+        totalVisits: '-',
+        note: r.text || ''
+      });
+    } else {
+      fsQueue.push({
+        date: curDate,
+        time: r.offTime || r.onTime || '-',
+        event: 'ЦИКЛ',
+        panelNum: '-',
+        name: r.name || '-',
+        visitNum: r.num || '-',
+        duration: r.duration || '-',
+        totalVisits: '-',
+        note: `Старт: ${r.onTime || '-'}, Финиш: ${r.offTime || '-'}`
+      });
+    }
+  });
+
+  flushNetworkLogQueue();
+  showToast(`Выгрузка ${logs.length} событий запущена`);
+}
+
+// Auto-restore FS handle on page load
+getFSHandleFromDB().then(handle => {
+  if (handle) {
+    activeFSHandle = handle;
+    activeFSFileName = handle.name;
+    updateFileSyncUI();
+  }
+}).catch(() => {});
+
+
 function storageTest() { 
  try { localStorage.setItem('__zt','1'); localStorage.removeItem('__zt'); return true; } catch(e) { return false; } 
 }
@@ -1722,7 +2361,7 @@ const storageOK = storageTest();
 function persistSession() { 
  if (!storageOK) return; 
  try { 
- localStorage.setItem(SESSION_KEY, JSON.stringify({ zoneIdCounter, logIdCounter, zones, logs, savedAt: Date.now() })); 
+ localStorage.setItem(SESSION_KEY, JSON.stringify({ zoneIdCounter, logIdCounter, zones, logs, operator: getOperatorIndicator(), systemActiveMs, systemActiveStartTime, savedAt: Date.now() })); 
  } catch(e) { 
  showToast('Память забита', true); 
  } 
@@ -1763,6 +2402,15 @@ function restoreSessionAction() {
  logIdCounter = pending.logIdCounter || 0; 
  zones = pending.zones || []; 
  logs = pending.logs || []; 
+ if (pending.operator) {
+   operatorIndicator = pending.operator;
+   localStorage.setItem(OPERATOR_KEY, operatorIndicator);
+ }
+ systemActiveMs = pending.systemActiveMs || 0;
+ systemActiveStartTime = pending.systemActiveStartTime || null;
+ if (getSystemActiveCount() > 0 && !systemActiveStartTime) {
+   systemActiveStartTime = Date.now();
+ } 
  zones.forEach(z => {
  z.countdown = z.countdown || false; 
  z.limitMs = z.limitMs || 0;
@@ -1858,53 +2506,111 @@ function closeModalsOnDim(e) {
 }
 
 /* Отрисовка Дашборда (#step3) */
-function attachCardInteraction(el, zoneId, isSingle) {
- let timer = null;
+function attachCardInteraction(el, zoneId, cardType = 'single') {
+ let pressTimer = null;
  let isLong = false;
- let sx = 0, sy = 0;
+ let startX = 0, startY = 0;
+ let isMoved = false;
 
  el.addEventListener('contextmenu', (e) => {
  e.preventDefault();
  return false;
  });
 
- el.addEventListener('pointerdown', (e) => {
- if (e.target !== el && e.target.closest('input, .occupant-chip button, .action-btn, .danger-btn')) return;
+ function isIgnoredTarget(target) {
+ return target && target !== el && target.closest('input, select, textarea, button:not(.tracker-btn), .action-btn, .danger-btn, .occupant-chip button');
+ }
 
- sx = e.clientX;
- sy = e.clientY;
+ function startPress(x, y, target) {
+ if (isIgnoredTarget(target)) return;
+ startX = x;
+ startY = y;
  isLong = false;
+ isMoved = false;
 
- timer = setTimeout(() => {
+ clearTimeout(pressTimer);
+ pressTimer = setTimeout(() => {
+ if (isMoved) return;
  isLong = true;
  if (window.getSelection) {
  const s = window.getSelection();
  if (s) s.removeAllRanges();
  }
  haptic(35, 'start');
- const z = zones.find(x => x.id === zoneId);
+ const z = zones.find(item => item.id === zoneId);
  const zName = z ? z.name : 'Элемент';
- openNoteModal(zoneId);
+ if (cardType === 'note') {
+ openNoteModal(zoneId, 'voice');
+ showToast(`Голосовая заметка: ${zName}`);
+ } else {
+ openNoteModal(zoneId, 'text');
  showToast(`Заметка для: ${zName}`);
+ }
  }, 450);
- });
+ }
 
- el.addEventListener('pointermove', (e) => {
- if (Math.hypot(e.clientX - sx, e.clientY - sy) > 8) {
- clearTimeout(timer);
+ function movePress(x, y) {
+ if (Math.hypot(x - startX, y - startY) > 16) {
+ isMoved = true;
+ clearTimeout(pressTimer);
+ }
+ }
+
+ function endPress() {
+ clearTimeout(pressTimer);
+ }
+
+ // Mobile Touch Events (Android & iOS)
+ el.addEventListener('touchstart', (e) => {
+ if (e.touches && e.touches.length === 1) {
+ startPress(e.touches[0].clientX, e.touches[0].clientY, e.target);
+ }
+ }, { passive: true });
+
+ el.addEventListener('touchmove', (e) => {
+ if (e.touches && e.touches.length === 1) {
+ movePress(e.touches[0].clientX, e.touches[0].clientY);
+ }
+ }, { passive: true });
+
+ el.addEventListener('touchend', endPress, { passive: true });
+ el.addEventListener('touchcancel', endPress, { passive: true });
+
+ // Desktop Mouse Events
+ el.addEventListener('mousedown', (e) => {
+ if (e.button === 0) {
+ startPress(e.clientX, e.clientY, e.target);
  }
  });
 
- el.addEventListener('pointerup', (e) => {
- clearTimeout(timer);
- if (!isLong && Math.hypot(e.clientX - sx, e.clientY - sy) <= 8) {
- if (isSingle) {
+ el.addEventListener('mousemove', (e) => {
+ if (e.buttons === 1) {
+ movePress(e.clientX, e.clientY);
+ }
+ });
+
+ el.addEventListener('mouseup', endPress);
+ el.addEventListener('mouseleave', endPress);
+
+ // Native Click Handler (dispatched on short tap on Android, iOS & PC)
+ el.addEventListener('click', (e) => {
+ if (isIgnoredTarget(e.target)) return;
+
+ if (isLong || isMoved) {
+ e.preventDefault();
+ e.stopPropagation();
+ isLong = false;
+ isMoved = false;
+ return;
+ }
+
+ if (cardType === 'single') {
  toggleSingle(zoneId);
- }
+ } else if (cardType === 'note') {
+ haptic(15, 'start');
+ openNoteModal(zoneId, 'text');
  }
  });
-
- el.addEventListener('pointercancel', () => clearTimeout(timer));
 }
 
 function renderMainPanel() {
@@ -1922,11 +2628,21 @@ function renderMainPanel() {
  btn.style.gridColumn = '1 / -1';
  }
  btn.innerHTML = singleInnerHTML(z); 
- attachCardInteraction(btn, z.id, true);
+ attachCardInteraction(btn, z.id, 'single');
+ grid.appendChild(btn);
+ } else if (z.mode === 'note') {
+ const btn = document.createElement('button'); 
+ btn.id = `noteBtn_${z.id}`; 
+ btn.className = 'tracker-btn note-tracker-btn'; 
+ if (z.size === 'wide') {
+ btn.style.gridColumn = '1 / -1';
+ }
+ btn.innerHTML = noteCardInnerHTML(z); 
+ attachCardInteraction(btn, z.id, 'note');
  grid.appendChild(btn);
  } else {
  const card = renderMultiCard(z);
- attachCardInteraction(card, z.id, false);
+ attachCardInteraction(card, z.id, 'multi');
  grid.appendChild(card);
  }
  });
@@ -1959,8 +2675,7 @@ function singleInnerHTML(z) {
  return `
  <div class="tracker-head" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
  <div style="display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden;">
- <span class="panel-num-badge" style="background:${z.color}25; color:${z.color}; border:1px solid ${z.color}55;">№${pNum}</span>
- <span class="tracker-title" title="${escapeHtml(z.name)}" style="font-weight:700; font-size:13px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${escapeHtml(z.name)}</span>
+ <span class="tracker-title" title="${escapeHtml(z.name)}" style="font-weight:700; font-size:13.5px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${escapeHtml(z.name)}</span>
  </div>
  <span class="tracker-status-tag ${z.active ? 'active' : ''}" style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; background:${z.active ? 'rgba(var(--shimmer-rgb),0.2)' : 'rgba(255,255,255,0.06)'}; color:${z.active ? 'var(--accent)' : 'var(--muted)'};">${statusText}</span>
  </div>
@@ -2030,7 +2745,6 @@ function multiCardInnerHTML(z) {
  <div class="zone-card-head" style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:flex-start;">
  <div style="display:flex; flex-direction:column; gap:4px;">
  <div style="display:flex; align-items:center; gap:6px;">
- <span class="panel-num-badge" style="background:${z.color}25; color:${z.color}; border:1px solid ${z.color}55;">№${pNum}</span>
  <span class="zone-card-title" style="font-size:15px; font-weight:700;">${escapeHtml(z.name)}</span>
  </div>
  <div style="display:flex; align-items:center; gap:4px;">
@@ -2050,34 +2764,72 @@ function multiCardInnerHTML(z) {
  <div style="display:flex; flex-wrap:wrap; gap:6px;">${occHtml}</div>`;
 }
 
+
+/* Учет совокупного времени активности системы (хотя бы 1 активный элемент) */
+let systemActiveMs = 0;
+let systemActiveStartTime = null;
+
+function getSystemActiveCount() {
+  let count = 0;
+  zones.forEach(z => {
+    if (z.mode === 'single' && z.active) count++;
+    else if (z.mode === 'multi' && z.occupants && z.occupants.length > 0) count += z.occupants.length;
+  });
+  return count;
+}
+
+function updateSystemActiveTime(now = Date.now()) {
+  const activeCount = getSystemActiveCount();
+  if (activeCount > 0) {
+    if (!systemActiveStartTime) {
+      systemActiveStartTime = now;
+    }
+  } else {
+    if (systemActiveStartTime) {
+      systemActiveMs += Math.max(0, now - systemActiveStartTime);
+      systemActiveStartTime = null;
+    }
+  }
+}
+
+function getLiveSystemActiveMs(now = Date.now()) {
+  let ms = systemActiveMs;
+  if (systemActiveStartTime && getSystemActiveCount() > 0) {
+    ms += Math.max(0, now - systemActiveStartTime);
+  }
+  return ms;
+}
+
 function renderSummaryBar() {
  const bar = document.getElementById('summaryBar'); 
- let totalMs = 0, activeCount = 0;
- zones.forEach(z => {
- totalMs += z.totalMs;
- if (z.mode === 'single') { 
- if (z.active) { totalMs += Date.now() - z.startTime; activeCount++; } 
- } else { 
- if (z.occupants.length > 0) {
- const groupStart = z.startTime || Math.min(...z.occupants.map(o => o.startTime));
- totalMs += Date.now() - groupStart;
- }
- activeCount += z.occupants.length; 
- }
- });
+ if (!bar) return;
+
+ const now = Date.now();
+ updateSystemActiveTime(now);
+
+ const activeCount = getSystemActiveCount();
+ const totalDisplayMs = getLiveSystemActiveMs(now);
  
  if (!bar.hasChildNodes()) {
  bar.innerHTML = `
  <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="layers" style="color:var(--accent); width:14px;"></i> <span>Элементов: <b id="sbZones">0</b></span></div>
  <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="activity" style="color:var(--accent); width:14px;"></i> <span>Активно: <b id="sbActive">0</b></span></div>
  <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="clock" style="color:var(--accent); width:14px;"></i> <span>Время: <b id="sbTime">0:00</b></span></div>
+ <div id="sbNetSyncItem" style="display:flex; flex-direction:row; align-items:center; gap:5px; cursor:pointer; padding:2px 6px; border-radius:6px; background:rgba(255,255,255,0.03); border:1px solid var(--border);" onclick="openFileSyncModal()" title="Сетевая таблица Excel (диск P:\)">
+   <span id="sbNetSyncDot" style="width:7px; height:7px; border-radius:50%; background:#8b9bb4; display:inline-block;"></span>
+   <span id="sbNetSyncText" style="font-size:10.5px; color:var(--muted); font-weight:600;">Диск P: Выкл</span>
+ </div>
  `;
  updateIcons(bar);
+ updateFileSyncUI();
  }
  
- document.getElementById('sbZones').textContent = zones.length;
- document.getElementById('sbActive').textContent = activeCount;
- document.getElementById('sbTime').textContent = formatDuration(totalMs);
+ const elZ = document.getElementById('sbZones');
+ const elA = document.getElementById('sbActive');
+ const elT = document.getElementById('sbTime');
+ if (elZ) elZ.textContent = zones.length;
+ if (elA) elA.textContent = activeCount;
+ if (elT) elT.textContent = formatDuration(totalDisplayMs);
 }
 
 function checkCountdowns() {
@@ -2181,7 +2933,20 @@ async function toggleSingle(id) {
  z.triggerCount++; 
  z.startTime = now; 
  z.limitNotified = false; 
- fireWebhook({ event: 'start', zoneId: z.id, zoneName: z.name }); 
+ fireWebhook({ event: 'start', zoneId: z.id, zoneName: z.name });
+ if (getFSOption(FS_PREF_AUTO_STARTS, false)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: formatTime(now),
+     event: 'СТАРТ',
+     panelNum: z.panelNum ? `№${z.panelNum}` : '',
+     name: z.name,
+     visitNum: z.triggerCount,
+     duration: '-',
+     totalVisits: z.triggerCount,
+     note: ''
+   });
+ } 
  } else { 
  forceOffSingle(z, now); 
  }
@@ -2203,9 +2968,22 @@ function forceOffSingle(z, offTime = Date.now()) {
  z.active = false; 
  z.totalMs += durationMs;
  fireWebhook({ event: 'stop', zoneId: z.id, zoneName: z.name, durationMs: durationMs });
- const entry = { id: logIdCounter++, type: 'event', name: z.name, num: z.triggerCount, onTime: formatTime(z.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs) };
+ const entry = { id: logIdCounter++, type: 'event', name: z.name, num: z.triggerCount, onTime: formatTime(z.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs), operator: getOperatorIndicator() };
  logs.push(entry); 
  prependTableRow(entry);
+ if (getFSOption(FS_PREF_AUTO_STOPS, true)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: formatTime(offTime),
+     event: 'СТОП',
+     panelNum: z.panelNum ? `№${z.panelNum}` : '',
+     name: z.name,
+     visitNum: z.triggerCount,
+     duration: formatDuration(durationMs),
+     totalVisits: z.triggerCount,
+     note: ''
+   });
+ }
 }
 
 function multiArrive(id) {
@@ -2227,7 +3005,20 @@ function multiArrive(id) {
  z.startTime = now;
  }
  z.occupants.push({ localNum: localNum, startTime: now, limitNotified: false });
- fireWebhook({ event: 'arrive', zoneId: z.id, zoneName: z.name, localNum: localNum }); 
+ fireWebhook({ event: 'arrive', zoneId: z.id, zoneName: z.name, localNum: localNum });
+ if (getFSOption(FS_PREF_AUTO_STARTS, false)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: formatTime(now),
+     event: 'ВХОД (ГРУППА)',
+     panelNum: z.panelNum ? `№${z.panelNum}` : '',
+     name: z.name,
+     visitNum: localNum,
+     duration: '-',
+     totalVisits: z.occupants.length,
+     note: `Заезд №${localNum}`
+   });
+ } 
  haptic(15, 'start'); 
  refreshMultiCard(z); 
  renderSummaryBar(); 
@@ -2254,9 +3045,22 @@ async function multiDepart(id, localNum, opts = {}) {
  }
  }
  fireWebhook({ event: 'depart', zoneId: z.id, zoneName: z.name, localNum: localNum, durationMs: durationMs });
- const entry = { id: logIdCounter++, type: 'event', name: z.name, num: localNum, onTime: formatTime(occ.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs) };
+ const entry = { id: logIdCounter++, type: 'event', name: z.name, num: localNum, onTime: formatTime(occ.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs), operator: getOperatorIndicator() };
  logs.push(entry); 
- prependTableRow(entry); 
+ prependTableRow(entry);
+ if (getFSOption(FS_PREF_AUTO_STOPS, true)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: formatTime(offTime),
+     event: 'ВЫХОД (ГРУППА)',
+     panelNum: z.panelNum ? `№${z.panelNum}` : '',
+     name: z.name,
+     visitNum: localNum,
+     duration: formatDuration(durationMs),
+     totalVisits: z.triggerCount,
+     note: `Заезд №${localNum}`
+   });
+ } 
  haptic(15, 'stop'); 
  refreshMultiCard(z); 
  renderSummaryBar(); 
@@ -2457,12 +3261,17 @@ function renderNotePanelChips() {
  updateNoteTargetDisplay();
 }
 
-function openNoteModal(zoneId = 'all') {
+function openNoteModal(zoneId = 'all', defaultMode = 'text') {
  selectedNoteZoneId = (zoneId === 'all' || zoneId === undefined || zoneId === null) ? 'all' : zoneId;
  closeModals();
  resetNoteModal();
  renderNotePanelChips();
  showModal('noteModal');
+ if (defaultMode === 'voice') {
+ startVoiceNote();
+ } else {
+ startTextNote();
+ }
 }
 
 let bottomPressTimer = null;
@@ -2619,14 +3428,120 @@ function toggleZoneSize(id) {
  showToast(z.size === 'wide' ? 'Размер: 2x (Широкий)' : 'Размер: 1x (Компактный)');
 }
 
+
+/* Индикатор оператора / смены */
+const OPERATOR_KEY = 'zonesPanel.operator.v1';
+let operatorIndicator = localStorage.getItem(OPERATOR_KEY) || '';
+
+function getOperatorIndicator() {
+  return operatorIndicator || localStorage.getItem(OPERATOR_KEY) || '';
+}
+
+function onOperatorIndicatorChange(val) {
+  operatorIndicator = (val || '').trim();
+  localStorage.setItem(OPERATOR_KEY, operatorIndicator);
+}
+
+/* Выбор времени в заметках (Старт и Финиш) */
+let isNoteCustomTimeActive = false;
+
+function toggleNoteCustomTime() {
+  const wrap = document.getElementById('noteTimeInputsWrap');
+  const btn = document.getElementById('noteTimeToggleBtn');
+  const display = document.getElementById('noteTimeDisplay');
+  const startIn = document.getElementById('noteStartTimeInput');
+  const endIn = document.getElementById('noteEndTimeInput');
+  if (!wrap || !btn) return;
+
+  isNoteCustomTimeActive = !isNoteCustomTimeActive;
+  if (isNoteCustomTimeActive) {
+    wrap.classList.remove('hidden');
+    const now = new Date();
+    const curTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+    if (startIn && !startIn.value) startIn.value = curTime;
+    if (endIn && !endIn.value) endIn.value = curTime;
+    onNoteTimeInputsChange();
+    btn.textContent = 'Сброс (Авто)';
+    btn.style.color = 'var(--warn)';
+    if (startIn) startIn.focus();
+  } else {
+    wrap.classList.add('hidden');
+    if (startIn) startIn.value = '';
+    if (endIn) endIn.value = '';
+    if (display) {
+      display.textContent = 'Авто (сейчас)';
+      display.style.color = 'var(--text)';
+    }
+    btn.textContent = 'Задать время';
+    btn.style.color = '';
+  }
+}
+
+function onNoteTimeInputsChange() {
+  const display = document.getElementById('noteTimeDisplay');
+  const startIn = document.getElementById('noteStartTimeInput');
+  const endIn = document.getElementById('noteEndTimeInput');
+  if (!display) return;
+
+  const sVal = startIn ? startIn.value.trim() : '';
+  const eVal = endIn ? endIn.value.trim() : '';
+
+  if (sVal && eVal) {
+    display.textContent = `${sVal} → ${eVal}`;
+    display.style.color = 'var(--accent)';
+  } else if (sVal) {
+    display.textContent = `${sVal} → (сейчас)`;
+    display.style.color = 'var(--accent)';
+  } else if (eVal) {
+    display.textContent = `(сейчас) → ${eVal}`;
+    display.style.color = 'var(--accent)';
+  } else {
+    display.textContent = 'Авто (сейчас)';
+    display.style.color = 'var(--text)';
+  }
+}
+
+
+/* Карточка элемента «Заметка» на панели */
+function noteCardInnerHTML(z) {
+  const notesForThis = logs.filter(l => l.type === 'note' && (l.zoneId === z.id || l.targetName === z.name));
+  const count = notesForThis.length;
+  const lastNote = notesForThis[notesForThis.length - 1];
+  const lastTimeStr = lastNote ? (lastNote.onTime || lastNote.time || '') : '';
+  const snippet = lastNote ? escapeHtml(lastNote.text) : 'Нажмите для ввода';
+
+  return `
+  <div class="tracker-head" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+    <div style="display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden;">
+      <span class="tracker-title" title="${escapeHtml(z.name)}" style="font-weight:700; font-size:13.5px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${escapeHtml(z.name)}</span>
+    </div>
+    <span style="color:var(--muted); opacity:0.65; display:flex; align-items:center; padding:2px 4px;" title="Заметка">
+      <i data-lucide="pen-tool" style="width:13px;height:13px;"></i>
+    </span>
+  </div>
+
+  <div class="tracker-visits" style="font-size:10.5px; color:var(--muted); display:flex; align-items:center; gap:5px; margin-bottom:6px;">
+    <span class="pulse-pip" style="width:6px; height:6px; border-radius:50%; background:${z.color}; display:inline-block;"></span>
+    <span>Записей: <b style="color:var(--text);">${count}</b>${lastTimeStr ? ` · посл: <b style="color:var(--text);">${lastTimeStr}</b>` : ''}</span>
+  </div>
+
+  <div style="background:rgba(0,0,0,0.18); border:1px solid var(--border); border-radius:6px; padding:6px 8px; margin:4px 0 0; min-height:36px; display:flex; align-items:center;">
+    <span style="font-size:11.5px; font-weight:500; color:${count > 0 ? 'var(--text)' : 'var(--muted)'}; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.25;">
+      ${snippet}
+    </span>
+  </div>
+  `;
+}
+
 function editAddZone(preferMode = 'single') { 
  saveStateForUndo(); 
  const id = zoneIdCounter++; 
  const isMulti = preferMode === 'multi';
+ const isNote = preferMode === 'note';
  zones.push({ 
  id, 
- name: isMulti ? `Группа ${id+1}` : `Элемент ${id+1}`, 
- mode: isMulti ? 'multi' : 'single', 
+ name: isNote ? `Заметка ${id+1}` : (isMulti ? `Группа ${id+1}` : `Элемент ${id+1}`), 
+ mode: preferMode, 
  color: colorFor(id), 
  active: false, 
  startTime: null, 
@@ -2642,7 +3557,7 @@ function editAddZone(preferMode = 'single') {
  }); 
  renderEditList(); 
  persistSession(); 
- showToast(isMulti ? 'Группа добавлена' : 'Элемент добавлен');
+ showToast(isNote ? 'Заметка добавлена' : (isMulti ? 'Группа добавлена' : 'Элемент добавлен'));
 }
 
 function initCardDrag(cardEl, zoneId) {
@@ -2750,6 +3665,8 @@ function renderEditList() {
  const launchBtn = document.getElementById('launchBtn');
  
  if (countBadge) countBadge.textContent = zones.length;
+ const opInput = document.getElementById('operatorIndicatorInput');
+ if (opInput) opInput.value = getOperatorIndicator();
  if (launchBtn) launchBtn.classList.toggle('can-launch', zones.length > 0);
  if (grid) grid.innerHTML = '';
  if (emptyPrompt) emptyPrompt.classList.toggle('hidden', zones.length > 0);
@@ -2788,6 +3705,33 @@ function renderEditList() {
  </button>
  <button class="icon-btn" onclick="openTimerSettings(${z.id})" title="Настройки лимита" style="padding:4px 8px; height:24px; color:${isTimerSet ? 'var(--accent)' : 'inherit'};">
  <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
+ `;
+ initCardDrag(card, z.id);
+ grid.appendChild(card);
+ } else if (z.mode === 'note') {
+ const card = document.createElement('div');
+ const isWide = z.size === 'wide';
+ card.className = 'constructor-card note-constructor-card' + (isWide ? ' size-wide' : '');
+ card.setAttribute('data-zone-id', z.id);
+
+ card.innerHTML = `
+ <div class="constructor-card-header">
+ <div class="color-dot" style="background:${z.color}; width:22px; height:22px;" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
+ <div class="edit-name-wrap" style="flex:1;">
+ <input type="text" value="${escapeHtml(z.name)}" placeholder="Имя заметки" onchange="commitRename(${z.id}, this.value)" style="padding:6px 8px; font-size:12px; margin:0;">
+ </div>
+ <button class="icon-btn danger-btn" onclick="editDeleteOne(${z.id})" title="Удалить" style="padding:4px; width:24px; height:24px; border-color:transparent; box-shadow:none; flex-shrink:0;">
+ <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
+ <div class="constructor-card-subrow" style="margin-top:8px;">
+ <span class="constructor-mode-badge" style="color:#38bdf8;">
+ <i data-lucide="file-text" style="width:12px;height:12px;"></i> Заметка
+ </span>
+ <button class="icon-btn" onclick="toggleZoneSize(${z.id})" title="Ширина (1x / 2x)" style="padding:2px 6px; font-size:10px; height:22px; color:${isWide ? 'var(--accent)' : 'var(--muted)'}; border-color:${isWide ? 'var(--accent)' : 'var(--border)'};">
+ ${isWide ? '2x' : '1x'}
  </button>
  </div>
  `;
@@ -2864,6 +3808,23 @@ function resetNoteModal() {
  document.getElementById('noteVoiceBox').classList.add('hidden');
  document.getElementById('noteTabVoiceBtn').classList.remove('active');
  document.getElementById('noteTabKeyboardBtn').classList.remove('active');
+ isNoteCustomTimeActive = false;
+ const wrap = document.getElementById('noteTimeInputsWrap');
+ if (wrap) wrap.classList.add('hidden');
+ const startIn = document.getElementById('noteStartTimeInput');
+ if (startIn) startIn.value = '';
+ const endIn = document.getElementById('noteEndTimeInput');
+ if (endIn) endIn.value = '';
+ const timeDisplay = document.getElementById('noteTimeDisplay');
+ if (timeDisplay) {
+ timeDisplay.textContent = 'Авто (сейчас)';
+ timeDisplay.style.color = 'var(--text)';
+ }
+ const timeBtn = document.getElementById('noteTimeToggleBtn');
+ if (timeBtn) {
+ timeBtn.textContent = 'Задать время';
+ timeBtn.style.color = '';
+ }
  stopVoiceRecognition();
 }
 
@@ -2971,7 +3932,37 @@ function saveNoteConfirm() {
  saveStateForUndo();
  
  const now = Date.now();
- const timeStr = formatTime(now);
+ const actualTime = formatTime(now);
+ let startTimeStr = actualTime;
+ let finishTimeStr = actualTime;
+ let durationStr = '-';
+
+ if (isNoteCustomTimeActive) {
+   const sInput = document.getElementById('noteStartTimeInput') ? document.getElementById('noteStartTimeInput').value.trim() : '';
+   const eInput = document.getElementById('noteEndTimeInput') ? document.getElementById('noteEndTimeInput').value.trim() : '';
+
+   if (sInput) {
+     startTimeStr = sInput.length === 5 ? sInput + ':00' : sInput;
+   }
+   if (eInput) {
+     finishTimeStr = eInput.length === 5 ? eInput + ':00' : eInput;
+   } else {
+     finishTimeStr = actualTime;
+   }
+   if (!sInput && eInput) {
+     startTimeStr = actualTime;
+   }
+
+   try {
+     const sParts = startTimeStr.split(':').map(Number);
+     const eParts = finishTimeStr.split(':').map(Number);
+     let diffSec = (eParts[0] * 3600 + eParts[1] * 60 + (eParts[2] || 0)) - (sParts[0] * 3600 + sParts[1] * 60 + (sParts[2] || 0));
+     if (diffSec < 0) diffSec += 86400;
+     if (diffSec > 0) {
+       durationStr = formatDuration(diffSec * 1000);
+     }
+   } catch(e) {}
+ }
  let targetName = 'Общая';
  
  if (selectedNoteZoneId !== 'all') {
@@ -2997,13 +3988,36 @@ function saveNoteConfirm() {
  text: text,
  zoneId: selectedNoteZoneId,
  targetName: targetName,
- time: timeStr,
- onTime: timeStr,
- timestamp: now
+ time: startTimeStr,
+ onTime: startTimeStr,
+ offTime: finishTimeStr,
+ duration: durationStr,
+ timestamp: now,
+ operator: getOperatorIndicator()
  };
  logs.push(entry);
  prependTableRow(entry);
  showToast(`Заметка сохранена (${targetName})`);
+ if (selectedNoteZoneId !== 'all') {
+ const noteZ = zones.find(x => x.id === selectedNoteZoneId);
+ if (noteZ && noteZ.mode === 'note') {
+ const el = document.getElementById(`noteBtn_${noteZ.id}`);
+ if (el) { el.innerHTML = noteCardInnerHTML(noteZ); updateIcons(el); }
+ }
+ }
+ if (getFSOption(FS_PREF_AUTO_NOTES, true)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: startTimeStr,
+     event: 'ЗАМЕТКА',
+     panelNum: '',
+     name: targetName,
+     visitNum: '',
+     duration: durationStr,
+     totalVisits: '-',
+     note: text
+   });
+ }
  fireWebhook({ event: 'note', text: text, zoneId: selectedNoteZoneId, targetName: targetName, timestamp: new Date().toISOString() });
  }
 
@@ -3052,30 +4066,40 @@ function getFeedItemHTML(entry) {
 }
 
 function getTableRowHTML(entry) {
+ const opStr = escapeHtml(entry.operator || getOperatorIndicator() || '-');
  if (entry.type === 'note') {
  const tName = escapeHtml(entry.targetName || 'Общая');
+ const noteRaw = entry.text || '';
+ const combined = (tName + ' ' + noteRaw).trim();
+ const durStr = (entry.duration && entry.duration !== '-') ? `<b>${entry.duration}</b>` : '-';
  return `<tr class="note-row">
+ <td style="color:var(--muted); font-size:11px; font-weight:600;">${opStr}</td>
  <td><span style="color:var(--accent); font-weight:700;"><i data-lucide="pen-tool" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>${tName}</span></td>
  <td>
  <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
- <span style="font-size:12.5px; font-weight:600; color:var(--text); word-break:break-word;">${escapeHtml(entry.text)}</span>
+ <span style="font-size:12.5px; font-weight:600; color:var(--text); word-break:break-word;">${escapeHtml(noteRaw)}</span>
  <div style="display:flex; gap:4px; flex-shrink:0;">
  <button class="icon-btn" style="padding:4px; height:24px; width:24px;" onclick="editNoteEntry(${entry.id}); closeModals();" title="Редактировать"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
  <button class="icon-btn" style="padding:4px; height:24px; width:24px; color:var(--danger); background:rgba(239, 68, 68, 0.1);" onclick="deleteNoteEntry(${entry.id})" title="Удалить"><i data-lucide="trash-2" style="width:12px;height:12px;"></i></button>
  </div>
  </div>
  </td>
+ <td><span style="font-size:12px; font-weight:600; color:var(--text); word-break:break-word;">${escapeHtml(combined)}</span></td>
  <td>${entry.onTime || entry.time || '-'}</td>
- <td>-</td>
- <td>-</td>
+ <td>${entry.offTime || '-'}</td>
+ <td>${durStr}</td>
  </tr>`;
  }
+ const noteText = entry.note && entry.note !== '-' ? entry.note : '';
+ const combined = noteText ? `${entry.name || ''} ${noteText}`.trim() : (entry.name || '');
  return `<tr>
- <td><b>${escapeHtml(entry.name)}</b></td>
- <td style="color:var(--muted);">-</td>
- <td>${entry.onTime}</td>
- <td>${entry.offTime}</td>
- <td><b>${entry.duration}</b></td>
+ <td style="color:var(--muted); font-size:11px; font-weight:600;">${opStr}</td>
+ <td><b>${escapeHtml(entry.name || '')}</b></td>
+ <td style="color:var(--muted);">${escapeHtml(entry.note || '-')}</td>
+ <td><span style="font-size:12px; font-weight:600; color:var(--text);">${escapeHtml(combined)}</span></td>
+ <td>${entry.onTime || '-'}</td>
+ <td>${entry.offTime || '-'}</td>
+ <td><b>${entry.duration || '-'}</b></td>
  </tr>`;
 }
 
@@ -3110,20 +4134,27 @@ function rebuildTableFromLogs() {
 /* Экспорт CSV */
 function buildCSV() {
  const delimiter = ';';
- const header = "\uFEFF" + ['Событие / Элемент', 'Текст заметки', 'Старт', 'Финиш', 'Время'].join(delimiter) + "\n";
+ const header = "\uFEFF" + ['Оператор', 'Событие / Элемент', 'Текст заметки', 'Элемент Примечание', 'Старт', 'Финиш', 'Время'].join(delimiter) + "\n";
  let rows = [];
  logs.forEach(r => {
+ const op = `"${(r.operator || getOperatorIndicator() || '').replace(/"/g, '""')}"`;
  if (r.type === 'note') {
  const target = (r.targetName || 'Общая').replace(/^№\d+\s+/, '');
- const noteText = `"${(r.text || '').replace(/"/g, '""')}"`;
- const time = r.onTime || r.time || '-';
- rows.push([`"${target.replace(/"/g, '""')}"`, noteText, time, '-', '-'].join(delimiter) + "\n");
+ const noteRaw = (r.text || '').replace(/"/g, '""');
+ const noteText = `"${noteRaw}"`;
+ const combined = `"${(target + ' ' + noteRaw).trim()}"`;
+ const onT = r.onTime || r.time || '-';
+ const offT = r.offTime || '-';
+ const dur = r.duration || '-';
+ rows.push([op, `"${target.replace(/"/g, '""')}"`, noteText, combined, onT, offT, dur].join(delimiter) + "\n");
  } else {
- const elemName = `"${(r.name || '').replace(/"/g, '""')}"`;
+ const elemName = (r.name || '').replace(/"/g, '""');
+ const noteVal = (r.note && r.note !== '-') ? r.note.replace(/"/g, '""') : '';
+ const combined = noteVal ? `"${(elemName + ' ' + noteVal).trim()}"` : `"${elemName}"`;
  const onT = r.onTime || '-';
  const offT = r.offTime || '-';
  const dur = r.duration || '-';
- rows.push([elemName, '-', onT, offT, dur].join(delimiter) + "\n");
+ rows.push([op, `"${elemName}"`, `"${noteVal || '-'}"`, combined, onT, offT, dur].join(delimiter) + "\n");
  }
  });
 
@@ -3206,6 +4237,8 @@ async function actionReset() {
  }); 
  });
  logs = []; 
+ systemActiveMs = 0;
+ systemActiveStartTime = null;
  document.getElementById('logBody').innerHTML = ''; 
  document.getElementById('logFeed').innerHTML = ''; 
  zones.forEach(z => { z.triggerCount = 0; z.totalMs = 0; z.startTime = null; z.nextLocalNum = 1; });
