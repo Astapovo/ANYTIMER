@@ -1,0 +1,4505 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="application-name" content="AnyTimer">
+<meta name="msapplication-TileColor" content="#0d0d19">
+<meta name="msapplication-TileImage" content="icon-192.png">
+<meta name="theme-color" content="#0d0d19" id="themeColorMeta">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>AnyTimer v8.0</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+*, *::before, *::after {
+ -webkit-user-select: none !important;
+ -moz-user-select: none !important;
+ -ms-user-select: none !important;
+ user-select: none !important;
+ -webkit-touch-callout: none !important;
+}
+
+input, textarea, [contenteditable="true"] {
+ -webkit-user-select: text !important;
+ -moz-user-select: text !important;
+ -ms-user-select: text !important;
+ user-select: text !important;
+ -webkit-touch-callout: default !important;
+}
+
+:root {
+ color-scheme: dark;
+ --bg: #0d0d19; 
+ --surface: rgba(255, 255, 255, 0.035);
+ --surface-hover: rgba(255, 255, 255, 0.075);
+ --border: rgba(255, 255, 255, 0.1);
+ --text: #e3e0f2;
+ --muted: #8b9bb4;
+ --accent: #4fdbc8; 
+ --accent-hover: #71f8e4;
+ --danger: #ff8a80;
+ --warn: #fbbf24;
+ --radius: 14px;
+ --radius-sm: 8px;
+ --shadow: 0 12px 32px rgba(0,0,0,0.45);
+ --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%);
+ --active-card-bg: linear-gradient(135deg, rgba(79, 219, 200, 0.12) 0%, rgba(13, 13, 25, 0.8) 100%);
+ --grid-color: rgba(255, 255, 255, 0.05);
+ --glass-blur: blur(20px);
+ --shimmer-rgb: 79, 219, 200;
+ --active-shimmer-bg: linear-gradient(115deg, rgba(var(--shimmer-rgb), 0.05) 0%, rgba(var(--shimmer-rgb), 0.30) 18%, rgba(var(--shimmer-rgb), 0.08) 36%, rgba(var(--shimmer-rgb), 0.28) 54%, rgba(var(--shimmer-rgb), 0.05) 72%, rgba(var(--shimmer-rgb), 0.30) 90%, rgba(var(--shimmer-rgb), 0.05) 100%);
+ --font-ui: 'JetBrains Mono', monospace;
+ --font-mono: 'JetBrains Mono', monospace;
+}
+
+:root[data-theme="light"] {
+ color-scheme: light;
+ --bg: #f4f6f9;
+ --surface: rgba(255, 255, 255, 0.88);
+ --surface-hover: rgba(255, 255, 255, 1);
+ --border: rgba(0, 0, 0, 0.08);
+ --text: #0f172a;
+ --muted: #64748b;
+ --accent: #0d9488;
+ --accent-hover: #0f766e;
+ --danger: #ef4444;
+ --warn: #d97706;
+ --shadow: 0 10px 25px rgba(0,0,0,0.05);
+ --shimmer-rgb: 13, 148, 136;
+ --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.70) 100%);
+ --active-card-bg: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+ --grid-color: rgba(0, 0, 0, 0.05);
+}
+
+:root[data-theme="amber"] {
+ color-scheme: dark;
+ --bg: #110d08;
+ --surface: rgba(245, 158, 11, 0.04);
+ --surface-hover: rgba(245, 158, 11, 0.08);
+ --border: rgba(245, 158, 11, 0.16);
+ --text: #fed7aa;
+ --muted: #b48c66;
+ --accent: #f59e0b;
+ --accent-hover: #fbbf24;
+ --danger: #ef4444;
+ --warn: #f59e0b;
+ --shadow: 0 12px 32px rgba(0,0,0,0.6);
+ --glass-bg: linear-gradient(180deg, rgba(245,158,11,0.06) 0%, rgba(17,13,8,0.85) 100%);
+ --active-card-bg: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(17, 13, 8, 0.9) 100%);
+ --grid-color: rgba(245, 158, 11, 0.06);
+ --glass-blur: blur(20px);
+ --shimmer-rgb: 245, 158, 11;
+ --active-shimmer-bg: linear-gradient(115deg, rgba(var(--shimmer-rgb), 0.05) 0%, rgba(var(--shimmer-rgb), 0.32) 18%, rgba(var(--shimmer-rgb), 0.08) 36%, rgba(var(--shimmer-rgb), 0.30) 54%, rgba(var(--shimmer-rgb), 0.05) 72%, rgba(var(--shimmer-rgb), 0.32) 90%, rgba(var(--shimmer-rgb), 0.05) 100%);
+}
+
+:root[data-theme="oled"] {
+ color-scheme: dark;
+ --bg: #000000;
+ --surface: rgba(255, 255, 255, 0.04);
+ --surface-hover: rgba(255, 255, 255, 0.09);
+ --border: rgba(255, 255, 255, 0.14);
+ --text: #f1f5f9;
+ --muted: #94a3b8;
+ --accent: #38bdf8;
+ --accent-hover: #7dd3fc;
+ --danger: #f87171;
+ --warn: #fbbf24;
+ --shadow: 0 12px 32px rgba(0,0,0,0.85);
+ --glass-bg: linear-gradient(180deg, rgba(20,20,25,0.95) 0%, rgba(5,5,10,0.98) 100%);
+ --active-card-bg: linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, rgba(0, 0, 0, 0.9) 100%);
+ --grid-color: rgba(255, 255, 255, 0.04);
+ --glass-blur: blur(20px);
+ --shimmer-rgb: 56, 189, 248;
+ --active-shimmer-bg: linear-gradient(115deg, rgba(var(--shimmer-rgb), 0.05) 0%, rgba(var(--shimmer-rgb), 0.32) 18%, rgba(var(--shimmer-rgb), 0.08) 36%, rgba(var(--shimmer-rgb), 0.30) 54%, rgba(var(--shimmer-rgb), 0.05) 72%, rgba(var(--shimmer-rgb), 0.32) 90%, rgba(var(--shimmer-rgb), 0.05) 100%);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; height: 100dvh; overflow: hidden; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+html {
+ background-color: var(--bg);
+ background-image: linear-gradient(to right, var(--grid-color) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+ background-size: 24px 24px; background-attachment: fixed; color: var(--text); font-family: var(--font-ui); transition: background-color 0.3s ease;
+}
+body { background: transparent; position: relative; }
+
+.app-container {
+ display: flex; flex-direction: column; height: 100%;
+ padding: 0 12px; padding-left: calc(12px + env(safe-area-inset-left)); padding-right: calc(12px + env(safe-area-inset-right));
+ max-width: 800px; margin: 0 auto; position: relative;
+}
+
+.mono { font-family: var(--font-mono); }
+.hidden { display: none !important; }
+.fade-in { animation: smoothFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards; }
+@keyframes smoothFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
+h3 { font-size: 14px; font-weight: 600; margin: 16px 0 8px; color: var(--muted); }
+p { color: var(--muted); font-size: 13px; }
+.eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+
+.topbar {
+ flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+ padding: calc(8px + env(safe-area-inset-top)) 14px 8px; margin-bottom: 8px;
+ background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+ border-bottom: 1px solid var(--border); border-radius: 0 0 var(--radius) var(--radius); margin-left: -12px; margin-right: -12px;
+ position: relative; overflow: hidden;
+}
+.topbar-spacer { width: 36px; }
+.topbar-title { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.topbar-title b { font-size: 17px; display: block; color: var(--accent); font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+:root[data-theme="dark"] .topbar-title b, :root[data-theme="amber"] .topbar-title b, :root[data-theme="oled"] .topbar-title b {
+ text-shadow: 0 0 12px rgba(var(--shimmer-rgb), 0.45);
+}
+.topbar-actions { width: 36px; display: flex; justify-content: flex-end; }
+.topbar-menu-btn { background: transparent; border: none; color: var(--text); padding: 7px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; transition: background 0.2s, color 0.2s; cursor: pointer; }
+.topbar-menu-btn:active { background: var(--surface-hover); transform: scale(0.92); }
+.topbar-menu-btn:hover { color: var(--accent); }
+
+button { font-family: inherit; font-size: 13px; font-weight: 600; border: none; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background-color 0.15s, transform 0.1s, box-shadow 0.1s; }
+button:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+
+.icon-btn, .back-btn, .choice-btn, .mode-option {
+ background-color: var(--surface);
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+ box-shadow: 0 2px 0 rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
+ border: 1px solid var(--border); color: var(--text);
+}
+
+.action-btn { 
+ background-color: var(--accent); 
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.08) 100%);
+ box-shadow: 0 2px 0 rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.25);
+ border: 1px solid rgba(0,0,0,0.2); color: #000; padding: 12px 16px; width: 100%; font-size: 14px; font-weight: 700; 
+}
+:root[data-theme="light"] .action-btn { color: #fff; box-shadow: 0 2px 0 rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.3); }
+
+.danger-btn { 
+ background-color: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: var(--danger); padding: 12px 16px; width: 100%; 
+}
+
+:root[data-theme="light"] .icon-btn, :root[data-theme="light"] .back-btn, :root[data-theme="light"] .choice-btn, :root[data-theme="light"] .mode-option {
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 100%);
+ box-shadow: 0 2px 0 rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.icon-btn { padding: 8px; }
+.icon-btn:hover, .back-btn:hover { background-color: var(--surface-hover); }
+.action-btn.small { padding: 8px 14px; width: auto; font-size: 12px; }
+.back-btn.small { padding: 8px 14px; width: auto; font-size: 12px; }
+button:active, .mode-option:active { transform: translateY(2px) !important; box-shadow: 0 0 0 rgba(0,0,0,0) !important; }
+
+input[type="number"], input[type="text"], textarea, select {
+ width: 100%; padding: 11px 12px; margin: 6px 0 10px; background: var(--surface);
+ border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text);
+ font-family: inherit; font-size: 13px; font-weight: 500;
+}
+input:focus, textarea:focus, select:focus {
+ outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(var(--shimmer-rgb), 0.2);
+}
+
+input.input-error { border-color: var(--danger) !important; box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3) !important; animation: shakeError 0.3s ease-in-out; }
+@keyframes shakeError { 0%, 100% { transform: translateX(0); } 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
+
+.screen-fixed-header {
+ flex-shrink: 0 !important; display: flex !important; flex-direction: row !important;
+ justify-content: space-between !important; align-items: center !important; width: 100% !important;
+ height: 36px !important; min-height: 36px !important; margin-bottom: 4px !important;
+ box-sizing: border-box !important; padding: 0 4px !important;
+}
+
+.screen-header-left { display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-start !important; flex: 1 1 0 !important; min-width: 0 !important; }
+.screen-header-center { display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: center !important; flex: 1 1 auto !important; min-width: 0 !important; }
+.screen-header-right { display: flex !important; flex-direction: row !important; align-items: center !important; justify-content: flex-end !important; flex: 1 1 0 !important; min-width: 0 !important; }
+
+.screen-fixed-divider {
+ height: 1px; width: 100%;
+ background: linear-gradient(90deg, transparent 0%, var(--border) 18%, var(--accent) 50%, var(--border) 82%, transparent 100%);
+ opacity: 0.55; margin-bottom: 8px; flex-shrink: 0;
+}
+
+#step3 { display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative; }
+
+.log-feed-viewport {
+ flex: 0 0 auto; min-height: 24px; max-height: 56px; display: flex; flex-direction: column; justify-content: flex-end;
+ margin: 0 auto 4px; width: 100%; padding: 0 18px; box-sizing: border-box; overflow: hidden; pointer-events: none;
+ -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 100%);
+ mask-image: linear-gradient(to bottom, transparent 0%, black 25%, black 100%);
+}
+#logFeed { display: flex; flex-direction: column; gap: 2px; padding-bottom: 2px; }
+
+.feed-item {
+ display: flex; justify-content: space-between; align-items: center; padding: 3px 8px; font-size: 11px; opacity: 0.9;
+ animation: smoothFadeIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards;
+}
+.feed-item .feed-time { color: rgba(139, 155, 180, 0.75); font-size: 10.5px; font-family: var(--font-mono); }
+.feed-item .feed-name { color: var(--text); font-weight: 600; font-size: 11.5px; }
+.feed-item .feed-dur { color: var(--accent); font-weight: 700; font-size: 11px; font-family: var(--font-mono); }
+
+.workspace-viewport { flex: 0 0 auto; max-height: 85vh; display: flex; flex-direction: column; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+
+.journal-header-btn {
+ display: inline-flex !important; flex-direction: row !important; align-items: center !important; gap: 4px !important; background: transparent !important; border: none !important;
+ color: var(--accent) !important; font-family: inherit !important; font-size: 11.5px !important; font-weight: 700 !important; letter-spacing: 0.04em !important; text-transform: uppercase !important;
+ cursor: pointer !important; padding: 5px 6px !important; border-radius: 6px !important; margin: 0 !important; white-space: nowrap !important; transition: all 0.15s ease !important; flex-shrink: 0 !important;
+}
+.journal-header-btn:hover { background: rgba(var(--shimmer-rgb), 0.1) !important; }
+.journal-header-btn:active { transform: scale(0.96) !important; background: rgba(var(--shimmer-rgb), 0.16) !important; }
+
+.workspace-scroll { overflow-y: auto; padding-right: 2px; padding-bottom: 24px !important; }
+.workspace-scroll::-webkit-scrollbar { width: 4px; }
+.workspace-scroll::-webkit-scrollbar-thumb { background: rgba(139, 155, 180, 0.3); border-radius: 4px; }
+
+.tracker-btn, .zone-card { 
+ background-color: var(--surface);
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+ backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); 
+ border: 1px solid var(--border); border-radius: var(--radius); 
+ box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05); 
+ position: relative; overflow: hidden; transition: all 0.2s ease; 
+}
+:root[data-theme="light"] .tracker-btn, :root[data-theme="light"] .zone-card {
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 100%);
+ box-shadow: 0 4px 12px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+.tracker-btn { padding: 14px; display: flex; flex-direction: column; justify-content: space-between; min-height: 96px; cursor: pointer; text-align: left; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+@keyframes shimmerSweep { 0% { background-position: 0% 50%; } 100% { background-position: 250% 50%; } }
+.tracker-btn.active, .zone-card.active {
+ position: relative; background-color: transparent; background-image: var(--active-shimmer-bg); background-size: 250% 250%;
+ animation: shimmerSweep 4.5s linear infinite; border-color: var(--accent);
+}
+.tracker-btn.active::after, .zone-card.active::after {
+ content: ''; position: absolute; inset: 0; pointer-events: none;
+ background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.12) 48%, transparent 66%);
+ background-size: 250% 250%; animation: shimmerSweep 4.5s linear infinite; mix-blend-mode: screen;
+}
+
+:root[data-theme="dark"] .tracker-btn.active, :root[data-theme="amber"] .tracker-btn.active, :root[data-theme="oled"] .tracker-btn.active {
+ box-shadow: 0 0 18px rgba(var(--shimmer-rgb), 0.28), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+:root[data-theme="light"] .tracker-btn.active { box-shadow: 0 4px 14px rgba(var(--shimmer-rgb), 0.28), inset 0 1px 0 rgba(255,255,255,0.5); }
+:root[data-theme="light"] .tracker-btn.active * { color: var(--text) !important; }
+.zone-card.active { --shimmer-rgb: var(--zc-rgb, 79, 219, 200); border-color: var(--zc, var(--accent)); }
+.tracker-btn:active { transform: scale(0.97); }
+.zone-card { padding: 16px; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+
+.summary-bar {
+ display: flex; gap: 8px; padding: 10px 14px; justify-content: space-between; align-items: center;
+ background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+ border-radius: 8px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+ font-size: 11px; font-weight: 600; color: var(--muted); border: 1px solid var(--border);
+}
+.summary-bar b { color: var(--text); font-size: 12px; }
+.summary-bar div { display: flex; flex-direction: row; align-items: center; gap: 6px; }
+
+.pulse-pip { animation: pipAnim 2s infinite; }
+@keyframes pipAnim { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+
+/* КОНСТРУКТОР (#editStep) */
+.constructor-screen { display: flex; flex-direction: column; flex: 1; min-height: 0; position: relative; }
+.constructor-workspace-scroll { flex: 1; overflow-y: auto; padding-right: 2px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); }
+.constructor-workspace-scroll::-webkit-scrollbar { width: 4px; }
+.constructor-workspace-scroll::-webkit-scrollbar-thumb { background: rgba(139, 155, 180, 0.3); border-radius: 4px; }
+
+.constructor-card {
+ background: var(--surface);
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+ backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+ border: 1px solid var(--border); border-radius: var(--radius);
+ padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between;
+ min-height: 96px; gap: 8px; position: relative;
+ box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05); box-sizing: border-box;
+}
+:root[data-theme="light"] .constructor-card {
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 100%);
+ box-shadow: 0 4px 12px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+.constructor-card.size-wide { grid-column: 1 / -1 !important; }
+.constructor-card-header { display: flex; align-items: center; gap: 6px; width: 100%; }
+
+.constructor-card .edit-name-wrap input {
+ margin: 0; width: 100%; padding: 4px 6px; background: rgba(255, 255, 255, 0.05);
+ border: 1px solid transparent; border-radius: 6px; color: var(--text); font-size: 12px; font-weight: 700;
+}
+.constructor-card .edit-name-wrap input:focus { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 2px rgba(var(--shimmer-rgb), 0.15); }
+:root[data-theme="light"] .constructor-card .edit-name-wrap input { background: rgba(0, 0, 0, 0.04); color: #0f172a; }
+
+.constructor-card-subrow { display: flex; justify-content: space-between; align-items: center; width: 100%; font-size: 11px; }
+.constructor-mode-badge { font-size: 10.5px; font-weight: 600; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+.constructor-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; width: 100%; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.06); }
+:root[data-theme="light"] .constructor-card-footer { border-top-color: rgba(0,0,0,0.06); }
+
+.constructor-toggle-btn {
+ display: flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 600;
+ background: var(--surface); border: 1px solid var(--border); color: var(--text); cursor: pointer; transition: all 0.15s ease;
+}
+.constructor-toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.constructor-group-card {
+ background: var(--surface);
+ background-image: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+ backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+ border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px;
+ display: flex; flex-direction: column; gap: 8px;
+ box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+:root[data-theme="light"] .constructor-group-card { background-image: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, rgba(255,255,255,0.35) 100%); }
+
+.color-dot { width: 22px; height: 22px; border-radius: 6px; cursor: pointer; flex-shrink: 0; box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15), 0 0 0 1px var(--border); transition: transform 0.15s ease; }
+.color-dot:active { transform: scale(0.85); }
+.edit-name-wrap { position: relative; flex: 1; min-width: 0; }
+
+/* МОДАЛЬНЫЕ ОКНА */
+.modal-overlay {
+ position: fixed; inset: 0; background: rgba(0, 0, 0, 0.68); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+ display: flex; justify-content: center; align-items: flex-end; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+}
+.modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+.modal-content {
+ background: var(--glass-bg); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+ width: 100%; max-width: 600px; border-radius: 20px 20px 0 0; 
+ padding: 22px 16px calc(16px + env(safe-area-inset-bottom)) 16px;
+ border-top: 1px solid var(--border); border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+ transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+ box-shadow: 0 -10px 40px rgba(0,0,0,0.4); display: flex; flex-direction: column; gap: 8px; max-height: 90vh; overflow-y: auto; position: relative;
+}
+.modal-overlay.show .modal-content { transform: translateY(0); }
+.modal-content::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 36px; height: 4px; border-radius: 4px; background: var(--muted); opacity: 0.35; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+.modal-header h3 { margin: 0; color: var(--text); font-size: 17px; font-weight: 800; letter-spacing: -0.01em; }
+.close-btn { width: auto; color: var(--muted); border-radius: var(--radius-sm); }
+
+body:has(.modal-overlay.show) #bottomActionBar,
+body:has(#stepResume:not(.hidden)) #bottomActionBar {
+ opacity: 0 !important; pointer-events: none !important; transform: scale(0.85) !important; visibility: hidden !important;
+}
+
+.menu-card-list { display: flex; flex-direction: column; gap: 7px; }
+.menu-card-btn {
+ display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 14px;
+ background: var(--surface); background-image: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
+ border: 1px solid var(--border); border-radius: 12px; text-align: left; color: var(--text);
+ box-shadow: 0 2px 8px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.04); cursor: pointer;
+ transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease; box-sizing: border-box;
+}
+:root[data-theme="light"] .menu-card-btn {
+ background-color: rgba(255, 255, 255, 0.95); background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+ border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.04), inset 0 1px 0 #ffffff;
+}
+.menu-card-btn:hover { background-color: var(--surface-hover); border-color: var(--accent); }
+.menu-card-btn:active { transform: scale(0.98) translateY(1px); }
+
+.menu-card-left { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+.menu-card-icon {
+ width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+ background: rgba(var(--shimmer-rgb), 0.12); border: 1px solid rgba(var(--shimmer-rgb), 0.25); color: var(--accent);
+}
+
+.menu-card-text { display: flex; flex-direction: column; min-width: 0; }
+.menu-card-text b { font-size: 13.5px; font-weight: 700; color: var(--text); line-height: 1.25; }
+.menu-card-text span { font-size: 11px; color: var(--muted); font-weight: 500; line-height: 1.3; margin-top: 2px; }
+.menu-card-chevron { color: var(--muted); opacity: 0.6; flex-shrink: 0; }
+
+.menu-grid-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; margin: 4px 0; }
+.menu-grid-card {
+ display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 12px 8px;
+ background: var(--surface); background-image: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0) 100%);
+ border: 1px solid var(--border); border-radius: 12px; color: var(--text); text-align: center; cursor: pointer; transition: all 0.15s ease;
+ box-sizing: border-box; box-shadow: 0 2px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+:root[data-theme="light"] .menu-grid-card {
+ background: #ffffff; background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border-color: rgba(0,0,0,0.08); box-shadow: 0 2px 6px rgba(0,0,0,0.03), inset 0 1px 0 #ffffff;
+}
+.menu-grid-card:hover { background: var(--surface-hover); border-color: var(--accent); }
+.menu-grid-card:active { transform: scale(0.97) translateY(1px); }
+.menu-grid-card b { font-size: 12px; font-weight: 700; color: var(--text); }
+.menu-grid-card span { font-size: 10px; color: var(--muted); }
+
+.menu-grid-card:has(input:checked) {
+ border-color: var(--accent); background-color: rgba(var(--shimmer-rgb), 0.14); background-image: none; color: var(--accent);
+ box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 0 12px rgba(var(--shimmer-rgb), 0.15); transform: translateY(1px);
+}
+.menu-grid-card input { display: none; }
+.menu-grid-card.danger { border-color: rgba(239, 68, 68, 0.35); background: rgba(239, 68, 68, 0.08); color: var(--danger); }
+.menu-grid-card.danger:hover { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); }
+.menu-grid-card.danger b { color: var(--danger); }
+
+.menu-section-eyebrow {
+ font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 10px 0 4px; display: flex; align-items: center; gap: 6px;
+}
+
+.resume-btn {
+ width: 100%; height: 48px; min-height: 48px; padding: 0 18px; border-radius: 12px; font-family: inherit; font-size: 13.5px; font-weight: 700; letter-spacing: 0.02em;
+ display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+ outline: none; box-sizing: border-box;
+}
+.resume-btn:active { transform: translateY(2px) scale(0.98) !important; box-shadow: none !important; }
+.resume-btn-primary {
+ background-color: var(--accent); background-image: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.08) 100%);
+ box-shadow: 0 4px 14px rgba(var(--shimmer-rgb), 0.3), inset 0 1px 0 rgba(255,255,255,0.25); border: 1px solid rgba(0,0,0,0.15); color: #000000;
+}
+:root[data-theme="light"] .resume-btn-primary { color: #ffffff; }
+.resume-btn-secondary {
+ background-color: var(--surface); background-image: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 100%);
+ border: 1.5px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.05); color: var(--text);
+}
+
+.table-wrap { overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); }
+table { width: 100%; border-collapse: collapse; min-width: 480px; }
+th, td { border-bottom: 1px solid var(--border); padding: 10px 12px; text-align: left; font-size: 12px; }
+th { background: rgba(0,0,0,0.02); color: var(--muted); font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+.note-row td { background: rgba(var(--shimmer-rgb), 0.05); border-left: 3px solid var(--accent); }
+
+/* CYBERPUNK TOPBAR HUD NOTIFICATION */
+.cyber-hud-toast {
+ position: absolute; inset: 0; z-index: 100;
+ background: linear-gradient(135deg, rgba(10, 15, 26, 0.98) 0%, rgba(13, 24, 33, 0.98) 100%);
+ backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+ border: 1px solid var(--accent); box-shadow: 0 0 20px rgba(var(--shimmer-rgb), 0.4), inset 0 0 14px rgba(var(--shimmer-rgb), 0.18);
+ display: flex; align-items: center; justify-content: center; padding: 0 10px; box-sizing: border-box;
+ opacity: 0; pointer-events: none; transform: scale(0.3); transform-origin: center center;
+ clip-path: inset(45% 45% 45% 45% round 12px);
+ transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.2), clip-path 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root[data-theme="light"] .cyber-hud-toast {
+ background: linear-gradient(135deg, rgba(240, 253, 250, 0.98) 0%, rgba(204, 251, 241, 0.98) 100%);
+ border-color: #0d9488; box-shadow: 0 4px 16px rgba(13, 148, 136, 0.25), inset 0 0 10px rgba(13, 148, 136, 0.12);
+}
+
+.cyber-hud-toast.show { opacity: 1; pointer-events: auto; transform: scale(1); clip-path: inset(0% 0% 0% 0% round 0px); }
+.cyber-hud-toast.warn {
+ border-color: var(--danger); box-shadow: 0 0 22px rgba(255, 138, 128, 0.5), inset 0 0 16px rgba(255, 138, 128, 0.22);
+ background: linear-gradient(135deg, rgba(28, 11, 15, 0.98) 0%, rgba(38, 14, 18, 0.98) 100%);
+}
+
+.cyber-toast-content { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; max-width: 100%; z-index: 2; }
+.cyber-toast-icon {
+ width: 22px; height: 22px; border-radius: 6px; background: rgba(var(--shimmer-rgb), 0.16);
+ border: 1px solid rgba(var(--shimmer-rgb), 0.35); color: var(--accent); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.cyber-hud-toast.warn .cyber-toast-icon { background: rgba(239, 68, 68, 0.18); border-color: rgba(239, 68, 68, 0.4); color: var(--danger); }
+.cyber-toast-text-wrap { display: flex; align-items: center; gap: 5px; min-width: 0; flex-shrink: 1; text-align: left; }
+.cyber-toast-prefix { font-family: var(--font-mono); font-size: 9.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); opacity: 0.85; flex-shrink: 0; }
+.cyber-hud-toast.warn .cyber-toast-prefix { color: var(--danger); }
+.cyber-toast-msg { font-family: var(--font-mono); font-size: 11.5px; font-weight: 700; letter-spacing: 0.01em; color: #ffffff; text-shadow: 0 0 8px rgba(var(--shimmer-rgb), 0.5); line-height: 1.25; word-break: break-word; }
+:root[data-theme="light"] .cyber-toast-msg { color: #0f172a; text-shadow: none; }
+.cyber-hud-toast.warn .cyber-toast-msg { color: #ff8a80; text-shadow: 0 0 8px rgba(255, 138, 128, 0.6); }
+
+.cyber-corner-tl, .cyber-corner-tr, .cyber-corner-bl, .cyber-corner-br { position: absolute; width: 6px; height: 6px; pointer-events: none; border-color: var(--accent); }
+.cyber-hud-toast.warn .cyber-corner-tl, .cyber-hud-toast.warn .cyber-corner-tr, .cyber-hud-toast.warn .cyber-corner-bl, .cyber-hud-toast.warn .cyber-corner-br { border-color: var(--danger); }
+.cyber-corner-tl { top: 3px; left: 4px; border-top: 2px solid; border-left: 2px solid; }
+.cyber-corner-tr { top: 3px; right: 4px; border-top: 2px solid; border-right: 2px solid; }
+.cyber-corner-bl { bottom: 3px; left: 4px; border-bottom: 2px solid; border-left: 2px solid; }
+.cyber-corner-br { bottom: 3px; right: 4px; border-bottom: 2px solid; border-right: 2px solid; }
+
+.cyber-scanline {
+ position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(var(--shimmer-rgb), 0.04) 51%, transparent 52%);
+ background-size: 100% 4px; pointer-events: none; opacity: 0.6;
+}
+
+.unified-zones-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; position: relative; }
+.zone-card { grid-column: 1 / -1 !important; }
+.constructor-group-card { grid-column: 1 / -1 !important; }
+
+@keyframes launchSubtlePulse {
+ 0%, 100% { opacity: 0.85; text-shadow: 0 0 0 rgba(var(--shimmer-rgb), 0); transform: scale(1); }
+ 50% { opacity: 1; text-shadow: 0 0 8px rgba(var(--shimmer-rgb), 0.45); transform: scale(1.03); }
+}
+
+.journal-header-btn.can-launch { animation: launchSubtlePulse 2.8s ease-in-out infinite; color: var(--accent) !important; }
+
+.constructor-card, .constructor-group-card { touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.constructor-card.dragging-card, .constructor-group-card.dragging-card {
+ opacity: 0.92 !important; box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 24px rgba(var(--shimmer-rgb), 0.5) !important;
+ border-color: var(--accent) !important; z-index: 1000 !important; cursor: grabbing !important;
+}
+
+.constructor-card.drop-target-card, .constructor-group-card.drop-target-card {
+ border: 2px dashed var(--accent) !important; background-color: rgba(var(--shimmer-rgb), 0.12) !important;
+ transform: scale(0.96) !important; transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.version-badge-pill {
+ display: inline-flex; align-items: center; gap: 6px; background: rgba(var(--shimmer-rgb), 0.12);
+ border: 1px solid rgba(var(--shimmer-rgb), 0.35); color: var(--accent); padding: 4px 10px; border-radius: 20px;
+ font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+}
+
+.panel-num-badge {
+ font-family: var(--font-mono); font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px;
+ display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; letter-spacing: 0.04em;
+}
+
+.panel-chip {
+ background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+ padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.15s ease;
+}
+.panel-chip:hover { border-color: var(--accent); color: var(--text); }
+.panel-chip.active { background: rgba(var(--shimmer-rgb), 0.15); border-color: var(--accent); color: var(--accent); font-weight: 700; }
+
+.bubble-menu {
+ position: fixed !important; bottom: calc(58px + env(safe-area-inset-bottom)) !important; left: 50% !important; transform: translateX(-50%) !important;
+ width: 250px !important; max-width: calc(100vw - 32px) !important; background: var(--glass-bg) !important;
+ backdrop-filter: blur(25px) !important; -webkit-backdrop-filter: blur(25px) !important;
+ border: 1px solid var(--border) !important; border-radius: 16px !important;
+ box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(var(--shimmer-rgb), 0.15) !important;
+ padding: 12px !important; display: flex !important; flex-direction: column !important; gap: 8px !important;
+ z-index: 9999 !important; pointer-events: auto !important; box-sizing: border-box !important;
+ animation: bubbleMenuAnim 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.1) forwards !important;
+}
+.bubble-menu.hidden {
+ display: none !important; opacity: 0 !important; pointer-events: none !important;
+ transform: translateX(-50%) translateY(12px) scale(0.94) !important;
+}
+@keyframes bubbleMenuAnim {
+ 0% { opacity: 0; transform: translateX(-50%) translateY(14px) scale(0.94); }
+ 100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+
+.bubble-menu-header {
+ display: flex !important; justify-content: space-between !important; align-items: center !important;
+ padding-bottom: 6px !important; border-bottom: 1px solid var(--border) !important;
+}
+.bubble-menu-header span { font-size: 11px !important; font-weight: 800 !important; text-transform: uppercase !important; letter-spacing: 0.08em !important; color: var(--accent) !important; }
+.bubble-close-btn { padding: 4px !important; border-radius: 6px !important; color: var(--muted) !important; width: auto !important; height: auto !important; cursor: pointer !important; }
+
+.bubble-menu-items { display: flex !important; flex-direction: column !important; gap: 6px !important; }
+.bubble-item-btn {
+ display: flex !important; align-items: center !important; gap: 10px !important; width: 100% !important; padding: 10px 12px !important;
+ background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: 10px !important;
+ text-align: left !important; color: var(--text) !important; cursor: pointer !important; transition: background 0.15s ease, transform 0.1s ease !important;
+}
+.bubble-item-btn:hover { background: var(--surface-hover) !important; border-color: var(--accent) !important; }
+.bubble-item-icon { width: 32px !important; height: 32px !important; border-radius: 8px !important; display: flex !important; align-items: center !important; justify-content: center !important; flex-shrink: 0 !important; }
+.bubble-item-text { display: flex !important; flex-direction: column !important; min-width: 0 !important; }
+.bubble-item-text b { font-size: 13px !important; font-weight: 700 !important; color: var(--text) !important; }
+.bubble-item-text span { font-size: 10px !important; color: var(--muted) !important; }
+.bubble-menu-row { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 6px !important; margin-top: 2px !important; }
+
+.bubble-action-subbtn {
+ display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 4px !important;
+ padding: 9px 6px !important; background: var(--surface) !important; border: 1px solid var(--border) !important; border-radius: 8px !important;
+ color: var(--text) !important; font-size: 11px !important; font-weight: 700 !important; cursor: pointer !important; transition: all 0.15s ease !important;
+}
+.bubble-action-subbtn:hover:not(:disabled) { background: var(--surface-hover) !important; border-color: var(--accent) !important; color: var(--accent) !important; }
+.bubble-action-subbtn:disabled { opacity: 0.4 !important; cursor: not-allowed !important; }
+
+.bottom-action-bar {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 100% !important;
+  max-width: 800px !important;
+  height: auto !important;
+  min-height: 46px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 9000 !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  -webkit-backdrop-filter: var(--glass-blur) !important;
+  border-top: 1px solid var(--border) !important;
+  border-radius: var(--radius) var(--radius) 0 0 !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3) !important;
+  padding: 6px 14px calc(6px + env(safe-area-inset-bottom)) !important;
+  box-sizing: border-box !important;
+}
+
+
+
+
+.bottom-action-btn {
+ background: transparent !important; border: none !important; cursor: pointer !important; padding: 8px 36px !important;
+ border-radius: 12px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important;
+ position: relative !important; user-select: none !important; -webkit-user-select: none !important; touch-action: manipulation !important;
+ transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important; outline: none !important;
+}
+.bottom-btn-text {
+ font-family: var(--font-mono) !important; font-size: 24px !important; font-weight: 800 !important; letter-spacing: 0.05em !important;
+ color: var(--accent) !important; text-shadow: 0 0 10px rgba(var(--shimmer-rgb), 0.6), 0 0 20px rgba(var(--shimmer-rgb), 0.25) !important;
+ transition: all 0.2s ease !important;
+}
+.bottom-action-btn:hover .bottom-btn-text {
+ color: var(--accent-hover) !important; text-shadow: 0 0 16px rgba(var(--shimmer-rgb), 0.95) !important; transform: scale(1.12) !important;
+}
+.bottom-action-btn:active .bottom-btn-text { transform: scale(0.92) !important; opacity: 0.85 !important; }
+
+.bottom-voice-dot {
+ width: 7px !important; height: 7px !important; border-radius: 50% !important; background: var(--danger) !important;
+ position: absolute !important; top: 6px !important; right: 20px !important; box-shadow: 0 0 8px var(--danger) !important;
+ animation: pulseVoiceDot 1s infinite !important;
+}
+@keyframes pulseVoiceDot { 0%, 100% { opacity: 0.4; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.3); } }
+
+.bottom-action-btn.listening .bottom-btn-text {
+ color: var(--danger) !important; text-shadow: 0 0 14px rgba(239, 68, 68, 0.8) !important; animation: amaVoicePulse 1.1s ease-in-out infinite !important;
+}
+@keyframes amaVoicePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+</style>
+</head>
+
+<body>
+
+<div class="app-container">
+ <div class="topbar">
+ <div class="topbar-spacer"></div>
+ <div class="topbar-title">
+ <b>AnyTimer</b>
+ </div>
+ <div class="topbar-spacer"></div>
+
+ <div id="toast" class="cyber-hud-toast">
+ <div class="cyber-toast-content">
+ <div class="cyber-toast-icon" id="toastIconWrap"><i data-lucide="check-circle-2" style="width:14px;height:14px;"></i></div>
+ <div class="cyber-toast-text-wrap">
+ <span class="cyber-toast-prefix" id="toastPrefix">[OK] //</span>
+ <span class="cyber-toast-msg" id="toastMsg">Готово</span>
+ </div>
+ </div>
+ <div class="cyber-scanline"></div>
+ <div class="cyber-corner-tl"></div>
+ <div class="cyber-corner-tr"></div>
+ <div class="cyber-corner-bl"></div>
+ <div class="cyber-corner-br"></div>
+ </div>
+ </div>
+
+ <div id="stepResume" class="hidden" style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:0; padding:16px 8px;">
+ <div style="width:100%; max-width:440px; background:var(--glass-bg); backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur); border:1px solid var(--border); border-radius:20px; padding:32px 22px 28px; box-shadow:var(--shadow); display:flex; flex-direction:column; align-items:center; text-align:center; margin-top:3vh;">
+ <div style="width:52px; height:52px; border-radius:16px; background:rgba(var(--shimmer-rgb), 0.12); border:1px solid rgba(var(--shimmer-rgb), 0.3); color:var(--accent); display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
+ <i data-lucide="history" style="width:26px; height:26px;"></i>
+ </div>
+ <div class="eyebrow">Автосохранение</div>
+ <h2 style="font-size:20px; font-weight:800; margin-bottom:8px; line-height:1.25;">Есть несохранённая панель</h2>
+ <p id="resumeInfo" style="margin: 0 0 22px; font-size: 13px; color: var(--muted); line-height: 1.45;">Вы можете восстановить предыдущую сессию со всеми таймерами или начать заново.</p>
+ 
+ <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
+ <button class="resume-btn resume-btn-primary" onclick="restoreSessionAction()">
+ <i data-lucide="rotate-ccw" style="width:18px;height:18px;"></i>
+ <span>Восстановить</span>
+ </button>
+ <button class="resume-btn resume-btn-secondary" onclick="discardSessionAction()">
+ <i data-lucide="plus-circle" style="width:18px;height:18px;"></i>
+ <span>Начать заново</span>
+ </button>
+ </div>
+ </div>
+ </div>
+
+ <div id="editStep" class="constructor-screen hidden">
+ <div class="log-feed-viewport" style="pointer-events:none;"></div>
+
+ <div class="screen-fixed-header">
+ <div class="screen-header-left">
+ <button class="journal-header-btn" onclick="openPresetsOverlay()" title="Открыть сохранённые панели (Пресеты)">
+ <i data-lucide="bookmark" style="width:13px;height:13px;"></i>
+ <span>Пресеты</span>
+ <i data-lucide="chevron-right" style="width:11px;height:11px; opacity:0.6;"></i>
+ </button>
+ </div>
+
+ <div class="screen-header-center">
+ <button id="launchBtn" class="journal-header-btn" onclick="exitEditMode()" title="Запустить панель в работу">
+ <i data-lucide="play" style="width:13px;height:13px;"></i>
+ <span>Запустить</span>
+ <i data-lucide="chevron-right" style="width:11px;height:11px; opacity:0.6;"></i>
+ </button>
+ </div>
+
+ <div class="screen-header-right">
+ <button class="journal-header-btn" onclick="openMenu()" title="Открыть настройки">
+ <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
+ <span>Настройки</span>
+ <i data-lucide="chevron-right" style="width:11px;height:11px; opacity:0.6;"></i>
+ </button>
+ </div>
+ </div>
+
+ <div class="screen-fixed-divider"></div>
+
+ <div class="constructor-workspace-scroll">
+ <div class="summary-bar" style="margin-bottom:12px;">
+ <div style="display:flex; flex-direction:row; align-items:center; gap:6px;">
+ <i data-lucide="layers" style="color:var(--accent); width:14px;"></i>
+ <span>Элементов: <b id="constructorZoneCount">0</b></span>
+ </div>
+ <div style="display:flex; gap:6px;">
+ <button class="back-btn small" onclick="editAddZone('single')" title="Добавить одиночный таймер" style="padding:2px 8px; font-size:11px; height:24px; border-color:var(--accent); color:var(--accent); background:rgba(var(--shimmer-rgb),0.06);">+ Одиночный</button>
+ <button class="back-btn small" onclick="editAddZone('multi')" title="Добавить группу" style="padding:2px 8px; font-size:11px; height:24px; border-color:var(--accent); color:var(--accent); background:rgba(var(--shimmer-rgb),0.06);">+ Группа</button>
+ <button class="back-btn small" onclick="editAddZone('note')" title="Добавить элемент Заметка" style="padding:2px 8px; font-size:11px; height:24px; border-color:#38bdf8; color:#38bdf8; background:rgba(56,189,248,0.08);">+ Заметка</button>
+ </div>
+ </div>
+
+ 
+ <!-- Поле ввода индикатора оператора / смены -->
+ <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:10px 12px; margin-bottom:12px; display:flex; flex-direction:column; gap:6px;">
+ <div style="display:flex; justify-content:space-between; align-items:center;">
+ <div class="menu-section-eyebrow" style="margin:0; display:flex; align-items:center; gap:6px;">
+ <i data-lucide="user-check" style="width:13px;height:13px; color:var(--accent);"></i>
+ <span>Индикатор оператора / смены</span>
+ </div>
+ <span style="font-size:10px; color:var(--muted);">Фиксируется в таблице и логах</span>
+ </div>
+ <input type="text" id="operatorIndicatorInput" placeholder="ФИО / Должность / Смена (например: Конышев С.В. — АСУ ТП)" style="margin:0; padding:7px 10px; font-size:12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); width:100%; box-sizing:border-box;" oninput="onOperatorIndicatorChange(this.value)">
+ </div>
+
+ <div id="editZonesGrid" class="unified-zones-grid"></div>
+
+ <div id="constructorEmptyPrompt" class="hidden" style="text-align:center; padding:36px 16px; background:var(--surface); border:1px dashed var(--border); border-radius:var(--radius); margin-top:12px;">
+ <div class="menu-card-icon" style="margin:0 auto 10px; width:44px; height:44px;">
+ <i data-lucide="plus-circle" style="width:24px;height:24px;"></i>
+ </div>
+ <b style="font-size:14px; color:var(--text);">Панель пока пуста</b>
+ <p style="font-size:12px; color:var(--muted); margin:4px 0 14px;">Добавьте одиночные или групповые таймеры для хронометража</p>
+ <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+ <button class="action-btn small" onclick="editAddZone('single')" style="width:auto;"><i data-lucide="plus"></i> Одиночный</button>
+ <button class="action-btn small" onclick="editAddZone('multi')" style="width:auto;"><i data-lucide="layers"></i> Групповой</button>
+ <button class="action-btn small" onclick="editAddZone('note')" style="width:auto; border-color:#38bdf8; color:#38bdf8;"><i data-lucide="file-text"></i> Заметка</button>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div id="step3" class="hidden">
+ <div class="log-feed-viewport">
+ <div id="logFeed"></div>
+ </div>
+ 
+ <div class="screen-fixed-header">
+ <div class="screen-header-left">
+ <button class="journal-header-btn" onclick="openFullTableModal()" title="Открыть полную историю и экспорт">
+ <i data-lucide="terminal" style="width:13px;height:13px;"></i>
+ <span>Журнал</span>
+ <i data-lucide="chevron-right" style="width:11px;height:11px; opacity:0.6;"></i>
+ </button>
+ </div>
+
+ <div class="screen-header-center">
+ <button class="journal-header-btn" onclick="enterEditMode()" title="Редактор элементов панели">
+ <i data-lucide="sliders-horizontal" style="width:13px;height:13px;"></i>
+ <span>Конструктор</span>
+ <i data-lucide="chevron-right" style="width:11px;height:11px; opacity:0.6;"></i>
+ </button>
+ </div>
+
+ <div class="screen-header-right">
+ <button class="journal-header-btn" onclick="openMenu()" title="Открыть настройки">
+ <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
+ <span>Настройки</span>
+ <i data-lucide="chevron-right" style="width:11px;height:11px; opacity:0.6;"></i>
+ </button>
+ </div>
+ </div>
+
+ <div class="screen-fixed-divider"></div>
+
+ <div class="workspace-viewport" style="flex:1; overflow:hidden; display:flex; flex-direction:column;">
+ <div class="workspace-scroll" id="mainWorkspaceScroll">
+ <div class="summary-bar" id="summaryBar"></div>
+ <div id="zonesGrid" class="unified-zones-grid"></div>
+ </div>
+ </div>
+ </div>
+</div>
+
+<div id="bottomActionBar" class="bottom-action-bar">
+ <button id="bottomActionBtn" class="bottom-action-btn" aria-label="Действия (клик — меню, удержание — голос)" title="Клик — меню, удержание — голос">
+ <span class="bottom-btn-text">A</span>
+ <span id="bottomVoiceIndicator" class="bottom-voice-dot hidden"></span>
+ </button>
+</div>
+
+<div id="quickActionsMenu" class="bubble-menu hidden">
+ <div class="bubble-menu-header">
+ <span>Быстрые действия</span>
+ <button class="bubble-close-btn icon-btn" onclick="toggleBottomMenu(false)" aria-label="Закрыть меню"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
+ </div>
+ <div class="bubble-menu-items">
+ <button class="bubble-item-btn" onclick="handleBottomNote()">
+ <div class="bubble-item-icon" style="background: rgba(251, 191, 36, 0.15); color: var(--warn);"><i data-lucide="pen-tool" style="width:16px;height:16px;"></i></div>
+ <div class="bubble-item-text">
+ <b>Создание заметок</b>
+ <span>Голосовой или текстовый ввод</span>
+ </div>
+ </button>
+ <div class="bubble-menu-row">
+ <button id="menuUndoBtn" class="bubble-action-subbtn" onclick="undoLastAction()" title="Отменить действие">
+ <i data-lucide="undo-2" style="width:16px;height:16px;"></i>
+ <span>Назад (Отмена)</span>
+ </button>
+ <button id="menuRedoBtn" class="bubble-action-subbtn" onclick="redoLastAction()" title="Вернуть действие">
+ <i data-lucide="redo-2" style="width:16px;height:16px;"></i>
+ <span>Вперёд (Вернуть)</span>
+ </button>
+ </div>
+ </div>
+</div>
+
+<!-- МОДАЛКИ -->
+<div id="noteModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+ <div class="modal-content">
+ <div class="modal-header">
+ <div style="display:flex; align-items:center; gap:8px;">
+ <div class="menu-card-icon" style="background:rgba(var(--shimmer-rgb), 0.15); color:var(--accent); width:32px; height:32px;">
+ <i data-lucide="pen-tool" style="width:16px;height:16px;"></i>
+ </div>
+ <div>
+ <h3 style="margin:0; font-size:16px;">Заметка в журнал</h3>
+ <span style="font-size:11px; color:var(--muted);">Фиксация комментария к хронометражу</span>
+ </div>
+ </div>
+ <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+ </div>
+
+ <div class="note-target-box" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:10px 12px; margin-top:8px; display:flex; flex-direction:column; gap:6px;">
+ <div style="display:flex; justify-content:space-between; align-items:center;">
+ <span style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;">Элемент для заметки:</span>
+ <b id="noteTargetName" style="font-size:12px; color:var(--accent);">Общая (по умолчанию)</b>
+ </div>
+ <select id="noteTargetSelect" onchange="onNoteTargetSelectChange(this.value)" style="width:100%; height:36px; padding:6px 10px; font-size:12px; border-radius:8px; background:var(--bg); border:1px solid var(--border); color:var(--text); outline:none; cursor:pointer;">
+ </select>
+ <div id="notePanelChips" style="display:flex; gap:6px; overflow-x:auto; padding-top:4px;"></div>
+ </div>
+
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top:6px;">
+ <button id="noteTabVoiceBtn" class="resume-btn resume-btn-secondary" style="height:42px; font-size:12px;" onclick="startVoiceNote()">
+ <i data-lucide="mic" style="width:16px;height:16px; color:var(--danger);"></i> Голосовой ввод
+ </button>
+ <button id="noteTabKeyboardBtn" class="resume-btn resume-btn-secondary" style="height:42px; font-size:12px;" onclick="startTextNote()">
+ <i data-lucide="keyboard" style="width:16px;height:16px; color:var(--warn);"></i> Клавиатура
+ </button>
+ </div>
+
+ <div id="noteVoiceBox" class="hidden" style="background:rgba(var(--shimmer-rgb), 0.06); border:1px dashed var(--accent); border-radius:14px; padding:16px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px; margin-top:6px;">
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="mic" id="voiceMicStatusIcon" class="mic-pulse" style="width:20px;height:20px; color:var(--danger);"></i>
+ <b id="voiceStatusText" style="font-size:13px; color:var(--text);">Слушаю вас... Говорите</b>
+ </div>
+ <div style="display:flex; align-items:center; justify-content:center; gap:4px; height:24px;">
+ <span style="width:4px;height:8px;border-radius:2px;background:var(--accent);"></span>
+ <span style="width:4px;height:16px;border-radius:2px;background:var(--accent);"></span>
+ <span style="width:4px;height:22px;border-radius:2px;background:var(--accent);"></span>
+ <span style="width:4px;height:14px;border-radius:2px;background:var(--accent);"></span>
+ <span style="width:4px;height:20px;border-radius:2px;background:var(--accent);"></span>
+ </div>
+ <span style="font-size:10px; color:var(--muted); opacity:0.9;">🔇 Музыка автоматически на паузе для чистоты записи</span>
+ </div>
+
+ 
+ <div style="display:flex; flex-direction:column; gap:6px; margin:6px 0; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:8px 10px;">
+ <div style="display:flex; align-items:center; justify-content:space-between;">
+ <div style="display:flex; align-items:center; gap:6px;">
+ <i data-lucide="clock" style="width:14px;height:14px; color:var(--accent);"></i>
+ <span style="font-size:11px; font-weight:600; color:var(--muted);">Время:</span>
+ <b id="noteTimeDisplay" style="font-size:11.5px; font-family:var(--font-mono); color:var(--text);">Авто (сейчас)</b>
+ </div>
+ <button type="button" class="back-btn small" id="noteTimeToggleBtn" onclick="toggleNoteCustomTime()" style="padding:2px 8px; font-size:10px; height:24px;">
+ Задать время
+ </button>
+ </div>
+
+ <div id="noteTimeInputsWrap" class="hidden" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding-top:6px; border-top:1px dashed var(--border);">
+ <div style="display:flex; flex-direction:column; gap:2px; flex:1;">
+ <span style="font-size:10px; color:var(--muted); font-weight:600;">Старт:</span>
+ <input type="time" step="1" id="noteStartTimeInput" style="height:28px; padding:2px 6px; font-size:11px; border-radius:6px; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:var(--font-mono); width:100%; box-sizing:border-box;" onchange="onNoteTimeInputsChange()">
+ </div>
+ <div style="display:flex; flex-direction:column; gap:2px; flex:1;">
+ <span style="font-size:10px; color:var(--muted); font-weight:600;">Финиш:</span>
+ <input type="time" step="1" id="noteEndTimeInput" placeholder="Авто (сейчас)" style="height:28px; padding:2px 6px; font-size:11px; border-radius:6px; background:var(--bg); border:1px solid var(--border); color:var(--text); font-family:var(--font-mono); width:100%; box-sizing:border-box;" onchange="onNoteTimeInputsChange()">
+ </div>
+ </div>
+ </div>
+
+ <div style="display:flex; flex-direction:column; gap:4px; margin-top:8px;">
+ <div style="display:flex; justify-content:space-between; align-items:center;">
+ <div class="menu-section-eyebrow" style="margin:0;"><i data-lucide="file-text" style="width:12px;height:12px;"></i> Текст записи</div>
+ <button class="icon-btn small" id="voiceNoteAppendBtn" onclick="startVoiceNote()" title="Додиктовать голосом" style="padding:4px 8px; border-color:var(--accent); color:var(--accent); height:26px; font-size:11px;">
+ <i data-lucide="mic" style="width:13px;height:13px;"></i> Додиктовать
+ </button>
+ </div>
+ <textarea id="noteTextInput" placeholder="Текст заметки или комментарий к смене..." rows="3" style="margin:4px 0 8px;"></textarea>
+ </div>
+
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top: 4px;">
+ <button class="resume-btn resume-btn-secondary" onclick="resetNoteModal()">Отмена</button>
+ <button class="resume-btn resume-btn-primary" onclick="saveNoteConfirm()"><i data-lucide="plus" style="width:16px;height:16px;"></i> Добавить</button>
+ </div>
+ </div>
+</div>
+
+<div id="fullTableModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+ <div class="modal-content" style="max-width: 800px; height: 95vh;">
+ <div class="modal-header">
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="table" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">История и Экспорт</h3>
+ </div>
+ <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+ </div>
+ 
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin: 6px 0 10px;">
+ <button class="resume-btn resume-btn-secondary" onclick="exportCSV()"><i data-lucide="download" style="width:16px;height:16px;"></i> Скачать CSV</button>
+ <button class="resume-btn resume-btn-primary" id="shareBtnMenu" onclick="shareCSV()"><i data-lucide="share-2" style="width:16px;height:16px;"></i> Поделиться</button>
+ </div>
+
+ <div class="table-wrap" style="flex: 1; margin-top: 4px; max-height: calc(100% - 100px);">
+ <table id="fullTable">
+ <thead>
+ <tr>
+ <th>Оператор</th>
+ <th>Событие / Элемент</th>
+ <th>Текст заметки</th>
+ <th>Элемент Примечание</th>
+ <th>Старт</th>
+ <th>Финиш</th>
+ <th>Время</th>
+ </tr>
+ </thead>
+ <tbody id="logBody"></tbody>
+ </table>
+ </div>
+ </div>
+</div>
+
+<div id="helpModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+ <div class="modal-content" style="max-width: 720px; height: 92vh;">
+ <div class="modal-header">
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="book-open" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Справка AnyTimer <span style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v8.0</span></h3>
+ </div>
+ <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+ </div>
+
+ <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:6px; margin:4px 0 10px;">
+ <button class="resume-btn resume-btn-secondary help-tab-btn active" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('start')"><i data-lucide="rocket" style="width:13px;"></i> Старт</button>
+ <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('actions')"><i data-lucide="zap" style="width:13px;"></i> Кнопка «A»</button>
+ <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('timers')"><i data-lucide="timer" style="width:13px;"></i> Режимы</button>
+ <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('journal')"><i data-lucide="terminal" style="width:13px;"></i> Журнал</button>
+ <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('presets')"><i data-lucide="webhook" style="width:13px;"></i> Пресеты</button>
+ <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('pwa')"><i data-lucide="smartphone" style="width:13px;"></i> PWA</button>
+ <button class="resume-btn resume-btn-secondary help-tab-btn" style="height:36px; padding:0 12px; font-size:11px;" onclick="switchHelpTab('version')"><i data-lucide="info" style="width:13px;"></i> Версия</button>
+ </div>
+
+  <div style="flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px;" id="helpContentScroll">
+ <div id="helpSection_start" class="help-tab-pane">
+ <div class="menu-card-btn" style="cursor:default;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon"><i data-lucide="activity"></i></div>
+ <div class="menu-card-text">
+ <b>Быстрый старт за 3 шага (v8.0)</b>
+ <span>1. Конструктор (таймеры, группы, заметки и оператор) → 2. Запуск панели → 3. Учёт смены и экспорт на диск P:\</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(56,189,248,0.15); color:#38bdf8;"><i data-lucide="file-text"></i></div>
+ <div class="menu-card-text">
+ <b>3 типа элементов на сетке</b>
+ <span><b>Одиночный</b> (прямой/обратный счёт), <b>Группа</b> (множество объектов в зоне) и <b>Заметка</b> (быстрая фиксация текста и голоса).</span>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div id="helpSection_actions" class="help-tab-pane hidden">
+ <div class="menu-card-btn" style="cursor:default;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(var(--shimmer-rgb),0.15); color:var(--accent);"><i data-lucide="zap"></i></div>
+ <div class="menu-card-text">
+ <b>Кнопка «A» внизу экрана</b>
+ <span>Клик — меню быстрых действий (Заметки, Отмена ↶ / Вернуть ↷)<br>Удержание (≥0.45с) — мгновенная голосовая запись заметки</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(56,189,248,0.15); color:#38bdf8;"><i data-lucide="pen-tool"></i></div>
+ <div class="menu-card-text">
+ <b>Карточка «Заметка» на панели</b>
+ <span><b>Клик</b> — мгновенный ввод заметки с клавиатуры.<br><b>Удержание (≥0.45с)</b> — автоматический старт голосовой диктовки с микрофона.</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(251,191,36,0.15); color:var(--warn);"><i data-lucide="clock"></i></div>
+ <div class="menu-card-text">
+ <b>Задание времени заметки (Старт / Финиш)</b>
+ <span>Кнопка «Задать время» позволяет указать время начала и окончания события. Если финиш не указан, подставляется актуальное текущее время.</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(59,130,246,0.15); color:#60a5fa;"><i data-lucide="move"></i></div>
+ <div class="menu-card-text">
+ <b>Перетаскивание в Конструкторе</b>
+ <span>Удержание карточки на 0.45с включает свободное перетаскивание на сетке для изменения порядка элементов.</span>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div id="helpSection_timers" class="help-tab-pane hidden">
+ <div class="menu-card-btn" style="cursor:default;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon"><i data-lucide="timer"></i></div>
+ <div class="menu-card-text">
+ <b>Секундомер vs Таймер</b>
+ <span>Прямой счёт от 00:00 или обратный отсчёт лимита ЧЧ:ММ:СС со звуковым сигналом, вибро или авто-стопом.</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(16,185,129,0.15); color:#34d399;"><i data-lucide="clock"></i></div>
+ <div class="menu-card-text">
+ <b>Общее время активности смены</b>
+ <span>Счетчик времени в верхней строке учитывает фактическое время работы системы: он идёт, когда включен <b>хотя бы один</b> таймер, без ложного суммирования одновременно включенных элементов.</span>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div id="helpSection_journal" class="help-tab-pane hidden">
+ <div class="menu-card-btn" style="cursor:default;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon"><i data-lucide="table"></i></div>
+ <div class="menu-card-text">
+ <b>Журнал и экспорт (v8.0)</b>
+ <span>Живая лента, фиксация оператора смены, раздельные колонки Старт / Финиш и сквозной столбец <b>«Элемент Примечание»</b> для быстрой сортировки.</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(16,185,129,0.15); color:#34d399;"><i data-lucide="file-spreadsheet"></i></div>
+ <div class="menu-card-text">
+ <b>Сетевой диск P:\ (Excel / CSV)</b>
+ <span>Прямая потоковая запись на смонтированный сетевой диск через File System Access API. Формат UTF-8 BOM и разделитель «;» для открытия в Excel двойным кликом.</span>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div id="helpSection_presets" class="help-tab-pane hidden">
+ <div class="menu-card-btn" style="cursor:default;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon"><i data-lucide="bookmark"></i></div>
+ <div class="menu-card-text">
+ <b>Пресеты (Шаблоны цехов)</b>
+ <span>Сохранение готовой разметки таймеров, экспорт и импорт файлов конфигураций .json.</span>
+ </div>
+ </div>
+ </div>
+ <div class="menu-card-btn" style="cursor:default; margin-top:6px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(234,179,8,0.15); color:#facc15;"><i data-lucide="webhook"></i></div>
+ <div class="menu-card-text">
+ <b>Интеграция Webhook</b>
+ <span>Автоматическая отправка POST-событий в формате JSON (старт, стоп, заметка) в Home Assistant, Node-RED и SCADA-системы.</span>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div id="helpSection_pwa" class="help-tab-pane hidden">
+ <div class="menu-card-btn" style="cursor:default;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon"><i data-lucide="smartphone"></i></div>
+ <div class="menu-card-text">
+ <b>Офлайн PWA и надежность</b>
+ <span>100% автономная работа без интернета (кэш Service Worker anytimer-v8.0), блокировка засыпания экрана (Wake Lock) и фоновая музыка с автопаузой при голосе.</span>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <div id="helpSection_version" class="help-tab-pane hidden">
+ <div class="menu-card-btn" style="cursor:default;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(var(--shimmer-rgb),0.15); color:var(--accent);"><i data-lucide="cpu"></i></div>
+ <div class="menu-card-text">
+ <b>AnyTimer <span class="app-version-display" style="font-size:11px; color:var(--accent); font-weight:600; vertical-align:middle;">v8.0</span></b>
+ <span>Enterprise & Industrial Filesystem Sync Release</span>
+ </div>
+ </div>
+ </div>
+ <div style="display:flex; flex-direction:column; gap:6px; margin-top:8px; padding:12px; background:var(--surface); border:1px solid var(--border); border-radius:14px;">
+ <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+ <span style="color:var(--muted);">Текущая сборка:</span>
+ <span class="version-badge-pill"><span class="pulse-pip" style="width:6px;height:6px;border-radius:50%;background:var(--accent);"></span><b class="app-version-display">v8.0</b></span>
+ </div>
+ <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+ <span style="color:var(--muted);">Service Worker кэш:</span>
+ <b id="aboutCacheName" style="font-family:var(--font-mono); color:var(--text); font-size:11px;">anytimer-v8.0</b>
+ </div>
+ <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+ <span style="color:var(--muted);">Режим работы:</span>
+ <b style="color:var(--accent);">100% Offline PWA + FS API</b>
+ </div>
+ <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+ <span style="color:var(--muted);">Интеграция:</span>
+ <b style="color:#34d399;">Прямая запись на диск P:\</b>
+ </div>
+ <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+ <span style="color:var(--muted);">Нижняя панель:</span>
+ <b style="color:var(--text);">Зеркальная рамка + Кнопка «A»</b>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+</div>
+
+<div id="timerSettingsModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+ <div class="modal-content">
+ <div class="modal-header">
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="sliders" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Параметры элемента</h3>
+ </div>
+ <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+ </div>
+ <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;">
+ <div>
+ <div class="menu-section-eyebrow">Режим работы</div>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <label class="menu-grid-card">
+ <input type="radio" name="tsCountdown" value="false" onchange="toggleTsCountdown(false)">
+ <i data-lucide="arrow-up-10" style="width:20px;height:20px;"></i>
+ <b>Секундомер</b>
+ <span>Прямой счёт</span>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="tsCountdown" value="true" onchange="toggleTsCountdown(true)">
+ <i data-lucide="hourglass" style="width:20px;height:20px;"></i>
+ <b>Таймер (Лимит)</b>
+ <span>Обратный счёт</span>
+ </label>
+ </div>
+ </div>
+
+ <div id="tsSettingsArea" class="hidden" style="display:flex; flex-direction:column; gap:10px;">
+ <div>
+ <div class="menu-section-eyebrow">Время таймера (ЧЧ : ММ : СС)</div>
+ <div style="display: flex; gap: 8px; margin-top: 4px;">
+ <div style="flex: 1;">
+ <div style="font-size: 10px; font-weight: 700; color: var(--muted); margin-bottom: 2px; text-align: center;">ЧАСЫ</div>
+ <input type="number" id="tsHours" placeholder="00" min="0" max="99" value="00" style="margin:0; text-align:center; font-weight:700; font-size:16px;" oninput="clearTimeErrors()" onblur="formatTimeInput(this)">
+ </div>
+ <div style="font-weight: 700; font-size: 18px; display: flex; align-items: flex-end; padding-bottom: 12px; color: var(--muted);">:</div>
+ <div style="flex: 1;">
+ <div style="font-size: 10px; font-weight: 700; color: var(--muted); margin-bottom: 2px; text-align: center;">МИНУТЫ</div>
+ <input type="number" id="tsMinutes" placeholder="00" min="0" max="59" value="00" style="margin:0; text-align:center; font-weight:700; font-size:16px;" oninput="clearTimeErrors()" onblur="formatTimeInput(this)">
+ </div>
+ <div style="font-weight: 700; font-size: 18px; display: flex; align-items: flex-end; padding-bottom: 12px; color: var(--muted);">:</div>
+ <div style="flex: 1;">
+ <div style="font-size: 10px; font-weight: 700; color: var(--muted); margin-bottom: 2px; text-align: center;">СЕКУНДЫ</div>
+ <input type="number" id="tsSeconds" placeholder="00" min="0" max="59" value="00" style="margin:0; text-align:center; font-weight:700; font-size:16px;" oninput="clearTimeErrors()" onblur="formatTimeInput(this)">
+ </div>
+ </div>
+ </div>
+
+ <div>
+ <div class="menu-section-eyebrow">Действие по окончании лимита</div>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <label class="menu-grid-card">
+ <input type="radio" name="tsAction" value="alert">
+ <i data-lucide="bell" style="width:18px;height:18px;"></i>
+ <b>Сигнал</b>
+ <span>Звук и вибро</span>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="tsAction" value="stop">
+ <i data-lucide="octagon-pause" style="width:18px;height:18px;"></i>
+ <b>Авто-стоп</b>
+ <span>Фиксация в лог</span>
+ </label>
+ </div>
+ </div>
+
+ <div id="tsMultiArea" class="hidden">
+ <div class="menu-section-eyebrow">Применение лимита (для групп)</div>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <label class="menu-grid-card">
+ <input type="radio" name="tsMultiType" value="individual">
+ <i data-lucide="user" style="width:18px;height:18px;"></i>
+ <b>К каждому</b>
+ <span>Личный таймер</span>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="tsMultiType" value="group">
+ <i data-lucide="users" style="width:18px;height:18px;"></i>
+ <b>Ко всем сразу</b>
+ <span>От первого входа</span>
+ </label>
+ </div>
+ </div>
+ </div>
+
+ <button class="resume-btn resume-btn-primary" onclick="saveTimerSettings()" style="margin-top: 12px;"><i data-lucide="save" style="width:18px;height:18px;"></i> Сохранить настройки</button>
+ </div>
+ </div>
+</div>
+
+<div id="confirmModal" class="modal-overlay" style="z-index: 9999;" onclick="closeConfirmOnDim(event)">
+ <div class="modal-content" style="border-radius: 20px; max-width: 440px; margin: auto;">
+ <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+ <div class="menu-card-icon" style="background:rgba(251,191,36,0.15); color:var(--warn); width:38px; height:38px;">
+ <i data-lucide="help-circle" style="width:20px;height:20px;"></i>
+ </div>
+ <h3 id="confirmTitle" style="font-size: 18px; font-weight: 800; color: var(--text); margin:0;">Подтверждение</h3>
+ </div>
+ <p id="confirmMessage" style="color: var(--text); opacity: 0.85; margin-bottom: 18px; line-height: 1.45; font-weight: 500; font-size: 13px;"></p>
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <button id="confirmCancelBtn" class="resume-btn resume-btn-secondary">Отмена</button>
+ <button id="confirmOkBtn" class="resume-btn resume-btn-primary">Да</button>
+ </div>
+ </div>
+</div>
+
+<div id="menuModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+ <div class="modal-content">
+ <div class="modal-header">
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="settings-2" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Настройки AnyTimer</h3>
+ </div>
+ <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+ </div>
+ 
+ <div style="display: flex; flex-direction: column; gap: 8px;">
+ <div class="menu-section-eyebrow"><i data-lucide="layout-grid" style="width:12px;height:12px;"></i> Инструменты и Справка</div>
+ 
+ <div class="menu-card-list">
+ <button class="menu-card-btn" onclick="openHelpModal()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(var(--shimmer-rgb), 0.15); color: var(--accent);"><i data-lucide="book-open" style="width:18px;height:18px;"></i></div>
+ <div class="menu-card-text"><b>Справка и руководство</b><span>Инструкция, жесты и интерактивный тренажер</span></div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
+ </button>
+
+ <button class="menu-card-btn" onclick="openPresetsOverlay()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa;"><i data-lucide="bookmark" style="width:18px;height:18px;"></i></div>
+ <div class="menu-card-text"><b>Сохраненные панели (Пресеты)</b><span>Шаблоны цехов, экспорт и импорт JSON</span></div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
+ </button>
+
+ <button class="menu-card-btn" onclick="openWebhookSettings()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(234, 179, 8, 0.15); border-color: rgba(234, 179, 8, 0.3); color: #facc15;"><i data-lucide="webhook" style="width:18px;height:18px;"></i></div>
+ <div class="menu-card-text"><b>Настройка Webhook</b><span>POST-события в Home Assistant и серверы</span></div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
+ </button>
+
+ <button class="menu-card-btn" onclick="openFileSyncModal()">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399;"><i data-lucide="file-spreadsheet" style="width:18px;height:18px;"></i></div>
+ <div class="menu-card-text"><b>Сетевая таблица Excel (диск P:\)</b><span id="menuSyncStatusText">Автозапись событий в CSV/Excel на сетевом диске</span></div>
+ </div>
+ <i data-lucide="chevron-right" class="menu-card-chevron"></i>
+ </button>
+ </div>
+
+ <button id="installAppBtn" class="action-btn hidden" style="margin: 4px 0 2px;" onclick="installPWA()">
+ <i data-lucide="download-cloud"></i> Установить приложение на рабочий стол
+ </button>
+
+ <div class="menu-section-eyebrow"><i data-lucide="palette" style="width:12px;height:12px;"></i> Тема оформления</div>
+ <div class="menu-grid-row">
+ <label class="menu-grid-card">
+ <input type="radio" name="themeChoice" id="themeDark" value="dark" onchange="setThemePref('dark')">
+ <i data-lucide="moon" style="width:18px;height:18px;"></i>
+ <b>Кибер</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="themeChoice" id="themeLight" value="light" onchange="setThemePref('light')">
+ <i data-lucide="sun" style="width:18px;height:18px;"></i>
+ <b>Светлая</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="themeChoice" id="themeAmber" value="amber" onchange="setThemePref('amber')">
+ <i data-lucide="flame" style="width:18px;height:18px;"></i>
+ <b>Янтарь</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="themeChoice" id="themeOled" value="oled" onchange="setThemePref('oled')">
+ <i data-lucide="contrast" style="width:18px;height:18px;"></i>
+ <b>OLED</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="themeChoice" id="themeSystem" value="system" onchange="setThemePref('system')">
+ <i data-lucide="smartphone" style="width:18px;height:18px;"></i>
+ <b>Авто</b>
+ </label>
+ </div>
+
+ <div class="menu-section-eyebrow"><i data-lucide="bell" style="width:12px;height:12px;"></i> Уведомления и звук</div>
+ <div class="menu-grid-row">
+ <label class="menu-grid-card">
+ <input type="radio" name="alertChoice" id="alertMute" value="mute" onchange="setAlertPref('mute')">
+ <i data-lucide="bell-off" style="width:18px;height:18px;"></i>
+ <b>Тихо</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="alertChoice" id="alertVibro" value="vibro" onchange="setAlertPref('vibro')">
+ <i data-lucide="vibrate" style="width:18px;height:18px;"></i>
+ <b>Вибро</b>
+ </label>
+ <label class="menu-grid-card">
+ <input type="radio" name="alertChoice" id="alertLoud" value="loud" onchange="setAlertPref('loud')">
+ <i data-lucide="volume-2" style="width:18px;height:18px;"></i>
+ <b>Звук</b>
+ </label>
+ </div>
+ 
+ <label class="menu-card-btn" style="cursor:pointer; margin-top:2px;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); color: #c084fc;">
+ <i data-lucide="music" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text"><b>Фоновая музыка</b><span>Атмосферный трек (автопауза при голосе)</span></div>
+ </div>
+ <input type="checkbox" id="musicToggle" onchange="toggleMusic(this.checked)" style="width:20px;height:20px;margin:0;cursor:pointer;accent-color:var(--accent);">
+ </label>
+
+ <div class="menu-section-eyebrow"><i data-lucide="activity" style="width:12px;height:12px;"></i> Управление сессией</div>
+ 
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <button class="menu-grid-card" onclick="actionStopAll()">
+ <i data-lucide="octagon-pause" style="width:18px;height:18px; color:var(--warn);"></i>
+ <b>Остановить всех</b>
+ <span>Пауза активных</span>
+ </button>
+ <button class="menu-grid-card" onclick="actionReset()">
+ <i data-lucide="rotate-ccw" style="width:18px;height:18px; color:var(--warn);"></i>
+ <b>Сбросить счётчики</b>
+ <span>Сброс в 00:00</span>
+ </button>
+ </div>
+
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top: 4px;">
+ <button class="menu-grid-card" onclick="actionNewTimer()">
+ <i data-lucide="file-plus" style="width:18px;height:18px; color:var(--accent);"></i>
+ <b>Новая панель</b>
+ <span>Создать с нуля</span>
+ </button>
+ <button class="menu-grid-card danger" onclick="actionExit()">
+ <i data-lucide="power" style="width:18px;height:18px;"></i>
+ <b>Завершить работу</b>
+ <span>Выход из панели</span>
+ </button>
+ </div>
+ </div>
+ </div>
+</div>
+
+<div id="presetsOverlay" class="modal-overlay" onclick="closeModalsOnDim(event)">
+ <div class="modal-content">
+ <div class="modal-header">
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="bookmark" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Сохраненные панели (Пресеты)</h3>
+ </div>
+ <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+ </div>
+ 
+ <div class="menu-section-eyebrow">Сохранить текущую панель</div>
+ <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+ <input type="text" id="presetNameInput" placeholder="Название (напр. Смена 1, Цех №3)" style="margin: 0;">
+ <button class="resume-btn resume-btn-primary small" style="width:auto; padding:0 16px; height:44px;" onclick="saveCurrentAsPreset()"><i data-lucide="save"></i></button>
+ </div>
+ 
+ <div class="menu-section-eyebrow">Список готовых шаблонов</div>
+ <div id="presetsList" class="menu-card-list"></div>
+ 
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border);">
+ <button class="resume-btn resume-btn-secondary" onclick="exportPresetJSON()"><i data-lucide="download"></i> Экспорт JSON</button>
+ <button class="resume-btn resume-btn-secondary" onclick="document.getElementById('importFileInput').click()"><i data-lucide="upload"></i> Импорт JSON</button>
+ </div>
+ <input type="file" id="importFileInput" accept="application/json" class="hidden" onchange="importPresetJSON(this.files[0])">
+ </div>
+</div>
+
+<div id="webhookModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+ <div class="modal-content">
+ <div class="modal-header">
+ <div style="display:flex; align-items:center; gap:8px;">
+ <i data-lucide="webhook" style="color:var(--accent); width:20px; height:20px;"></i>
+ <h3 style="margin:0;">Настройка Webhook</h3>
+ </div>
+ <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+ </div>
+ 
+ <div class="menu-card-btn" style="margin-top: 6px; cursor: default;">
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(234, 179, 8, 0.15); color:#facc15;">
+ <i data-lucide="radio" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>Автоматическая отправка событий</b>
+ <span>Каждый старт, стоп и заметка отсылаются POST JSON</span>
+ </div>
+ </div>
+ </div>
+
+ <div class="menu-section-eyebrow" style="margin-top: 8px;">URL адрес получателя (POST)</div>
+ <input type="text" id="webhookInput" placeholder="https://your-server.com/api/webhook" inputmode="url" autocapitalize="off" autocorrect="off" style="margin: 2px 0 10px;">
+ 
+ <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+ <button class="resume-btn resume-btn-secondary" onclick="closeModals()">Отмена</button>
+ <button class="resume-btn resume-btn-primary" onclick="saveWebhookConfirm()"><i data-lucide="check" style="width:16px;height:16px;"></i> Сохранить</button>
+ </div>
+ </div>
+</div>
+
+<!-- Модальное окно: Сетевая таблица Excel (диск P:\) через File System Access API -->
+<div id="fileSyncModal" class="modal-overlay" onclick="closeModalsOnDim(event)">
+  <div class="modal-content" style="max-width: 520px;">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i data-lucide="file-spreadsheet" style="color:#34d399; width:20px; height:20px;"></i>
+        <h3 style="margin:0;">Сетевая таблица Excel (диск P:\)</h3>
+      </div>
+      <button class="icon-btn close-btn" onclick="closeModals()" aria-label="Закрыть"><i data-lucide="x" style="width:18px;"></i></button>
+    </div>
+
+    <!-- Карточка статуса -->
+    <div class="menu-card-btn" style="margin-top: 6px; cursor: default; flex-direction: column; align-items: stretch; gap: 8px;">
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div id="fsStatusIcon" class="menu-card-icon" style="background:rgba(139, 155, 180, 0.15); color:var(--muted);">
+            <i data-lucide="hard-drive" style="width:18px;height:18px;"></i>
+          </div>
+          <div>
+            <b id="fsStatusTitle">Файл не привязан</b>
+            <span id="fsStatusSubtitle" style="display:block; font-size:11px; color:var(--muted);">Выберите файл на сетевом диске P: для автозаписи</span>
+          </div>
+        </div>
+        <span id="fsStatusBadge" class="panel-num-badge" style="background:rgba(139, 155, 180, 0.15); color:var(--muted); border:1px solid var(--border);">ОФФЛАЙН</span>
+      </div>
+
+      <div id="fsPathBox" style="background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font-family:var(--font-mono); font-size:10.5px; color:var(--muted); word-break:break-all;">
+        Пример: P:\Склад\101РОБОТЫ101\РОБОТЫ\АСУ\Очеты\KSM\TEST\anytimer_events.csv
+      </div>
+    </div>
+
+    <!-- Кнопки привязки -->
+    <div style="display: flex; flex-direction: column; gap: 8px; margin: 12px 0 6px;">
+      <div class="menu-grid-row" style="grid-template-columns: 1fr 1fr;">
+        <button class="resume-btn resume-btn-primary" onclick="linkSaveNetworkFile()" style="background:#059669; color:#fff;">
+          <i data-lucide="plus-circle" style="width:16px;height:16px;"></i> Создать / Привязать
+        </button>
+        <button class="resume-btn resume-btn-secondary" onclick="linkOpenNetworkFile()">
+          <i data-lucide="folder-open" style="width:16px;height:16px;"></i> Открыть файл
+        </button>
+      </div>
+
+      <div id="fsConnectedActions" class="menu-grid-row hidden" style="grid-template-columns: 1fr 1fr;">
+        <button class="resume-btn resume-btn-secondary" onclick="testNetworkFileWrite()">
+          <i data-lucide="check-circle-2" style="width:15px;height:15px;"></i> Тест записи
+        </button>
+        <button class="resume-btn resume-btn-secondary" onclick="dumpAllLogsToNetworkFile()">
+          <i data-lucide="upload-cloud" style="width:15px;height:15px;"></i> Выгрузить смену
+        </button>
+      </div>
+
+      <button id="fsUnlinkBtn" class="resume-btn resume-btn-secondary hidden" onclick="unlinkNetworkFile()" style="color:var(--danger); border-color:rgba(239, 68, 68, 0.25);">
+        <i data-lucide="trash-2" style="width:14px;height:14px;"></i> Отвязать сетевой файл
+      </button>
+    </div>
+
+    <!-- Опции -->
+    <div class="menu-section-eyebrow" style="margin-top: 8px;">Параметры автозаписи</div>
+    <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:12px; font-size:12px;">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="fsAutoStopsCheck" onchange="toggleFSOption('autoStops', this.checked)" checked style="accent-color:#10b981; width:16px; height:16px;">
+        <span>Записывать остановку таймеров (Стоп / Финиш цикла)</span>
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="fsAutoNotesCheck" onchange="toggleFSOption('autoNotes', this.checked)" checked style="accent-color:#10b981; width:16px; height:16px;">
+        <span>Записывать текстовые и голосовые заметки</span>
+      </label>
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="fsAutoStartsCheck" onchange="toggleFSOption('autoStarts', this.checked)" style="accent-color:#10b981; width:16px; height:16px;">
+        <span>Записывать также моменты запуска (Старт / Вход)</span>
+      </label>
+    </div>
+
+    <!-- Подсказка для Excel -->
+    <div style="font-size:11px; color:var(--muted); background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:8px 10px; line-height:1.4;">
+      <b style="color:var(--text);">Формат для Excel (Windows 11):</b><br>
+      Файл пишется в формате CSV с разделителем «точка с запятой» и кодировкой UTF-8 BOM. Excel открывает его напрямую в виде таблицы без сбитой кодировки. Дескриптор файла сохраняется в браузере (Edge/Chrome) между сессиями.
+    </div>
+  </div>
+</div>
+
+
+<script>
+const APP_VERSION = 'v8.0';
+
+function syncAppVersion() {
+ document.querySelectorAll('.app-version-display').forEach(el => {
+ el.textContent = APP_VERSION;
+ });
+ const cacheNameEl = document.getElementById('aboutCacheName');
+ if (cacheNameEl) cacheNameEl.textContent = 'anytimer-' + APP_VERSION;
+
+ if (typeof fetch === 'function') {
+ fetch('./manifest.json')
+ .then(res => res.json())
+ .then(manifest => {
+ if (manifest && manifest.version) {
+ const v = manifest.version.startsWith('v') ? manifest.version : 'v' + manifest.version;
+ document.querySelectorAll('.app-version-display').forEach(el => {
+ el.textContent = v;
+ });
+ if (cacheNameEl) cacheNameEl.textContent = 'anytimer-' + v;
+ }
+ })
+ .catch(() => {});
+ }
+}
+
+if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') { try { lucide.createIcons(); } catch(e) {} }
+
+let zoneIdCounter = 0; 
+let logIdCounter = 0; 
+let zones = []; 
+let logs = []; 
+let tickHandle = null; 
+let historyStack = []; 
+let redoStack = [];
+
+const SESSION_KEY = 'zonesPanel.session.v3'; 
+const PRESETS_KEY = 'zonesPanel.presets.v3'; 
+const WEBHOOK_KEY = 'zonesPanel.webhook.v2';
+
+const palette = [
+ '#14b8a6','#3b82f6','#8b5cf6','#d946ef','#f43f5e','#f97316',
+ '#eab308','#84cc16','#06b6d4','#6366f1','#a855f7','#ec4899',
+ '#ef4444','#f59e0b','#10b981','#0ea5e9'
+];
+
+function colorFor(id) { 
+ return palette[id % palette.length]; 
+}
+
+function escapeHtml(str) { 
+ return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); 
+}
+
+/* Async Confirm Dialog */
+let activeConfirmResolve = null;
+function customConfirm(message, okText = 'Да', isDanger = false) {
+ return new Promise((resolve) => {
+ const overlay = document.getElementById('confirmModal'); 
+ const msgEl = document.getElementById('confirmMessage'); 
+ const btnOk = document.getElementById('confirmOkBtn'); 
+ const btnCancel = document.getElementById('confirmCancelBtn');
+ msgEl.innerHTML = message; 
+ btnOk.textContent = okText;
+ if (isDanger) { 
+ btnOk.style.background = 'var(--danger)'; 
+ btnOk.style.color = '#fff'; 
+ } else { 
+ btnOk.style.background = 'var(--accent)'; 
+ btnOk.style.color = '#fff'; 
+ if (document.documentElement.getAttribute('data-theme') !== 'light') btnOk.style.color = '#000'; 
+ }
+ overlay.classList.add('show');
+ const cleanup = () => { 
+ overlay.classList.remove('show'); 
+ btnOk.removeEventListener('click', onOk); 
+ btnCancel.removeEventListener('click', onCancel); 
+ activeConfirmResolve = null; 
+ };
+ const onOk = () => { cleanup(); resolve(true); }; 
+ const onCancel = () => { cleanup(); resolve(false); };
+ btnOk.addEventListener('click', onOk); 
+ btnCancel.addEventListener('click', onCancel); 
+ activeConfirmResolve = onCancel;
+ });
+}
+
+function closeConfirmOnDim(e) { 
+ if (e.target.id === 'confirmModal' && activeConfirmResolve) activeConfirmResolve(); 
+}
+
+/* Тема оформления */
+const THEME_KEY = 'zonesPanel.theme.v1';
+function getThemePref() { 
+ return localStorage.getItem(THEME_KEY) || 'dark'; 
+}
+
+function resolveTheme(pref) { 
+ return pref === 'system' ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : pref; 
+}
+
+function applyTheme() {
+ const resolved = resolveTheme(getThemePref()); 
+ document.documentElement.setAttribute('data-theme', resolved); 
+ document.documentElement.style.colorScheme = (resolved === 'light') ? 'light' : 'dark';
+ const meta = document.getElementById('themeColorMeta'); 
+ if (meta) {
+ if (resolved === 'light') meta.setAttribute('content', '#f4f6f9');
+ else if (resolved === 'amber') meta.setAttribute('content', '#110d08');
+ else if (resolved === 'oled') meta.setAttribute('content', '#000000');
+ else meta.setAttribute('content', '#0d0d19');
+ }
+}
+
+function setThemePref(pref) { 
+ localStorage.setItem(THEME_KEY, pref); 
+ applyTheme(); 
+ showToast('Тема: ' + (pref === 'dark' ? 'Кибер' : (pref === 'light' ? 'Светлая' : (pref === 'amber' ? 'Янтарь' : (pref === 'oled' ? 'OLED' : 'Авто'))))); 
+}
+
+if (window.matchMedia) {
+ window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { 
+ if (getThemePref() === 'system') applyTheme(); 
+ });
+}
+
+/* Звук и Haptics */
+const ALERT_KEY = 'zonesPanel.alert.v2';
+function getAlertPref() { 
+ return localStorage.getItem(ALERT_KEY) || 'loud'; 
+}
+
+function setAlertPref(mode) { 
+ localStorage.setItem(ALERT_KEY, mode); 
+ showToast(mode === 'mute' ? 'Без звука' : (mode === 'vibro' ? 'Только вибро' : 'Звук + Вибро')); 
+}
+
+let audioCtx = null;
+function playTone(freq = 880, durationMs = 90) {
+ if (getAlertPref() !== 'loud') return;
+ try {
+ if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+ if (audioCtx.state === 'suspended') audioCtx.resume();
+ const osc = audioCtx.createOscillator(); 
+ const gain = audioCtx.createGain();
+ osc.type = 'sine'; 
+ osc.frequency.value = freq; 
+ gain.gain.setValueAtTime(0.15, audioCtx.currentTime); 
+ gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + durationMs / 1000);
+ osc.connect(gain); 
+ gain.connect(audioCtx.destination); 
+ osc.start(); 
+ osc.stop(audioCtx.currentTime + durationMs / 1000);
+ } catch(e) {}
+}
+
+function haptic(ms = 15, tone = 'start') { 
+ const pref = getAlertPref();
+ if (pref === 'mute') return;
+ try { if (navigator.vibrate) navigator.vibrate(ms); } catch(e) {} 
+ if (pref === 'loud') playTone(tone === 'stop' ? 520 : 880, 90);
+}
+
+function playAlarm() {
+ const pref = getAlertPref();
+ if (pref !== 'mute' && navigator.vibrate) {
+ try { navigator.vibrate([200, 100, 200, 100, 400]); } catch(e) {}
+ }
+ if (pref === 'loud') {
+ playTone(880, 150);
+ setTimeout(() => playTone(880, 150), 200);
+ setTimeout(() => playTone(1100, 300), 400);
+ }
+}
+
+/* Фоновая музыка и автопауза при голосе */
+const MUSIC_KEY = 'zonesPanel.music.v1';
+let bgMusic = new Audio('./bg-music.mp3');
+bgMusic.loop = true; 
+bgMusic.volume = 0.3;
+let wasMusicPlayingBeforeVoice = false;
+
+function getMusicPref() { 
+ return localStorage.getItem(MUSIC_KEY) === 'true'; 
+}
+
+function setMusicPref(state) { 
+ localStorage.setItem(MUSIC_KEY, state); 
+}
+
+function toggleMusic(state) { 
+ setMusicPref(state); 
+ if (state) { 
+ bgMusic.play().catch(() => showToast('Нажмите на экран для старта музыки', true)); 
+ } else { 
+ bgMusic.pause(); 
+ } 
+}
+
+document.addEventListener('pointerdown', () => { 
+ if (getMusicPref() && bgMusic.paused) { 
+ bgMusic.play().catch(()=>{}); 
+ } 
+ }, { once: true });
+
+function pauseMusicForVoice() {
+ if (bgMusic && !bgMusic.paused) {
+ wasMusicPlayingBeforeVoice = true;
+ bgMusic.pause();
+ }
+}
+
+function resumeMusicAfterVoice() {
+ if (wasMusicPlayingBeforeVoice) {
+ wasMusicPlayingBeforeVoice = false;
+ if (getMusicPref() && bgMusic) {
+ bgMusic.play().catch(()=>{});
+ }
+ }
+}
+
+function syncMenuControls() { 
+ const pref = getThemePref(); 
+ const el = document.getElementById('theme' + pref.charAt(0).toUpperCase() + pref.slice(1)); 
+ if (el) el.checked = true; 
+ const alertPref = getAlertPref(); 
+ const alertEl = document.getElementById('alert' + alertPref.charAt(0).toUpperCase() + alertPref.slice(1)); 
+ if (alertEl) alertEl.checked = true; 
+ const musicEl = document.getElementById('musicToggle');
+ if (musicEl) musicEl.checked = getMusicPref();
+}
+applyTheme();
+
+/* Wake Lock */
+let wakeLock = null;
+async function acquireWakeLock() { 
+ try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch(e) {} 
+}
+
+function releaseWakeLockIfIdle() { 
+ const anyActive = zones.some(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants.length > 0)); 
+ if (!anyActive && wakeLock) { 
+ try { wakeLock.release(); } catch(e) {} 
+ wakeLock = null; 
+ } 
+}
+
+function refreshWakeLock() { 
+ const anyActive = zones.some(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants.length > 0)); 
+ if (anyActive && !wakeLock) acquireWakeLock(); 
+ if (!anyActive) releaseWakeLockIfIdle(); 
+}
+
+document.addEventListener('visibilitychange', () => { 
+ if (document.visibilityState === 'visible') refreshWakeLock(); 
+});
+
+function updateIcons(root = document) { 
+ if (typeof lucide !== 'undefined' && lucide && typeof lucide.createIcons === 'function') {
+ try {
+ lucide.createIcons({ root }); 
+ } catch(e) {}
+ }
+}
+
+/* Undo & Redo */
+function saveStateForUndo() { 
+ historyStack.push({ 
+ zones: JSON.parse(JSON.stringify(zones)), 
+ logs: JSON.parse(JSON.stringify(logs)), 
+ zoneIdCounter: zoneIdCounter, 
+ logIdCounter: logIdCounter 
+ }); 
+ if (historyStack.length > 50) historyStack.shift(); 
+ redoStack = [];
+ updateUndoRedoButtons(); 
+}
+
+function updateUndoRedoButtons() { 
+ const undoBtn = document.getElementById('menuUndoBtn'); 
+ const redoBtn = document.getElementById('menuRedoBtn');
+ if (undoBtn) undoBtn.disabled = historyStack.length === 0; 
+ if (redoBtn) redoBtn.disabled = redoStack.length === 0;
+}
+
+function undoLastAction() {
+ if (historyStack.length === 0) return; 
+ const currentState = { 
+ zones: JSON.parse(JSON.stringify(zones)), 
+ logs: JSON.parse(JSON.stringify(logs)), 
+ zoneIdCounter: zoneIdCounter, 
+ logIdCounter: logIdCounter 
+ };
+ redoStack.push(currentState);
+ const state = historyStack.pop(); 
+ zones = state.zones; 
+ logs = state.logs; 
+ zoneIdCounter = state.zoneIdCounter;
+ logIdCounter = state.logIdCounter || logIdCounter;
+ rebuildTableFromLogs();
+ if (!document.getElementById('step3').classList.contains('hidden')) { 
+ renderMainPanel(); 
+ } else if (!document.getElementById('editStep').classList.contains('hidden')) { 
+ renderEditList(); 
+ }
+ persistSession(); 
+ updateUndoRedoButtons(); 
+ showToast('Отменено ↶');
+}
+
+function redoLastAction() {
+ if (redoStack.length === 0) return; 
+ const currentState = { 
+ zones: JSON.parse(JSON.stringify(zones)), 
+ logs: JSON.parse(JSON.stringify(logs)), 
+ zoneIdCounter: zoneIdCounter, 
+ logIdCounter: logIdCounter 
+ };
+ historyStack.push(currentState);
+ const state = redoStack.pop();
+ zones = state.zones;
+ logs = state.logs;
+ zoneIdCounter = state.zoneIdCounter;
+ logIdCounter = state.logIdCounter || logIdCounter;
+ rebuildTableFromLogs();
+ if (!document.getElementById('step3').classList.contains('hidden')) { 
+ renderMainPanel(); 
+ } else if (!document.getElementById('editStep').classList.contains('hidden')) { 
+ renderEditList(); 
+ }
+ persistSession(); 
+ updateUndoRedoButtons(); 
+ showToast('Возвращено ↷');
+}
+
+/* Storage & Webhook */
+function getWebhook() { return localStorage.getItem(WEBHOOK_KEY) || ''; }
+function setWebhook(url) { localStorage.setItem(WEBHOOK_KEY, url); }
+function openWebhookSettings() { document.getElementById('webhookInput').value = getWebhook(); showModal('webhookModal'); }
+
+function saveWebhookConfirm() {
+ const url = document.getElementById('webhookInput').value.trim();
+ if (url && !/^https?:\/\//i.test(url)) { showToast('Нужен адрес http:// или https://', true); return; }
+ setWebhook(url); 
+ closeModals(); 
+ showToast(url ? 'Вебхук сохранён' : 'Вебхук отключён');
+}
+
+function fireWebhook(payload) { 
+ const url = getWebhook(); 
+ if (!url) return; 
+ payload.timestamp = new Date().toISOString(); 
+ try { 
+ fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(()=>{}); 
+ } catch(e) {} 
+}
+
+
+/* =========================================================
+   Сетевая таблица Excel (CSV) через File System Access API
+   ========================================================= */
+
+const FS_DB_NAME = 'AnyTimerFS_v1';
+const FS_STORE_NAME = 'handles';
+const FS_HANDLE_KEY = 'activeSyncFile';
+
+const FS_PREF_NAME = 'zonesPanel.fs.name';
+const FS_PREF_AUTO_STOPS = 'zonesPanel.fs.autoStops';
+const FS_PREF_AUTO_NOTES = 'zonesPanel.fs.autoNotes';
+const FS_PREF_AUTO_STARTS = 'zonesPanel.fs.autoStarts';
+
+let activeFSHandle = null;
+let activeFSFileName = localStorage.getItem(FS_PREF_NAME) || '';
+let fsQueue = [];
+let fsIsWriting = false;
+
+function getFSOption(key, defaultVal) {
+  const val = localStorage.getItem(key);
+  return val === null ? defaultVal : val === 'true';
+}
+function setFSOption(key, boolVal) {
+  localStorage.setItem(key, boolVal ? 'true' : 'false');
+}
+function toggleFSOption(opt, val) {
+  if (opt === 'autoStops') setFSOption(FS_PREF_AUTO_STOPS, val);
+  if (opt === 'autoNotes') setFSOption(FS_PREF_AUTO_NOTES, val);
+  if (opt === 'autoStarts') setFSOption(FS_PREF_AUTO_STARTS, val);
+}
+
+function openFSDatabase() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) {
+      reject(new Error('IndexedDB не поддерживается'));
+      return;
+    }
+    const req = indexedDB.open(FS_DB_NAME, 1);
+    req.onupgradeneeded = () => {
+      req.result.createObjectStore(FS_STORE_NAME);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function saveFSHandleToDB(handle) {
+  const db = await openFSDatabase();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(FS_STORE_NAME, 'readwrite');
+    tx.objectStore(FS_STORE_NAME).put(handle, FS_HANDLE_KEY);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function getFSHandleFromDB() {
+  try {
+    const db = await openFSDatabase();
+    return new Promise((resolve) => {
+      const tx = db.transaction(FS_STORE_NAME, 'readonly');
+      const req = tx.objectStore(FS_STORE_NAME).get(FS_HANDLE_KEY);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) {
+    return null;
+  }
+}
+
+async function removeFSHandleFromDB() {
+  try {
+    const db = await openFSDatabase();
+    return new Promise((resolve) => {
+      const tx = db.transaction(FS_STORE_NAME, 'readwrite');
+      tx.objectStore(FS_STORE_NAME).delete(FS_HANDLE_KEY);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => resolve();
+    });
+  } catch(e) {}
+}
+
+async function verifyFSPermission(handle, readWrite = true) {
+  if (!handle) return false;
+  const opts = { mode: readWrite ? 'readwrite' : 'read' };
+  try {
+    if ((await handle.queryPermission(opts)) === 'granted') return true;
+    if ((await handle.requestPermission(opts)) === 'granted') return true;
+  } catch (e) {
+    console.warn('Permission query/request error:', e);
+  }
+  return false;
+}
+
+function getFormattedCurrentDate() {
+  const d = new Date();
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}.${month}.${year}`;
+}
+
+const FS_CSV_HEADER = '\uFEFFДата;Время;Оператор;Событие;№;Элемент;Примечание;Элемент Примечание;№ Визита;Длительность;Всего визитов\r\n';
+
+function formatFSCSVRow(rec) {
+  const clean = (val) => {
+    if (val === null || val === undefined) return '""';
+    return '"' + String(val).replace(/"/g, '""').replace(/[\r\n]+/g, ' ') + '"';
+  };
+  const elem = rec.name || '-';
+  const note = rec.note || '';
+  const combined = (note && note !== '-') ? `${elem} ${note}`.trim() : elem;
+
+  return [
+    clean(rec.date || getFormattedCurrentDate()),
+    clean(rec.time || '-'),
+    clean(rec.operator || getOperatorIndicator() || ''),
+    clean(rec.event || '-'),
+    clean(rec.panelNum || '-'),
+    clean(elem),
+    clean(note),
+    clean(combined),
+    clean(rec.visitNum || '-'),
+    clean(rec.duration || '-'),
+    clean(rec.totalVisits || '-')
+  ].join(';') + '\r\n';
+}
+
+async function appendNetworkLogRecord(rec) {
+  if (!activeFSHandle) return;
+  fsQueue.push(rec);
+  flushNetworkLogQueue();
+}
+
+async function flushNetworkLogQueue() {
+  if (fsIsWriting || fsQueue.length === 0 || !activeFSHandle) return;
+  fsIsWriting = true;
+  try {
+    const hasPerm = await verifyFSPermission(activeFSHandle, true);
+    if (!hasPerm) {
+      fsIsWriting = false;
+      updateFileSyncUI();
+      return;
+    }
+
+    const file = await activeFSHandle.getFile();
+    const isNew = file.size === 0;
+
+    let payload = isNew ? FS_CSV_HEADER : '';
+    while (fsQueue.length > 0) {
+      const item = fsQueue.shift();
+      payload += formatFSCSVRow(item);
+    }
+
+    const writable = await activeFSHandle.createWritable({ keepExistingData: true });
+    if (!isNew) {
+      await writable.seek(file.size);
+    }
+    await writable.write(new TextEncoder().encode(payload));
+    await writable.close();
+
+    updateFileSyncUI('active');
+  } catch (err) {
+    console.warn('Network file write error:', err);
+    updateFileSyncUI('error');
+  } finally {
+    fsIsWriting = false;
+    if (fsQueue.length > 0) {
+      setTimeout(flushNetworkLogQueue, 3000);
+    }
+  }
+}
+
+async function updateFileSyncUI(forcedState) {
+  const statusIcon = document.getElementById('fsStatusIcon');
+  const statusTitle = document.getElementById('fsStatusTitle');
+  const statusSub = document.getElementById('fsStatusSubtitle');
+  const statusBadge = document.getElementById('fsStatusBadge');
+  const pathBox = document.getElementById('fsPathBox');
+  const connectedActions = document.getElementById('fsConnectedActions');
+  const unlinkBtn = document.getElementById('fsUnlinkBtn');
+
+  const menuText = document.getElementById('menuSyncStatusText');
+  const journalPip = document.getElementById('journalSyncPip');
+  const journalText = document.getElementById('journalSyncText');
+  const sbDot = document.getElementById('sbNetSyncDot');
+  const sbText = document.getElementById('sbNetSyncText');
+
+  const autoStops = document.getElementById('fsAutoStopsCheck');
+  const autoNotes = document.getElementById('fsAutoNotesCheck');
+  const autoStarts = document.getElementById('fsAutoStartsCheck');
+
+  if (autoStops) autoStops.checked = getFSOption(FS_PREF_AUTO_STOPS, true);
+  if (autoNotes) autoNotes.checked = getFSOption(FS_PREF_AUTO_NOTES, true);
+  if (autoStarts) autoStarts.checked = getFSOption(FS_PREF_AUTO_STARTS, false);
+
+  if (!activeFSHandle) {
+    if (statusIcon) {
+      statusIcon.style.background = 'rgba(139, 155, 180, 0.15)';
+      statusIcon.style.color = 'var(--muted)';
+    }
+    if (statusTitle) statusTitle.textContent = 'Файл не привязан';
+    if (statusSub) statusSub.textContent = 'Выберите файл на сетевом диске P: для автозаписи';
+    if (statusBadge) {
+      statusBadge.textContent = 'ОФФЛАЙН';
+      statusBadge.style.background = 'rgba(139, 155, 180, 0.15)';
+      statusBadge.style.color = 'var(--muted)';
+      statusBadge.style.borderColor = 'var(--border)';
+    }
+    if (pathBox) pathBox.innerHTML = 'Пример пути: <b style="color:var(--text);">P:\\Склад\\101РОБОТЫ101\\РОБОТЫ\\АСУ\\Очеты\\KSM\\TEST\\anytimer_events.csv</b>';
+    if (connectedActions) connectedActions.classList.add('hidden');
+    if (unlinkBtn) unlinkBtn.classList.add('hidden');
+    if (menuText) menuText.textContent = 'Автозапись событий в CSV/Excel на сетевом диске';
+    if (journalPip) journalPip.style.background = '#8b9bb4';
+    if (journalText) journalText.textContent = 'Сетевой лог: не подключен';
+    if (sbDot) sbDot.style.background = '#8b9bb4';
+    if (sbText) sbText.textContent = 'Диск P: Выкл';
+    return;
+  }
+
+  const fName = activeFSHandle.name || activeFSFileName || 'log.csv';
+  if (connectedActions) connectedActions.classList.remove('hidden');
+  if (unlinkBtn) unlinkBtn.classList.remove('hidden');
+
+  let isGranted = false;
+  try {
+    isGranted = (await activeFSHandle.queryPermission({ mode: 'readwrite' })) === 'granted';
+  } catch(e) {}
+
+  if (forcedState === 'error') {
+    if (statusIcon) {
+      statusIcon.style.background = 'rgba(239, 68, 68, 0.15)';
+      statusIcon.style.color = 'var(--danger)';
+    }
+    if (statusTitle) statusTitle.textContent = `Ошибка записи: ${fName}`;
+    if (statusSub) statusSub.textContent = 'Файл может быть заблокирован в Excel. События в очереди.';
+    if (statusBadge) {
+      statusBadge.textContent = 'БЛОКИРОВКА';
+      statusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+      statusBadge.style.color = 'var(--danger)';
+      statusBadge.style.borderColor = 'var(--danger)';
+    }
+    if (journalPip) journalPip.style.background = 'var(--danger)';
+    if (journalText) journalText.textContent = `Сетевой лог: Ошибка (${fName})`;
+    if (sbDot) sbDot.style.background = 'var(--danger)';
+    if (sbText) sbText.textContent = 'Диск P: Ошибка';
+  } else if (!isGranted) {
+    if (statusIcon) {
+      statusIcon.style.background = 'rgba(245, 158, 11, 0.15)';
+      statusIcon.style.color = 'var(--warn)';
+    }
+    if (statusTitle) statusTitle.textContent = `Файл привязан: ${fName}`;
+    if (statusSub) statusSub.textContent = 'Нажмите «Тест записи» для подтверждения доступа браузера';
+    if (statusBadge) {
+      statusBadge.textContent = 'ОЖИДАЕТ ДОСТУП';
+      statusBadge.style.background = 'rgba(245, 158, 11, 0.2)';
+      statusBadge.style.color = 'var(--warn)';
+      statusBadge.style.borderColor = 'var(--warn)';
+    }
+    if (journalPip) journalPip.style.background = 'var(--warn)';
+    if (journalText) journalText.textContent = `Сетевой лог: Ожидание (${fName})`;
+    if (sbDot) sbDot.style.background = 'var(--warn)';
+    if (sbText) sbText.textContent = 'Диск P: Доступ';
+  } else {
+    if (statusIcon) {
+      statusIcon.style.background = 'rgba(16, 185, 129, 0.15)';
+      statusIcon.style.color = '#34d399';
+    }
+    if (statusTitle) statusTitle.textContent = `Подключен: ${fName}`;
+    if (statusSub) statusSub.textContent = 'Автозапись событий в таблицу активна в реальном времени';
+    if (statusBadge) {
+      statusBadge.textContent = 'АКТИВЕН';
+      statusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+      statusBadge.style.color = '#34d399';
+      statusBadge.style.borderColor = '#10b981';
+    }
+    if (journalPip) journalPip.style.background = '#10b981';
+    if (journalText) journalText.textContent = `Сетевой лог: ${fName}`;
+    if (sbDot) sbDot.style.background = '#10b981';
+    if (sbText) sbText.textContent = 'Диск P: Вкл';
+  }
+
+  if (pathBox) {
+    pathBox.innerHTML = `Подключенный файл: <b style="color:#34d399;">${escapeHtml(fName)}</b>${fsQueue.length ? ` <span style="color:var(--warn);">(В очереди: ${fsQueue.length})</span>` : ''}`;
+  }
+  if (menuText) {
+    menuText.textContent = `🟢 Подключен: ${fName}`;
+  }
+  updateIcons();
+}
+
+function openFileSyncModal() {
+  updateFileSyncUI();
+  showModal('fileSyncModal');
+}
+
+async function linkSaveNetworkFile() {
+  if (!('showSaveFilePicker' in window)) {
+    showToast('File System API доступен в Chrome / Edge на Windows 11', true);
+    return;
+  }
+  try {
+    const dStr = new Date().toISOString().slice(0, 10);
+    const handle = await window.showSaveFilePicker({
+      suggestedName: `AnyTimer_Events_${dStr}.csv`,
+      types: [{
+        description: 'Таблица Excel / CSV (*.csv)',
+        accept: { 'text/csv': ['.csv'], 'text/plain': ['.txt'] }
+      }]
+    });
+    if (!handle) return;
+    await saveFSHandleToDB(handle);
+    activeFSHandle = handle;
+    activeFSFileName = handle.name;
+    localStorage.setItem(FS_PREF_NAME, handle.name);
+
+    const file = await handle.getFile();
+    if (file.size === 0) {
+      const writable = await handle.createWritable();
+      await writable.write(new TextEncoder().encode(FS_CSV_HEADER));
+      await writable.close();
+    }
+
+    updateFileSyncUI('active');
+    showToast(`Файл привязан: ${handle.name}`);
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      console.warn('Link save file error:', err);
+      showToast('Ошибка привязки: ' + (err.message || err), true);
+    }
+  }
+}
+
+async function linkOpenNetworkFile() {
+  if (!('showOpenFilePicker' in window)) {
+    showToast('File System API доступен в Chrome / Edge на Windows 11', true);
+    return;
+  }
+  try {
+    const [handle] = await window.showOpenFilePicker({
+      multiple: false,
+      types: [{
+        description: 'Таблица Excel / CSV (*.csv, *.txt)',
+        accept: { 'text/csv': ['.csv'], 'text/plain': ['.txt'] }
+      }]
+    });
+    if (!handle) return;
+    await saveFSHandleToDB(handle);
+    activeFSHandle = handle;
+    activeFSFileName = handle.name;
+    localStorage.setItem(FS_PREF_NAME, handle.name);
+
+    updateFileSyncUI('active');
+    showToast(`Файл открыт: ${handle.name}`);
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      console.warn('Link open file error:', err);
+      showToast('Ошибка открытия: ' + (err.message || err), true);
+    }
+  }
+}
+
+async function unlinkNetworkFile() {
+  if (!(await customConfirm('Отвязать сетевой файл? Автозапись в него прекратится.', 'Отвязать', true))) return;
+  activeFSHandle = null;
+  activeFSFileName = '';
+  localStorage.removeItem(FS_PREF_NAME);
+  await removeFSHandleFromDB();
+  updateFileSyncUI();
+  showToast('Сетевой файл отвязан');
+}
+
+async function testNetworkFileWrite() {
+  if (!activeFSHandle) return;
+  const testRec = {
+    date: getFormattedCurrentDate(),
+    time: formatTime(Date.now()),
+    event: 'ТЕСТ',
+    panelNum: '-',
+    name: 'AnyTimer',
+    visitNum: '-',
+    duration: '-',
+    totalVisits: '-',
+    note: 'Проверка записи на сетевой диск (диск P:)'
+  };
+  await appendNetworkLogRecord(testRec);
+  showToast('Тестовая строка отправлена в файл');
+}
+
+async function dumpAllLogsToNetworkFile() {
+  if (!activeFSHandle) return;
+  if (logs.length === 0) {
+    showToast('Журнал смены пуст', true);
+    return;
+  }
+  if (!(await customConfirm(`Выгрузить все ${logs.length} записей смены в сетевой файл?`, 'Выгрузить'))) return;
+
+  const curDate = getFormattedCurrentDate();
+  logs.forEach(r => {
+    if (r.type === 'note') {
+      const target = (r.targetName || 'Общая').replace(/^№\d+\s+/, '');
+      fsQueue.push({
+        date: curDate,
+        time: r.onTime || r.time || '-',
+        event: 'ЗАМЕТКА',
+        panelNum: '-',
+        name: target,
+        visitNum: '-',
+        duration: '-',
+        totalVisits: '-',
+        note: r.text || ''
+      });
+    } else {
+      fsQueue.push({
+        date: curDate,
+        time: r.offTime || r.onTime || '-',
+        event: 'ЦИКЛ',
+        panelNum: '-',
+        name: r.name || '-',
+        visitNum: r.num || '-',
+        duration: r.duration || '-',
+        totalVisits: '-',
+        note: `Старт: ${r.onTime || '-'}, Финиш: ${r.offTime || '-'}`
+      });
+    }
+  });
+
+  flushNetworkLogQueue();
+  showToast(`Выгрузка ${logs.length} событий запущена`);
+}
+
+// Auto-restore FS handle on page load
+getFSHandleFromDB().then(handle => {
+  if (handle) {
+    activeFSHandle = handle;
+    activeFSFileName = handle.name;
+    updateFileSyncUI();
+  }
+}).catch(() => {});
+
+
+function storageTest() { 
+ try { localStorage.setItem('__zt','1'); localStorage.removeItem('__zt'); return true; } catch(e) { return false; } 
+}
+const storageOK = storageTest();
+
+function persistSession() { 
+ if (!storageOK) return; 
+ try { 
+ localStorage.setItem(SESSION_KEY, JSON.stringify({ zoneIdCounter, logIdCounter, zones, logs, operator: getOperatorIndicator(), systemActiveMs, systemActiveStartTime, savedAt: Date.now() })); 
+ } catch(e) { 
+ showToast('Память забита', true); 
+ } 
+}
+
+function loadSessionRaw() { 
+ if (!storageOK) return null; 
+ try { 
+ const raw = localStorage.getItem(SESSION_KEY); 
+ return raw ? JSON.parse(raw) : null; 
+ } catch(e) { return null; } 
+}
+
+function clearSession() { 
+ if (storageOK) localStorage.removeItem(SESSION_KEY); 
+}
+
+function getPresets() { 
+ if (!storageOK) return {}; 
+ try { return JSON.parse(localStorage.getItem(PRESETS_KEY) || '{}'); } catch(e) { return {}; } 
+}
+
+function savePresetsObj(obj) { 
+ if (storageOK) try { localStorage.setItem(PRESETS_KEY, JSON.stringify(obj)); } catch(e) {} 
+}
+
+function ensureLogIds() { 
+ let maxId = -1; 
+ logs.forEach(e => { if (typeof e.id === 'number') maxId = Math.max(maxId, e.id); }); 
+ logs.forEach(e => { if (typeof e.id !== 'number') e.id = ++maxId; }); 
+ logIdCounter = Math.max(logIdCounter, maxId + 1); 
+}
+
+function restoreSessionAction() { 
+ const pending = window.__pendingSession; 
+ if (!pending) return; 
+ zoneIdCounter = pending.zoneIdCounter || 0; 
+ logIdCounter = pending.logIdCounter || 0; 
+ zones = pending.zones || []; 
+ logs = pending.logs || []; 
+ if (pending.operator) {
+   operatorIndicator = pending.operator;
+   localStorage.setItem(OPERATOR_KEY, operatorIndicator);
+ }
+ systemActiveMs = pending.systemActiveMs || 0;
+ systemActiveStartTime = pending.systemActiveStartTime || null;
+ if (getSystemActiveCount() > 0 && !systemActiveStartTime) {
+   systemActiveStartTime = Date.now();
+ } 
+ zones.forEach(z => {
+ z.countdown = z.countdown || false; 
+ z.limitMs = z.limitMs || 0;
+ z.limitAction = z.limitAction || 'alert'; 
+ z.multiLimitType = z.multiLimitType || 'individual'; 
+ z.size = z.size || 'compact';
+ });
+ ensureLogIds(); 
+ historyStack = []; 
+ redoStack = []; 
+ updateUndoRedoButtons(); 
+ document.getElementById('stepResume').classList.add('hidden'); 
+ document.getElementById('step3').classList.add('fade-in'); 
+ document.getElementById('step3').classList.remove('hidden'); 
+ rebuildTableFromLogs(); 
+ renderMainPanel(); 
+ startTicker();
+ syncAppVersion(); 
+ refreshWakeLock(); 
+ showToast('Сессия восстановлена'); 
+}
+
+function discardSessionAction() { 
+ clearSession(); 
+ window.__pendingSession = null; 
+ document.getElementById('stepResume').classList.add('hidden'); 
+ zones = []; 
+ logs = []; 
+ zoneIdCounter = 0; 
+ logIdCounter = 0; 
+ enterEditMode(); 
+}
+
+let toastTimer = null;
+function showToast(msg, warn) {
+ const t = document.getElementById('toast');
+ if (!t) return;
+ const msgEl = document.getElementById('toastMsg');
+ if (msgEl) {
+ msgEl.textContent = msg;
+ if (msg.length > 34) {
+ msgEl.style.fontSize = '10px';
+ } else if (msg.length > 25) {
+ msgEl.style.fontSize = '11px';
+ } else {
+ msgEl.style.fontSize = '11.5px';
+ }
+ }
+ const prefix = document.getElementById('toastPrefix');
+ if (prefix) prefix.textContent = warn ? '[WARN] //' : '[OK] //';
+ t.classList.toggle('warn', !!warn);
+ 
+ const iconWrap = document.getElementById('toastIconWrap');
+ if (iconWrap) {
+ iconWrap.innerHTML = `<i data-lucide="${warn ? 'alert-triangle' : 'check-circle-2'}" style="width:14px;height:14px;"></i>`;
+ updateIcons(iconWrap);
+ }
+ 
+ t.classList.remove('show');
+ void t.offsetWidth;
+ t.classList.add('show');
+ 
+ clearTimeout(toastTimer);
+ toastTimer = setTimeout(() => {
+ t.classList.remove('show');
+ }, 2600);
+}
+
+function isAnyModalOpen() {
+ return !!document.querySelector('.modal-overlay.show');
+}
+
+function showModal(id) {
+ closeModals();
+ const el = document.getElementById(id);
+ if (el) {
+ el.classList.add('show');
+ }
+}
+
+function openMenu() { 
+ syncMenuControls(); 
+ showModal('menuModal'); 
+}
+
+function closeModals() { 
+ document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('show')); 
+ toggleBottomMenu(false);
+}
+
+function closeModalsOnDim(e) { 
+ if (e.target.classList.contains('modal-overlay') && e.target.id !== 'confirmModal') closeModals(); 
+}
+
+/* Отрисовка Дашборда (#step3) */
+function attachCardInteraction(el, zoneId, cardType = 'single') {
+ let pressTimer = null;
+ let isLong = false;
+ let startX = 0, startY = 0;
+ let isMoved = false;
+
+ el.addEventListener('contextmenu', (e) => {
+ e.preventDefault();
+ return false;
+ });
+
+ function isIgnoredTarget(target) {
+ return target && target !== el && target.closest('input, select, textarea, button:not(.tracker-btn), .action-btn, .danger-btn, .occupant-chip button');
+ }
+
+ function startPress(x, y, target) {
+ if (isIgnoredTarget(target)) return;
+ startX = x;
+ startY = y;
+ isLong = false;
+ isMoved = false;
+
+ clearTimeout(pressTimer);
+ pressTimer = setTimeout(() => {
+ if (isMoved) return;
+ isLong = true;
+ if (window.getSelection) {
+ const s = window.getSelection();
+ if (s) s.removeAllRanges();
+ }
+ haptic(35, 'start');
+ const z = zones.find(item => item.id === zoneId);
+ const zName = z ? z.name : 'Элемент';
+ if (cardType === 'note') {
+ openNoteModal(zoneId, 'voice');
+ showToast(`Голосовая заметка: ${zName}`);
+ } else {
+ openNoteModal(zoneId, 'text');
+ showToast(`Заметка для: ${zName}`);
+ }
+ }, 450);
+ }
+
+ function movePress(x, y) {
+ if (Math.hypot(x - startX, y - startY) > 16) {
+ isMoved = true;
+ clearTimeout(pressTimer);
+ }
+ }
+
+ function endPress() {
+ clearTimeout(pressTimer);
+ }
+
+ // Mobile Touch Events (Android & iOS)
+ el.addEventListener('touchstart', (e) => {
+ if (e.touches && e.touches.length === 1) {
+ startPress(e.touches[0].clientX, e.touches[0].clientY, e.target);
+ }
+ }, { passive: true });
+
+ el.addEventListener('touchmove', (e) => {
+ if (e.touches && e.touches.length === 1) {
+ movePress(e.touches[0].clientX, e.touches[0].clientY);
+ }
+ }, { passive: true });
+
+ el.addEventListener('touchend', endPress, { passive: true });
+ el.addEventListener('touchcancel', endPress, { passive: true });
+
+ // Desktop Mouse Events
+ el.addEventListener('mousedown', (e) => {
+ if (e.button === 0) {
+ startPress(e.clientX, e.clientY, e.target);
+ }
+ });
+
+ el.addEventListener('mousemove', (e) => {
+ if (e.buttons === 1) {
+ movePress(e.clientX, e.clientY);
+ }
+ });
+
+ el.addEventListener('mouseup', endPress);
+ el.addEventListener('mouseleave', endPress);
+
+ // Native Click Handler (dispatched on short tap on Android, iOS & PC)
+ el.addEventListener('click', (e) => {
+ if (isIgnoredTarget(e.target)) return;
+
+ if (isLong || isMoved) {
+ e.preventDefault();
+ e.stopPropagation();
+ isLong = false;
+ isMoved = false;
+ return;
+ }
+
+ if (cardType === 'single') {
+ toggleSingle(zoneId);
+ } else if (cardType === 'note') {
+ haptic(15, 'start');
+ openNoteModal(zoneId, 'text');
+ }
+ });
+}
+
+function renderMainPanel() {
+ const grid = document.getElementById('zonesGrid');
+ if (!grid) return;
+ grid.innerHTML = '';
+ 
+ zones.forEach((z, idx) => {
+ z.panelNum = idx + 1;
+ if (z.mode === 'single') {
+ const btn = document.createElement('button'); 
+ btn.id = `singleBtn_${z.id}`; 
+ btn.className = 'tracker-btn' + (z.active ? ' active' : ''); 
+ if (z.size === 'wide') {
+ btn.style.gridColumn = '1 / -1';
+ }
+ btn.innerHTML = singleInnerHTML(z); 
+ attachCardInteraction(btn, z.id, 'single');
+ grid.appendChild(btn);
+ } else if (z.mode === 'note') {
+ const btn = document.createElement('button'); 
+ btn.id = `noteBtn_${z.id}`; 
+ btn.className = 'tracker-btn note-tracker-btn'; 
+ if (z.size === 'wide') {
+ btn.style.gridColumn = '1 / -1';
+ }
+ btn.innerHTML = noteCardInnerHTML(z); 
+ attachCardInteraction(btn, z.id, 'note');
+ grid.appendChild(btn);
+ } else {
+ const card = renderMultiCard(z);
+ attachCardInteraction(card, z.id, 'multi');
+ grid.appendChild(card);
+ }
+ });
+
+ document.getElementById('editStep').classList.add('hidden'); 
+ document.getElementById('stepResume').classList.add('hidden'); 
+ document.getElementById('step3').classList.remove('hidden'); 
+
+ document.getElementById('summaryBar').innerHTML = '';
+ renderSummaryBar(); 
+ updateIcons(grid);
+}
+
+function singleInnerHTML(z) {
+ const now = Date.now();
+ let mainElapsedStr = z.active ? formatDuration(now - z.startTime) : formatDuration(z.totalMs);
+ 
+ let countdownBadge = '';
+ if (z.active && z.countdown && z.limitMs > 0) {
+ const left = Math.max(0, z.limitMs - (now - z.startTime));
+ countdownBadge = `
+ <div style="font-size:10px; font-weight:700; color:var(--warn); margin-top:4px; display:flex; align-items:center; gap:4px; opacity:0.9;">
+ <span>⏳ -${formatDuration(left)}</span>
+ </div>`;
+ }
+
+ const pNum = z.panelNum || (zones.findIndex(x => x.id === z.id) + 1);
+ const statusText = z.active ? 'идёт' : 'готов';
+
+ return `
+ <div class="tracker-head" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+ <div style="display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden;">
+ <span class="tracker-title" title="${escapeHtml(z.name)}" style="font-weight:700; font-size:13.5px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${escapeHtml(z.name)}</span>
+ </div>
+ <span class="tracker-status-tag ${z.active ? 'active' : ''}" style="font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; background:${z.active ? 'rgba(var(--shimmer-rgb),0.2)' : 'rgba(255,255,255,0.06)'}; color:${z.active ? 'var(--accent)' : 'var(--muted)'};">${statusText}</span>
+ </div>
+
+ <div class="tracker-visits" style="font-size:10.5px; color:var(--muted); display:flex; align-items:center; gap:5px; margin-bottom:8px;">
+ <span class="pulse-pip" style="width:6px; height:6px; border-radius:50%; background:${z.color}; display:inline-block;"></span>
+ <span>Визитов: <b style="color:var(--text);">${z.triggerCount}</b></span>
+ </div>
+
+ <div class="tracker-display" style="font-size:22px; font-weight:800; font-family:var(--font-mono); color:${z.active ? 'var(--accent)' : 'inherit'};">
+ ${mainElapsedStr}
+ </div>
+ ${countdownBadge}
+ `;
+}
+
+function hexToRgbStr(hex) {
+ const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+ return m ? `${parseInt(m[1],16)}, ${parseInt(m[2],16)}, ${parseInt(m[3],16)}` : '79, 219, 200';
+}
+
+function renderMultiCard(z) {
+ const card = document.createElement('div');
+ card.id = `multiCard_${z.id}`;
+ card.className = 'zone-card' + (z.occupants.length ? ' active' : '');
+ card.style.setProperty('--zc', z.color);
+ card.style.setProperty('--zc-rgb', hexToRgbStr(z.color));
+ card.innerHTML = multiCardInnerHTML(z);
+ return card;
+}
+
+function multiCardInnerHTML(z) {
+ const now = Date.now();
+ const isBusy = z.occupants.length > 0;
+ const groupStart = z.startTime || (isBusy ? Math.min(...z.occupants.map(o => o.startTime)) : now);
+ const liveMs = isBusy ? Math.max(0, now - groupStart) : 0;
+ const totalOccupiedMs = z.totalMs + liveMs;
+ 
+ let groupBadge = '';
+ if (z.countdown && z.limitMs > 0 && z.multiLimitType === 'group' && isBusy) {
+ const earliest = Math.min(...z.occupants.map(o => o.startTime));
+ const left = Math.max(0, z.limitMs - (now - earliest));
+ groupBadge = `<span style="font-size:10px; font-weight:700; color:var(--warn); padding:2px 6px; border-radius:4px; background:rgba(251,191,36,0.15); margin-left:6px;">⏳ -${formatDuration(left)}</span>`;
+ }
+
+ const pNum = z.panelNum || (zones.findIndex(x => x.id === z.id) + 1);
+ const statusBadge = isBusy
+ ? `<div style="display:flex; align-items:center;"><span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:rgba(${hexToRgbStr(z.color)},0.22); color:${z.color}; display:flex; align-items:center; gap:4px;"><span style="width:4px;height:4px;border-radius:2px;background:${z.color};" class="pulse-pip"></span> ЗАНЯТО · ${z.occupants.length}</span>${groupBadge}</div>`
+ : `<span style="font-size:9px; font-weight:700; padding:2px 6px; border-radius:4px; background:var(--surface); color:var(--muted); border:1px solid var(--border);">СВОБОДНО</span>`;
+
+ const occHtml = isBusy
+ ? z.occupants.map(o => {
+ let occTime = formatDuration(now - o.startTime);
+ if (z.countdown && z.limitMs > 0 && z.multiLimitType === 'individual') {
+ const left = Math.max(0, z.limitMs - (now - o.startTime));
+ occTime = formatDuration(now - o.startTime) + ` <span style="font-size:10px; opacity:0.8; color:var(--warn);">(-${formatDuration(left)})</span>`;
+ }
+ return `
+ <div style="display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:4px 4px 4px 10px; font-size:12px; font-weight:600;">
+ <span>№${o.localNum} · <b style="color:${z.color}; font-weight:700;">${occTime}</b></span>
+ <button class="danger-btn" onclick="event.stopPropagation(); multiDepart(${z.id}, ${o.localNum})" style="padding:4px 10px; font-size:11px; font-weight:700; border-radius:4px; margin:0; width:auto; box-shadow:none;">СТОП</button>
+ </div>`;
+ }).join('')
+ : `<span style="color:var(--muted); font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; opacity:0.8;">ПУСТО</span>`;
+ 
+ return `
+ <div class="zone-card-head" style="margin-bottom:6px; display:flex; justify-content:space-between; align-items:flex-start;">
+ <div style="display:flex; flex-direction:column; gap:4px;">
+ <div style="display:flex; align-items:center; gap:6px;">
+ <span class="zone-card-title" style="font-size:15px; font-weight:700;">${escapeHtml(z.name)}</span>
+ </div>
+ <div style="display:flex; align-items:center; gap:4px;">
+ <span style="width:6px;height:6px;border-radius:2px;background:${z.color};display:inline-block;"></span>
+ <span style="font-size:10px; font-weight:600; color:var(--muted);">Активно: <b style="color:var(--text);">${z.occupants.length}</b> · Всего визитов: <b style="color:var(--text);">${z.triggerCount}</b></span>
+ </div>
+ </div>
+ ${statusBadge}
+ </div>
+ <div style="display:flex; justify-content:space-between; align-items:flex-end; margin: 6px 0 10px;">
+ <div>
+ <div style="font-size:9px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); margin-bottom:2px;">Занято всего</div>
+ <div style="font-size:20px; font-weight:700; letter-spacing:-0.02em; color:${isBusy ? z.color : 'var(--text)'}; font-family:var(--font-mono);">${formatDuration(totalOccupiedMs)}</div>
+ </div>
+ <button class="action-btn" onclick="multiArrive(${z.id})" style="width:auto; padding:6px 12px; font-size:12px; border-radius:6px;">+ Добавить</button>
+ </div>
+ <div style="display:flex; flex-wrap:wrap; gap:6px;">${occHtml}</div>`;
+}
+
+
+/* Учет совокупного времени активности системы (хотя бы 1 активный элемент) */
+let systemActiveMs = 0;
+let systemActiveStartTime = null;
+
+function getSystemActiveCount() {
+  let count = 0;
+  zones.forEach(z => {
+    if (z.mode === 'single' && z.active) count++;
+    else if (z.mode === 'multi' && z.occupants && z.occupants.length > 0) count += z.occupants.length;
+  });
+  return count;
+}
+
+function updateSystemActiveTime(now = Date.now()) {
+  const activeCount = getSystemActiveCount();
+  if (activeCount > 0) {
+    if (!systemActiveStartTime) {
+      systemActiveStartTime = now;
+    }
+  } else {
+    if (systemActiveStartTime) {
+      systemActiveMs += Math.max(0, now - systemActiveStartTime);
+      systemActiveStartTime = null;
+    }
+  }
+}
+
+function getLiveSystemActiveMs(now = Date.now()) {
+  let ms = systemActiveMs;
+  if (systemActiveStartTime && getSystemActiveCount() > 0) {
+    ms += Math.max(0, now - systemActiveStartTime);
+  }
+  return ms;
+}
+
+function renderSummaryBar() {
+ const bar = document.getElementById('summaryBar'); 
+ if (!bar) return;
+
+ const now = Date.now();
+ updateSystemActiveTime(now);
+
+ const activeCount = getSystemActiveCount();
+ const totalDisplayMs = getLiveSystemActiveMs(now);
+ 
+ if (!bar.hasChildNodes()) {
+ bar.innerHTML = `
+ <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="layers" style="color:var(--accent); width:14px;"></i> <span>Элементов: <b id="sbZones">0</b></span></div>
+ <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="activity" style="color:var(--accent); width:14px;"></i> <span>Активно: <b id="sbActive">0</b></span></div>
+ <div style="display:flex; flex-direction:row; align-items:center; gap:6px;"><i data-lucide="clock" style="color:var(--accent); width:14px;"></i> <span>Время: <b id="sbTime">0:00</b></span></div>
+ <div id="sbNetSyncItem" style="display:flex; flex-direction:row; align-items:center; gap:5px; cursor:pointer; padding:2px 6px; border-radius:6px; background:rgba(255,255,255,0.03); border:1px solid var(--border);" onclick="openFileSyncModal()" title="Сетевая таблица Excel (диск P:\)">
+   <span id="sbNetSyncDot" style="width:7px; height:7px; border-radius:50%; background:#8b9bb4; display:inline-block;"></span>
+   <span id="sbNetSyncText" style="font-size:10.5px; color:var(--muted); font-weight:600;">Диск P: Выкл</span>
+ </div>
+ `;
+ updateIcons(bar);
+ updateFileSyncUI();
+ }
+ 
+ const elZ = document.getElementById('sbZones');
+ const elA = document.getElementById('sbActive');
+ const elT = document.getElementById('sbTime');
+ if (elZ) elZ.textContent = zones.length;
+ if (elA) elA.textContent = activeCount;
+ if (elT) elT.textContent = formatDuration(totalDisplayMs);
+}
+
+function checkCountdowns() {
+ const now = Date.now();
+ zones.forEach(z => {
+ if (!z.countdown || z.limitMs <= 0) return;
+ 
+ if (z.mode === 'single' && z.active) {
+ const elapsed = now - z.startTime;
+ if (elapsed >= z.limitMs && !z.limitNotified) {
+ z.limitNotified = true;
+ executeLimitAction(z, null, now);
+ }
+ } else if (z.mode === 'multi' && z.occupants.length > 0) {
+ if (z.multiLimitType === 'group') {
+ const earliest = Math.min(...z.occupants.map(o => o.startTime));
+ if (now - earliest >= z.limitMs && !z.limitNotified) {
+ z.limitNotified = true;
+ executeLimitAction(z, null, now);
+ }
+ } else {
+ [...z.occupants].forEach(o => {
+ if (now - o.startTime >= z.limitMs && !o.limitNotified) {
+ o.limitNotified = true;
+ executeLimitAction(z, o, now);
+ }
+ });
+ }
+ }
+ });
+}
+
+function executeLimitAction(z, occupant, now) {
+ playAlarm();
+ const targetName = occupant ? `№${occupant.localNum} в «${z.name}»` : `«${z.name}»`;
+ 
+ if (z.limitAction === 'alert') {
+ showToast(`Время вышло: ${targetName}!`, true);
+ } else if (z.limitAction === 'stop') {
+ showToast(`Авто-стоп: ${targetName}`, true);
+ if (z.mode === 'single') {
+ forceOffSingle(z, now);
+ renderSummaryBar();
+ const el = document.getElementById(`singleBtn_${z.id}`);
+ if (el) el.innerHTML = singleInnerHTML(z);
+ } else {
+ if (occupant) {
+ multiDepart(z.id, occupant.localNum, {skipConfirm: true});
+ } else {
+ [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, {skipConfirm: true}));
+ }
+ }
+ }
+}
+
+function startTicker() {
+ if (tickHandle) clearInterval(tickHandle);
+ tickHandle = setInterval(() => {
+ if (document.getElementById('step3').classList.contains('hidden')) return; 
+ checkCountdowns();
+ zones.forEach(z => {
+ if (z.mode === 'single') { 
+ if (z.active) { 
+ const el = document.getElementById(`singleBtn_${z.id}`); 
+ if (el) el.innerHTML = singleInnerHTML(z); 
+ } 
+ } else { 
+ const card = document.getElementById(`multiCard_${z.id}`); 
+ if (card && z.occupants.length) { 
+ card.innerHTML = multiCardInnerHTML(z); 
+ } 
+ }
+ });
+ renderSummaryBar(); 
+ }, 1000);
+}
+
+/* Логика Управления таймерами */
+const LONG_TIMER_CONFIRM_MS = 30 * 60 * 1000; 
+
+async function toggleSingle(id) {
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
+ const now = Date.now();
+ 
+ if (!z.active && z.countdown && z.limitMs <= 0) {
+ openTimerSettings(id);
+ highlightTimeErrors();
+ showToast('Задайте время таймера!', true);
+ return;
+ }
+
+ if (z.active) {
+ const elapsed = now - z.startTime;
+ if (elapsed > LONG_TIMER_CONFIRM_MS && !(await customConfirm(`«${escapeHtml(z.name)}» работает уже ${formatDuration(elapsed)}.<br>Остановить?`, 'Остановить'))) return;
+ }
+ 
+ saveStateForUndo();
+ if (!z.active) { 
+ z.active = true; 
+ z.triggerCount++; 
+ z.startTime = now; 
+ z.limitNotified = false; 
+ fireWebhook({ event: 'start', zoneId: z.id, zoneName: z.name });
+ if (getFSOption(FS_PREF_AUTO_STARTS, false)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: formatTime(now),
+     event: 'СТАРТ',
+     panelNum: z.panelNum ? `№${z.panelNum}` : '',
+     name: z.name,
+     visitNum: z.triggerCount,
+     duration: '-',
+     totalVisits: z.triggerCount,
+     note: ''
+   });
+ } 
+ } else { 
+ forceOffSingle(z, now); 
+ }
+ 
+ const el = document.getElementById(`singleBtn_${id}`); 
+ if (el) {
+ el.className = 'tracker-btn' + (z.active ? ' active' : ''); 
+ el.innerHTML = singleInnerHTML(z);
+ }
+ haptic(15, z.active ? 'start' : 'stop'); 
+ renderSummaryBar(); 
+ persistSession(); 
+ refreshWakeLock();
+}
+
+function forceOffSingle(z, offTime = Date.now()) {
+ if (!z.active) return; 
+ const durationMs = offTime - z.startTime; 
+ z.active = false; 
+ z.totalMs += durationMs;
+ fireWebhook({ event: 'stop', zoneId: z.id, zoneName: z.name, durationMs: durationMs });
+ const entry = { id: logIdCounter++, type: 'event', name: z.name, num: z.triggerCount, onTime: formatTime(z.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs), operator: getOperatorIndicator() };
+ logs.push(entry); 
+ prependTableRow(entry);
+ if (getFSOption(FS_PREF_AUTO_STOPS, true)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: formatTime(offTime),
+     event: 'СТОП',
+     panelNum: z.panelNum ? `№${z.panelNum}` : '',
+     name: z.name,
+     visitNum: z.triggerCount,
+     duration: formatDuration(durationMs),
+     totalVisits: z.triggerCount,
+     note: ''
+   });
+ }
+}
+
+function multiArrive(id) {
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
+
+ if (z.countdown && z.limitMs <= 0) {
+ openTimerSettings(id);
+ highlightTimeErrors();
+ showToast('Задайте время таймера!', true);
+ return;
+ }
+
+ saveStateForUndo(); 
+ const localNum = z.nextLocalNum++; 
+ const now = Date.now();
+ if (z.occupants.length === 0 || !z.startTime) {
+ z.limitNotified = false;
+ z.startTime = now;
+ }
+ z.occupants.push({ localNum: localNum, startTime: now, limitNotified: false });
+ fireWebhook({ event: 'arrive', zoneId: z.id, zoneName: z.name, localNum: localNum });
+ if (getFSOption(FS_PREF_AUTO_STARTS, false)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: formatTime(now),
+     event: 'ВХОД (ГРУППА)',
+     panelNum: z.panelNum ? `№${z.panelNum}` : '',
+     name: z.name,
+     visitNum: localNum,
+     duration: '-',
+     totalVisits: z.occupants.length,
+     note: `Заезд №${localNum}`
+   });
+ } 
+ haptic(15, 'start'); 
+ refreshMultiCard(z); 
+ renderSummaryBar(); 
+ persistSession(); 
+ refreshWakeLock();
+}
+
+async function multiDepart(id, localNum, opts = {}) {
+ const z = zones.find(x => x.id === id); 
+ if (!z) return;
+ const idx = z.occupants.findIndex(o => o.localNum === localNum); 
+ if (idx === -1) return;
+ const occ = z.occupants[idx]; 
+ const offTime = Date.now(); 
+ const durationMs = offTime - occ.startTime;
+ if (!opts.skipConfirm && durationMs > LONG_TIMER_CONFIRM_MS && !(await customConfirm(`№${localNum} в «${escapeHtml(z.name)}» уже ${formatDuration(durationMs)}.<br>Остановить?`, 'Стоп'))) return;
+ saveStateForUndo(); 
+ z.occupants.splice(idx, 1); 
+ z.triggerCount++; 
+ if (z.occupants.length === 0) {
+ if (z.startTime) {
+ z.totalMs += Math.max(0, offTime - z.startTime);
+ z.startTime = null;
+ }
+ }
+ fireWebhook({ event: 'depart', zoneId: z.id, zoneName: z.name, localNum: localNum, durationMs: durationMs });
+ const entry = { id: logIdCounter++, type: 'event', name: z.name, num: localNum, onTime: formatTime(occ.startTime), offTime: formatTime(offTime), duration: formatDuration(durationMs), operator: getOperatorIndicator() };
+ logs.push(entry); 
+ prependTableRow(entry);
+ if (getFSOption(FS_PREF_AUTO_STOPS, true)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: formatTime(offTime),
+     event: 'ВЫХОД (ГРУППА)',
+     panelNum: z.panelNum ? `№${z.panelNum}` : '',
+     name: z.name,
+     visitNum: localNum,
+     duration: formatDuration(durationMs),
+     totalVisits: z.triggerCount,
+     note: `Заезд №${localNum}`
+   });
+ } 
+ haptic(15, 'stop'); 
+ refreshMultiCard(z); 
+ renderSummaryBar(); 
+ persistSession(); 
+ refreshWakeLock();
+}
+
+function refreshMultiCard(z) { 
+ const card = document.getElementById(`multiCard_${z.id}`); 
+ if (card) { 
+ card.className = 'zone-card' + (z.occupants.length ? ' active' : ''); 
+ card.innerHTML = multiCardInnerHTML(z); 
+ } 
+}
+
+/* Настройки отсчёта в Ч : М : С */
+let editingTsId = null;
+
+function msToHMS(ms) {
+ if (!ms || ms <= 0) return { h: 0, m: 0, s: 0 };
+ const totalSeconds = Math.floor(ms / 1000);
+ const h = Math.floor(totalSeconds / 3600);
+ const m = Math.floor((totalSeconds % 3600) / 60);
+ const s = totalSeconds % 60;
+ return { h, m, s };
+}
+
+function openTimerSettings(id) {
+ const z = zones.find(x => x.id === id); 
+ if (!z) return;
+ editingTsId = id;
+ clearTimeErrors();
+ 
+ document.querySelector(`input[name="tsCountdown"][value="${z.countdown ? 'true' : 'false'}"]`).checked = true;
+ 
+ const { h, m, s } = msToHMS(z.limitMs);
+ document.getElementById('tsHours').value = String(h).padStart(2, '0');
+ document.getElementById('tsMinutes').value = String(m).padStart(2, '0');
+ document.getElementById('tsSeconds').value = String(s).padStart(2, '0');
+ 
+ document.querySelector(`input[name="tsAction"][value="${z.limitAction || 'alert'}"]`).checked = true;
+ document.querySelector(`input[name="tsMultiType"][value="${z.multiLimitType || 'individual'}"]`).checked = true;
+ 
+ document.getElementById('tsMultiArea').classList.toggle('hidden', z.mode !== 'multi');
+ toggleTsCountdown(z.countdown);
+ 
+ showModal('timerSettingsModal');
+}
+
+function toggleTsCountdown(isCountdown) {
+ document.getElementById('tsSettingsArea').classList.toggle('hidden', !isCountdown);
+ if (!isCountdown) clearTimeErrors();
+}
+
+function formatTimeInput(input) {
+ let val = parseInt(input.value) || 0;
+ if (val < 0) val = 0;
+ const max = parseInt(input.max) || 99;
+ if (val > max) val = max;
+ input.value = String(val).padStart(2, '0');
+}
+
+function clearTimeErrors() {
+ ['tsHours', 'tsMinutes', 'tsSeconds'].forEach(id => {
+ const el = document.getElementById(id);
+ if (el) el.classList.remove('input-error');
+ });
+}
+
+function highlightTimeErrors() {
+ ['tsHours', 'tsMinutes', 'tsSeconds'].forEach(id => {
+ const el = document.getElementById(id);
+ if (el) el.classList.add('input-error');
+ });
+}
+
+function saveTimerSettings() {
+ const z = zones.find(x => x.id === editingTsId); 
+ if (!z) return;
+ 
+ const isCountdown = document.querySelector('input[name="tsCountdown"]:checked').value === 'true';
+ const h = parseInt(document.getElementById('tsHours').value) || 0;
+ const m = parseInt(document.getElementById('tsMinutes').value) || 0;
+ const s = parseInt(document.getElementById('tsSeconds').value) || 0;
+ const totalMs = (h * 3600 + m * 60 + s) * 1000;
+
+ if (isCountdown && totalMs <= 0) {
+ highlightTimeErrors();
+ showToast('Задайте время таймера больше 0!', true);
+ return;
+ }
+
+ saveStateForUndo();
+ z.countdown = isCountdown;
+ z.limitMs = isCountdown ? totalMs : 0;
+ z.limitAction = document.querySelector('input[name="tsAction"]:checked').value;
+ z.multiLimitType = document.querySelector('input[name="tsMultiType"]:checked').value;
+ 
+ z.limitNotified = false;
+ z.occupants.forEach(o => o.limitNotified = false);
+ 
+ persistSession(); 
+ if (!document.getElementById('editStep').classList.contains('hidden')) {
+ renderEditList();
+ } else {
+ renderMainPanel();
+ }
+ closeModals(); 
+ showToast('Настройки сохранены');
+}
+
+/* Нижняя кнопка действий (A) и привязка заметок */
+let selectedNoteZoneId = 'all';
+
+function onNoteTargetSelectChange(val) {
+ selectedNoteZoneId = (val === 'all' || val === '' || val === undefined) ? 'all' : parseInt(val);
+ updateNoteTargetDisplay();
+}
+
+function updateNoteTargetDisplay() {
+ const select = document.getElementById('noteTargetSelect');
+ const targetNameEl = document.getElementById('noteTargetName');
+ const chips = document.getElementById('notePanelChips');
+ 
+ if (select) select.value = selectedNoteZoneId;
+ 
+ if (chips && chips.children) {
+ Array.from(chips.children).forEach(btn => {
+ const bId = btn.getAttribute('data-zone-id');
+ const isActive = (selectedNoteZoneId === 'all' && bId === 'all') || (String(selectedNoteZoneId) === bId);
+ btn.classList.toggle('active', isActive);
+ });
+ }
+
+ if (targetNameEl) {
+ if (selectedNoteZoneId === 'all') {
+ targetNameEl.textContent = 'Общая (по умолчанию)';
+ targetNameEl.style.color = 'var(--accent)';
+ } else {
+ const targetZ = zones.find(x => x.id === selectedNoteZoneId);
+ if (targetZ) {
+ targetNameEl.textContent = targetZ.name;
+ targetNameEl.style.color = targetZ.color || 'var(--accent)';
+ } else {
+ targetNameEl.textContent = 'Общая (по умолчанию)';
+ targetNameEl.style.color = 'var(--accent)';
+ }
+ }
+ }
+}
+
+function renderNotePanelChips() {
+ const container = document.getElementById('notePanelChips');
+ const select = document.getElementById('noteTargetSelect');
+ if (!container && !select) return;
+ 
+ if (select) select.innerHTML = '';
+ if (container) container.innerHTML = '';
+
+ if (select) {
+ const opt = document.createElement('option');
+ opt.value = 'all';
+ opt.textContent = 'Общая (по умолчанию)';
+ select.appendChild(opt);
+ }
+ if (container) {
+ const genBtn = document.createElement('button');
+ genBtn.className = 'panel-chip' + (selectedNoteZoneId === 'all' ? ' active' : '');
+ genBtn.setAttribute('data-zone-id', 'all');
+ genBtn.innerHTML = '<span>Общая</span>';
+ genBtn.onclick = () => {
+ selectedNoteZoneId = 'all';
+ updateNoteTargetDisplay();
+ };
+ container.appendChild(genBtn);
+ }
+
+ zones.forEach((z, idx) => {
+ if (select) {
+ const opt = document.createElement('option');
+ opt.value = z.id;
+ opt.textContent = z.name;
+ select.appendChild(opt);
+ }
+ if (container) {
+ const chip = document.createElement('button');
+ chip.className = 'panel-chip' + (String(selectedNoteZoneId) === String(z.id) ? ' active' : '');
+ chip.setAttribute('data-zone-id', z.id);
+ chip.innerHTML = `<span>${escapeHtml(z.name)}</span>`;
+ chip.onclick = () => {
+ selectedNoteZoneId = z.id;
+ updateNoteTargetDisplay();
+ };
+ container.appendChild(chip);
+ }
+ });
+
+ updateNoteTargetDisplay();
+}
+
+function openNoteModal(zoneId = 'all', defaultMode = 'text') {
+ selectedNoteZoneId = (zoneId === 'all' || zoneId === undefined || zoneId === null) ? 'all' : zoneId;
+ closeModals();
+ resetNoteModal();
+ renderNotePanelChips();
+ showModal('noteModal');
+ if (defaultMode === 'voice') {
+ startVoiceNote();
+ } else {
+ startTextNote();
+ }
+}
+
+let bottomPressTimer = null;
+let isBottomLongPress = false;
+let bottomStartX = 0, bottomStartY = 0;
+
+function initBottomButton() {
+ const btn = document.getElementById('bottomActionBtn');
+ if (!btn) return;
+
+ btn.addEventListener('pointerdown', (e) => {
+ bottomStartX = e.clientX;
+ bottomStartY = e.clientY;
+ isBottomLongPress = false;
+
+ bottomPressTimer = setTimeout(() => {
+ isBottomLongPress = true;
+ haptic(35, 'start');
+ btn.classList.add('listening');
+ const dot = document.getElementById('bottomVoiceIndicator');
+ if (dot) dot.classList.remove('hidden');
+ toggleBottomMenu(false);
+ openNoteModal('all');
+ startVoiceNote();
+ showToast('Голосовой ввод: Общая заметка 🎙️');
+ }, 450);
+ });
+
+ btn.addEventListener('pointermove', (e) => {
+ if (Math.hypot(e.clientX - bottomStartX, e.clientY - bottomStartY) > 10) {
+ clearTimeout(bottomPressTimer);
+ }
+ });
+
+ function onPointerEnd(e) {
+ clearTimeout(bottomPressTimer);
+ if (!isBottomLongPress && Math.hypot(e.clientX - bottomStartX, e.clientY - bottomStartY) <= 10) {
+ toggleBottomMenu();
+ }
+ }
+
+ btn.addEventListener('pointerup', onPointerEnd);
+ btn.addEventListener('pointercancel', () => clearTimeout(bottomPressTimer));
+
+ document.addEventListener('pointerdown', (e) => {
+ const menu = document.getElementById('quickActionsMenu');
+ const b = document.getElementById('bottomActionBtn');
+ if (menu && !menu.classList.contains('hidden') && !menu.contains(e.target) && !b.contains(e.target)) {
+ toggleBottomMenu(false);
+ }
+ });
+}
+
+function toggleBubbleMenu(show) { toggleBottomMenu(show); }
+function toggleBottomMenu(show) {
+ const menu = document.getElementById('quickActionsMenu');
+ if (!menu) return;
+ const isCurrentlyHidden = menu.classList.contains('hidden');
+ const targetOpen = show !== undefined ? show : isCurrentlyHidden;
+ menu.classList.toggle('hidden', !targetOpen);
+ if (targetOpen) {
+ updateUndoRedoButtons();
+ updateIcons(menu);
+ }
+}
+
+function handleBottomNote() {
+ toggleBottomMenu(false);
+ openNoteModal('all');
+}
+
+/* Редактор элементов (Конструктор) */
+function enterEditMode() { 
+ closeModals(); 
+ document.getElementById('step3').classList.add('hidden'); 
+ document.getElementById('editStep').classList.remove('hidden'); 
+ document.getElementById('editStep').classList.add('fade-in'); 
+ renderEditList(); 
+ showToast('Режим конструктора: элементы на сетке');
+}
+
+function exitEditMode() {
+ if (zones.length === 0) { showToast('Добавьте хотя бы один элемент!', true); return; }
+ document.getElementById('editStep').classList.add('hidden'); 
+ document.getElementById('step3').classList.remove('hidden'); 
+ document.getElementById('step3').classList.add('fade-in');
+ renderMainPanel(); 
+ startTicker();
+ syncAppVersion(); 
+ persistSession(); 
+}
+
+function commitRename(id, val) { 
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
+ const trimmed = (val || '').trim(); 
+ if (trimmed && z.name !== trimmed) { 
+ saveStateForUndo(); 
+ z.name = trimmed; 
+ persistSession(); 
+ } 
+}
+
+function cycleColor(id) { 
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
+ saveStateForUndo(); 
+ z.color = palette[(palette.indexOf(z.color) + 1) % palette.length]; 
+ renderEditList(); 
+ persistSession(); 
+}
+
+function setZoneMode(id, mode) { 
+ const z = zones.find(x => x.id === id); 
+ if (!z || z.mode === mode) return; 
+ saveStateForUndo(); 
+ if (z.mode === 'single' && z.active) forceOffSingle(z); 
+ if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, { skipConfirm: true })); 
+ z.mode = mode; 
+ z.active = false; 
+ z.startTime = null; 
+ z.occupants = []; 
+ z.nextLocalNum = 1; 
+ renderEditList(); 
+ persistSession(); 
+ showToast(mode === 'multi' ? 'Переключено в группу' : 'Переключено в одиночный');
+}
+
+function toggleZoneMode(id) {
+ const z = zones.find(x => x.id === id);
+ if (!z) return;
+ setZoneMode(id, z.mode === 'single' ? 'multi' : 'single');
+}
+
+function editDeleteOne(id) { 
+ const z = zones.find(x => x.id === id); 
+ if (!z) return; 
+ saveStateForUndo(); 
+ if (z.mode === 'single' && z.active) forceOffSingle(z); 
+ if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, { skipConfirm: true })); 
+ zones = zones.filter(x => x.id !== id); 
+ renderEditList(); 
+ persistSession(); 
+ showToast('Элемент удалён');
+}
+
+function toggleZoneSize(id) {
+ const z = zones.find(x => x.id === id);
+ if (!z) return;
+ saveStateForUndo();
+ z.size = (z.size === 'wide') ? 'compact' : 'wide';
+ renderEditList();
+ persistSession();
+ showToast(z.size === 'wide' ? 'Размер: 2x (Широкий)' : 'Размер: 1x (Компактный)');
+}
+
+
+/* Индикатор оператора / смены */
+const OPERATOR_KEY = 'zonesPanel.operator.v1';
+let operatorIndicator = localStorage.getItem(OPERATOR_KEY) || '';
+
+function getOperatorIndicator() {
+  return operatorIndicator || localStorage.getItem(OPERATOR_KEY) || '';
+}
+
+function onOperatorIndicatorChange(val) {
+  operatorIndicator = (val || '').trim();
+  localStorage.setItem(OPERATOR_KEY, operatorIndicator);
+}
+
+/* Выбор времени в заметках (Старт и Финиш) */
+let isNoteCustomTimeActive = false;
+
+function toggleNoteCustomTime() {
+  const wrap = document.getElementById('noteTimeInputsWrap');
+  const btn = document.getElementById('noteTimeToggleBtn');
+  const display = document.getElementById('noteTimeDisplay');
+  const startIn = document.getElementById('noteStartTimeInput');
+  const endIn = document.getElementById('noteEndTimeInput');
+  if (!wrap || !btn) return;
+
+  isNoteCustomTimeActive = !isNoteCustomTimeActive;
+  if (isNoteCustomTimeActive) {
+    wrap.classList.remove('hidden');
+    const now = new Date();
+    const curTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+    if (startIn && !startIn.value) startIn.value = curTime;
+    if (endIn && !endIn.value) endIn.value = curTime;
+    onNoteTimeInputsChange();
+    btn.textContent = 'Сброс (Авто)';
+    btn.style.color = 'var(--warn)';
+    if (startIn) startIn.focus();
+  } else {
+    wrap.classList.add('hidden');
+    if (startIn) startIn.value = '';
+    if (endIn) endIn.value = '';
+    if (display) {
+      display.textContent = 'Авто (сейчас)';
+      display.style.color = 'var(--text)';
+    }
+    btn.textContent = 'Задать время';
+    btn.style.color = '';
+  }
+}
+
+function onNoteTimeInputsChange() {
+  const display = document.getElementById('noteTimeDisplay');
+  const startIn = document.getElementById('noteStartTimeInput');
+  const endIn = document.getElementById('noteEndTimeInput');
+  if (!display) return;
+
+  const sVal = startIn ? startIn.value.trim() : '';
+  const eVal = endIn ? endIn.value.trim() : '';
+
+  if (sVal && eVal) {
+    display.textContent = `${sVal} → ${eVal}`;
+    display.style.color = 'var(--accent)';
+  } else if (sVal) {
+    display.textContent = `${sVal} → (сейчас)`;
+    display.style.color = 'var(--accent)';
+  } else if (eVal) {
+    display.textContent = `(сейчас) → ${eVal}`;
+    display.style.color = 'var(--accent)';
+  } else {
+    display.textContent = 'Авто (сейчас)';
+    display.style.color = 'var(--text)';
+  }
+}
+
+
+/* Карточка элемента «Заметка» на панели */
+function noteCardInnerHTML(z) {
+  const notesForThis = logs.filter(l => l.type === 'note' && (l.zoneId === z.id || l.targetName === z.name));
+  const count = notesForThis.length;
+  const lastNote = notesForThis[notesForThis.length - 1];
+  const lastTimeStr = lastNote ? (lastNote.onTime || lastNote.time || '') : '';
+  const snippet = lastNote ? escapeHtml(lastNote.text) : 'Нажмите для ввода';
+
+  return `
+  <div class="tracker-head" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+    <div style="display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden;">
+      <span class="tracker-title" title="${escapeHtml(z.name)}" style="font-weight:700; font-size:13.5px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${escapeHtml(z.name)}</span>
+    </div>
+    <span style="color:var(--muted); opacity:0.65; display:flex; align-items:center; padding:2px 4px;" title="Заметка">
+      <i data-lucide="pen-tool" style="width:13px;height:13px;"></i>
+    </span>
+  </div>
+
+  <div class="tracker-visits" style="font-size:10.5px; color:var(--muted); display:flex; align-items:center; gap:5px; margin-bottom:6px;">
+    <span class="pulse-pip" style="width:6px; height:6px; border-radius:50%; background:${z.color}; display:inline-block;"></span>
+    <span>Записей: <b style="color:var(--text);">${count}</b>${lastTimeStr ? ` · посл: <b style="color:var(--text);">${lastTimeStr}</b>` : ''}</span>
+  </div>
+
+  <div style="background:rgba(0,0,0,0.18); border:1px solid var(--border); border-radius:6px; padding:6px 8px; margin:4px 0 0; min-height:36px; display:flex; align-items:center;">
+    <span style="font-size:11.5px; font-weight:500; color:${count > 0 ? 'var(--text)' : 'var(--muted)'}; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.25;">
+      ${snippet}
+    </span>
+  </div>
+  `;
+}
+
+function editAddZone(preferMode = 'single') { 
+ saveStateForUndo(); 
+ const id = zoneIdCounter++; 
+ const isMulti = preferMode === 'multi';
+ const isNote = preferMode === 'note';
+ zones.push({ 
+ id, 
+ name: isNote ? `Заметка ${id+1}` : (isMulti ? `Группа ${id+1}` : `Элемент ${id+1}`), 
+ mode: preferMode, 
+ color: colorFor(id), 
+ active: false, 
+ startTime: null, 
+ occupants: [], 
+ nextLocalNum: 1, 
+ triggerCount: 0, 
+ totalMs: 0, 
+ countdown: false, 
+ limitMs: 0, 
+ limitAction: 'alert', 
+ multiLimitType: 'individual',
+ size: 'compact'
+ }); 
+ renderEditList(); 
+ persistSession(); 
+ showToast(isNote ? 'Заметка добавлена' : (isMulti ? 'Группа добавлена' : 'Элемент добавлен'));
+}
+
+function initCardDrag(cardEl, zoneId) {
+ let pressTimer = null;
+ let isDragging = false;
+ let startX = 0, startY = 0;
+ let currentTarget = null;
+ 
+ function onPointerDown(e) {
+ if (e.target.closest('button, input, .color-dot')) return;
+ startX = e.clientX;
+ startY = e.clientY;
+ isDragging = false;
+ currentTarget = null;
+ 
+ pressTimer = setTimeout(() => {
+ isDragging = true;
+ haptic(35, 'start');
+ cardEl.classList.add('dragging-card');
+ showToast('Перетащите на нужное место');
+ try {
+ cardEl.setPointerCapture(e.pointerId);
+ } catch(err) {}
+ }, 450);
+ }
+
+ function onPointerMove(e) {
+ if (!isDragging) {
+ if (Math.hypot(e.clientX - startX, e.clientY - startY) > 8) {
+ clearTimeout(pressTimer);
+ }
+ return;
+ }
+ 
+ e.preventDefault();
+ const dx = e.clientX - startX;
+ const dy = e.clientY - startY;
+ cardEl.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.05)`;
+ 
+ const grid = document.getElementById('editZonesGrid');
+ if (!grid) return;
+ const cards = Array.from(grid.children).filter(c => c !== cardEl && c.getAttribute('data-zone-id'));
+ 
+ let closest = null;
+ let minD = Infinity;
+ 
+ cards.forEach(c => {
+ const rect = c.getBoundingClientRect();
+ const cx = rect.left + rect.width / 2;
+ const cy = rect.top + rect.height / 2;
+ const dist = Math.hypot(e.clientX - cx, e.clientY - cy);
+ if (dist < minD && dist < Math.max(rect.width, rect.height) * 1.6) {
+ minD = dist;
+ closest = c;
+ }
+ });
+ 
+ cards.forEach(c => c.classList.remove('drop-target-card'));
+ if (closest) {
+ closest.classList.add('drop-target-card');
+ currentTarget = closest;
+ } else {
+ currentTarget = null;
+ }
+ }
+
+ function onPointerUp(e) {
+ clearTimeout(pressTimer);
+ if (isDragging) {
+ isDragging = false;
+ cardEl.classList.remove('dragging-card');
+ cardEl.style.transform = '';
+ 
+ const targetCard = currentTarget;
+ if (targetCard) {
+ targetCard.classList.remove('drop-target-card');
+ const targetId = parseInt(targetCard.getAttribute('data-zone-id'));
+ const fromIdx = zones.findIndex(z => z.id === zoneId);
+ const toIdx = zones.findIndex(z => z.id === targetId);
+ if (fromIdx !== -1 && toIdx !== -1 && fromIdx !== toIdx) {
+ saveStateForUndo();
+ const [moved] = zones.splice(fromIdx, 1);
+ zones.splice(toIdx, 0, moved);
+ renderEditList();
+ persistSession();
+ haptic(20, 'start');
+ showToast('Порядок изменён ↕️');
+ return;
+ }
+ }
+ renderEditList();
+ }
+ }
+
+ cardEl.addEventListener('pointerdown', onPointerDown);
+ cardEl.addEventListener('pointermove', onPointerMove);
+ cardEl.addEventListener('pointerup', onPointerUp);
+ cardEl.addEventListener('pointercancel', onPointerUp);
+}
+
+function renderEditList() {
+ const grid = document.getElementById('editZonesGrid');
+ const emptyPrompt = document.getElementById('constructorEmptyPrompt');
+ const countBadge = document.getElementById('constructorZoneCount');
+ const launchBtn = document.getElementById('launchBtn');
+ 
+ if (countBadge) countBadge.textContent = zones.length;
+ const opInput = document.getElementById('operatorIndicatorInput');
+ if (opInput) opInput.value = getOperatorIndicator();
+ if (launchBtn) launchBtn.classList.toggle('can-launch', zones.length > 0);
+ if (grid) grid.innerHTML = '';
+ if (emptyPrompt) emptyPrompt.classList.toggle('hidden', zones.length > 0);
+ if (!grid) return;
+ 
+ zones.forEach(z => {
+ if (z.mode === 'single') {
+ const card = document.createElement('div');
+ const isWide = z.size === 'wide';
+ card.className = 'constructor-card' + (isWide ? ' size-wide' : '');
+ card.setAttribute('data-zone-id', z.id);
+ const isTimerSet = z.countdown && z.limitMs > 0;
+ 
+ card.innerHTML = `
+ <div class="constructor-card-header">
+ <div class="color-dot" style="background:${z.color}; width:22px; height:22px;" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
+ <div class="edit-name-wrap" style="flex:1;">
+ <input type="text" value="${escapeHtml(z.name)}" placeholder="Имя" onchange="commitRename(${z.id}, this.value)" style="padding:6px 8px; font-size:12px; margin:0;">
+ </div>
+ <button class="icon-btn danger-btn" onclick="editDeleteOne(${z.id})" title="Удалить" style="padding:4px; width:24px; height:24px; border-color:transparent; box-shadow:none; flex-shrink:0;">
+ <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
+ 
+ <div class="constructor-card-subrow">
+ <span class="constructor-mode-badge">${isTimerSet ? `⏳ ${formatDuration(z.limitMs)}` : '⏱️ Секундомер'}</span>
+ <button class="icon-btn" onclick="toggleZoneSize(${z.id})" title="Ширина (1x / 2x)" style="padding:2px 6px; font-size:10px; height:22px; color:${isWide ? 'var(--accent)' : 'var(--muted)'}; border-color:${isWide ? 'var(--accent)' : 'var(--border)'};">
+ ${isWide ? '2x' : '1x'}
+ </button>
+ </div>
+
+ <div class="constructor-card-footer">
+ <button class="constructor-toggle-btn" onclick="toggleZoneMode(${z.id})" title="Преобразовать в группу">
+ <i data-lucide="layers" style="width:11px;height:11px;"></i>
+ <span>В группу</span>
+ </button>
+ <button class="icon-btn" onclick="openTimerSettings(${z.id})" title="Настройки лимита" style="padding:4px 8px; height:24px; color:${isTimerSet ? 'var(--accent)' : 'inherit'};">
+ <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
+ `;
+ initCardDrag(card, z.id);
+ grid.appendChild(card);
+ } else if (z.mode === 'note') {
+ const card = document.createElement('div');
+ const isWide = z.size === 'wide';
+ card.className = 'constructor-card note-constructor-card' + (isWide ? ' size-wide' : '');
+ card.setAttribute('data-zone-id', z.id);
+
+ card.innerHTML = `
+ <div class="constructor-card-header">
+ <div class="color-dot" style="background:${z.color}; width:22px; height:22px;" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
+ <div class="edit-name-wrap" style="flex:1;">
+ <input type="text" value="${escapeHtml(z.name)}" placeholder="Имя заметки" onchange="commitRename(${z.id}, this.value)" style="padding:6px 8px; font-size:12px; margin:0;">
+ </div>
+ <button class="icon-btn danger-btn" onclick="editDeleteOne(${z.id})" title="Удалить" style="padding:4px; width:24px; height:24px; border-color:transparent; box-shadow:none; flex-shrink:0;">
+ <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
+ <div class="constructor-card-subrow" style="margin-top:8px;">
+ <span class="constructor-mode-badge" style="color:#38bdf8;">
+ <i data-lucide="file-text" style="width:12px;height:12px;"></i> Заметка
+ </span>
+ <button class="icon-btn" onclick="toggleZoneSize(${z.id})" title="Ширина (1x / 2x)" style="padding:2px 6px; font-size:10px; height:22px; color:${isWide ? 'var(--accent)' : 'var(--muted)'}; border-color:${isWide ? 'var(--accent)' : 'var(--border)'};">
+ ${isWide ? '2x' : '1x'}
+ </button>
+ </div>
+ `;
+ initCardDrag(card, z.id);
+ grid.appendChild(card);
+ } else {
+ const card = document.createElement('div');
+ card.className = 'constructor-group-card';
+ card.setAttribute('data-zone-id', z.id);
+ const isTimerSet = z.countdown && z.limitMs > 0;
+ 
+ card.innerHTML = `
+ <div class="constructor-card-header">
+ <div class="color-dot" style="background:${z.color}; width:24px; height:24px;" onclick="cycleColor(${z.id})" title="Сменить цвет"></div>
+ <div class="edit-name-wrap" style="flex:1;">
+ <input type="text" value="${escapeHtml(z.name)}" placeholder="Имя группы" onchange="commitRename(${z.id}, this.value)" style="font-weight:700; font-size:13px; margin:0; padding:6px 8px;">
+ </div>
+ <button class="icon-btn danger-btn" onclick="editDeleteOne(${z.id})" title="Удалить" style="padding:4px 6px; height:26px; width:26px; border-color:transparent; box-shadow:none;">
+ <i data-lucide="trash-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
+
+ <div class="constructor-card-footer" style="margin-top:4px;">
+ <button class="constructor-toggle-btn" onclick="toggleZoneMode(${z.id})" title="Преобразовать в одиночный">
+ <i data-lucide="timer" style="width:11px;height:11px;"></i>
+ <span>В одиночный</span>
+ </button>
+ <div style="display:flex; align-items:center; gap:6px;">
+ <span class="constructor-mode-badge">${isTimerSet ? `⏳ Лимит: ${formatDuration(z.limitMs)}` : '👥 Групповой счёт'}</span>
+ <button class="icon-btn" onclick="openTimerSettings(${z.id})" title="Настройки лимита" style="padding:4px 8px; height:24px; color:${isTimerSet ? 'var(--accent)' : 'inherit'};">
+ <i data-lucide="settings-2" style="width:13px;height:13px;"></i>
+ </button>
+ </div>
+ </div>
+ `;
+ initCardDrag(card, z.id);
+ grid.appendChild(card);
+ }
+ });
+
+ updateIcons(document.getElementById('editStep'));
+}
+
+/* Заметки */
+let recognition = null; 
+let editingNoteId = null;
+
+function editNoteEntry(id) {
+ const entry = logs.find(e => e.id === id && e.type === 'note'); 
+ if (!entry) return; 
+ editingNoteId = id;
+ selectedNoteZoneId = (entry.zoneId !== undefined && entry.zoneId !== null) ? entry.zoneId : 'all';
+ startTextNote();
+ renderNotePanelChips();
+ document.getElementById('noteTextInput').value = entry.text; 
+ showModal('noteModal');
+ setTimeout(() => document.getElementById('noteTextInput').focus(), 100);
+}
+
+async function deleteNoteEntry(id) {
+ const entry = logs.find(e => e.id === id && e.type === 'note');
+ if (!entry) return;
+ if (!(await customConfirm('Удалить эту заметку из журнала?', 'Удалить'))) return;
+ saveStateForUndo();
+ logs = logs.filter(e => e.id !== id);
+ rebuildTableFromLogs();
+ persistSession();
+ showToast('Заметка удалена');
+}
+
+function resetNoteModal() {
+ editingNoteId = null;
+ document.getElementById('noteTextInput').value = '';
+ document.getElementById('noteVoiceBox').classList.add('hidden');
+ document.getElementById('noteTabVoiceBtn').classList.remove('active');
+ document.getElementById('noteTabKeyboardBtn').classList.remove('active');
+ isNoteCustomTimeActive = false;
+ const wrap = document.getElementById('noteTimeInputsWrap');
+ if (wrap) wrap.classList.add('hidden');
+ const startIn = document.getElementById('noteStartTimeInput');
+ if (startIn) startIn.value = '';
+ const endIn = document.getElementById('noteEndTimeInput');
+ if (endIn) endIn.value = '';
+ const timeDisplay = document.getElementById('noteTimeDisplay');
+ if (timeDisplay) {
+ timeDisplay.textContent = 'Авто (сейчас)';
+ timeDisplay.style.color = 'var(--text)';
+ }
+ const timeBtn = document.getElementById('noteTimeToggleBtn');
+ if (timeBtn) {
+ timeBtn.textContent = 'Задать время';
+ timeBtn.style.color = '';
+ }
+ stopVoiceRecognition();
+}
+
+function startTextNote() {
+ stopVoiceRecognition();
+ document.getElementById('noteTabKeyboardBtn').classList.add('active');
+ document.getElementById('noteTabVoiceBtn').classList.remove('active');
+ document.getElementById('noteVoiceBox').classList.add('hidden');
+ const input = document.getElementById('noteTextInput');
+ setTimeout(() => input.focus(), 50);
+}
+
+function startVoiceNote() {
+ document.getElementById('noteTabVoiceBtn').classList.add('active');
+ document.getElementById('noteTabKeyboardBtn').classList.remove('active');
+ document.getElementById('noteVoiceBox').classList.remove('hidden');
+ 
+ pauseMusicForVoice();
+
+ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+ if (!SpeechRecognition) {
+ showToast('Диктовка не поддерживается в этом браузере', true);
+ startTextNote();
+ return;
+ }
+
+ if (recognition) {
+ try { recognition.abort(); } catch(e) {}
+ }
+
+ try {
+ recognition = new SpeechRecognition();
+ recognition.lang = 'ru-RU';
+ recognition.continuous = true;
+ recognition.interimResults = true;
+
+ const statusText = document.getElementById('voiceStatusText');
+ const input = document.getElementById('noteTextInput');
+ const initialVal = input.value.trim();
+
+ recognition.onstart = () => {
+ if (statusText) statusText.textContent = 'Слушаю вас... Говорите';
+ const btn = document.getElementById('bottomActionBtn');
+ if (btn) btn.classList.add('listening');
+ const dot = document.getElementById('bottomVoiceIndicator');
+ if (dot) dot.classList.remove('hidden');
+ };
+
+ recognition.onresult = (e) => {
+ let interim = '';
+ let final = '';
+ for (let i = e.resultIndex; i < e.results.length; ++i) {
+ if (e.results[i].isFinal) {
+ final += e.results[i][0].transcript;
+ } else {
+ interim += e.results[i][0].transcript;
+ }
+ }
+ const full = (initialVal ? initialVal + ' ' : '') + final + (interim ? ' ' + interim : '');
+ input.value = full.trim();
+ };
+
+ recognition.onerror = (e) => {
+ if (e.error === 'not-allowed') {
+ showToast('Нет доступа к микрофону', true);
+ } else if (e.error !== 'no-speech') {
+ showToast('Ошибка микрофона', true);
+ }
+ stopVoiceRecognition();
+ };
+
+ recognition.onend = () => {
+ stopVoiceRecognition();
+ };
+
+ recognition.start();
+ } catch(err) {
+ showToast('Ошибка запуска записи', true);
+ stopVoiceRecognition();
+ }
+}
+
+function stopVoiceRecognition() {
+ if (recognition) {
+ try { recognition.stop(); } catch(e) {}
+ recognition = null;
+ }
+ const btn = document.getElementById('bottomActionBtn');
+ if (btn) btn.classList.remove('listening');
+ const dot = document.getElementById('bottomVoiceIndicator');
+ if (dot) dot.classList.add('hidden');
+ const statusText = document.getElementById('voiceStatusText');
+ if (statusText) statusText.textContent = 'Запись остановлена';
+ 
+ resumeMusicAfterVoice();
+}
+
+function saveNoteConfirm() {
+ const text = document.getElementById('noteTextInput').value.trim();
+ if (!text) {
+ showToast('Заметка пуста', true);
+ return;
+ }
+ 
+ saveStateForUndo();
+ 
+ const now = Date.now();
+ const actualTime = formatTime(now);
+ let startTimeStr = actualTime;
+ let finishTimeStr = actualTime;
+ let durationStr = '-';
+
+ if (isNoteCustomTimeActive) {
+   const sInput = document.getElementById('noteStartTimeInput') ? document.getElementById('noteStartTimeInput').value.trim() : '';
+   const eInput = document.getElementById('noteEndTimeInput') ? document.getElementById('noteEndTimeInput').value.trim() : '';
+
+   if (sInput) {
+     startTimeStr = sInput.length === 5 ? sInput + ':00' : sInput;
+   }
+   if (eInput) {
+     finishTimeStr = eInput.length === 5 ? eInput + ':00' : eInput;
+   } else {
+     finishTimeStr = actualTime;
+   }
+   if (!sInput && eInput) {
+     startTimeStr = actualTime;
+   }
+
+   try {
+     const sParts = startTimeStr.split(':').map(Number);
+     const eParts = finishTimeStr.split(':').map(Number);
+     let diffSec = (eParts[0] * 3600 + eParts[1] * 60 + (eParts[2] || 0)) - (sParts[0] * 3600 + sParts[1] * 60 + (sParts[2] || 0));
+     if (diffSec < 0) diffSec += 86400;
+     if (diffSec > 0) {
+       durationStr = formatDuration(diffSec * 1000);
+     }
+   } catch(e) {}
+ }
+ let targetName = 'Общая';
+ 
+ if (selectedNoteZoneId !== 'all') {
+ const targetZ = zones.find(x => x.id === selectedNoteZoneId);
+ if (targetZ) {
+ targetName = targetZ.name;
+ }
+ }
+ 
+ if (editingNoteId !== null) {
+ const entry = logs.find(e => e.id === editingNoteId && e.type === 'note');
+ if (entry) {
+ entry.text = text;
+ entry.zoneId = selectedNoteZoneId;
+ entry.targetName = targetName;
+ rebuildTableFromLogs();
+ showToast('Заметка обновлена');
+ }
+ } else {
+ const entry = {
+ id: logIdCounter++,
+ type: 'note',
+ text: text,
+ zoneId: selectedNoteZoneId,
+ targetName: targetName,
+ time: startTimeStr,
+ onTime: startTimeStr,
+ offTime: finishTimeStr,
+ duration: durationStr,
+ timestamp: now,
+ operator: getOperatorIndicator()
+ };
+ logs.push(entry);
+ prependTableRow(entry);
+ showToast(`Заметка сохранена (${targetName})`);
+ if (selectedNoteZoneId !== 'all') {
+ const noteZ = zones.find(x => x.id === selectedNoteZoneId);
+ if (noteZ && noteZ.mode === 'note') {
+ const el = document.getElementById(`noteBtn_${noteZ.id}`);
+ if (el) { el.innerHTML = noteCardInnerHTML(noteZ); updateIcons(el); }
+ }
+ }
+ if (getFSOption(FS_PREF_AUTO_NOTES, true)) {
+   appendNetworkLogRecord({
+     date: getFormattedCurrentDate(),
+     time: startTimeStr,
+     event: 'ЗАМЕТКА',
+     panelNum: '',
+     name: targetName,
+     visitNum: '',
+     duration: durationStr,
+     totalVisits: '-',
+     note: text
+   });
+ }
+ fireWebhook({ event: 'note', text: text, zoneId: selectedNoteZoneId, targetName: targetName, timestamp: new Date().toISOString() });
+ }
+
+ stopVoiceRecognition();
+ persistSession();
+ closeModals();
+ resetNoteModal();
+}
+
+function openFullTableModal() { 
+ updateShareButtonVisibility();
+ showModal('fullTableModal'); 
+}
+
+/* Журнал и Экспорт */
+function formatTime(ms) { return new Date(ms).toTimeString().split(' ')[0]; }
+
+function formatDuration(ms) { 
+ const totalSeconds = Math.floor(ms / 1000); 
+ const h = Math.floor(totalSeconds / 3600); 
+ const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2,'0'); 
+ const s = (totalSeconds % 60).toString().padStart(2,'0'); 
+ return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`; 
+}
+
+function getFeedItemHTML(entry) {
+ if (entry.type === 'note') {
+ const tName = escapeHtml(entry.targetName || 'Общая');
+ return `
+ <div class="feed-item">
+ <div style="display:flex; gap:6px; align-items:center; min-width:0; flex:1;">
+ <span class="feed-time">${entry.onTime || entry.time || ''}</span>
+ <span style="display:inline-flex; align-items:center; gap:3px; color:var(--accent); font-weight:700; font-size:10.5px; flex-shrink:0;"><i data-lucide="pen-tool" style="width:11px;height:11px;"></i> ${tName}</span>
+ <span class="feed-name" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(entry.text)}</span>
+ </div>
+ </div>`;
+ }
+ return `
+ <div class="feed-item">
+ <div style="display:flex; gap:6px; align-items:center; min-width:0; flex:1;">
+ <span class="feed-time">${entry.offTime}</span>
+ <span class="feed-name">${escapeHtml(entry.name)}</span>
+ </div>
+ <div class="feed-dur">${entry.duration}</div>
+ </div>`;
+}
+
+function getTableRowHTML(entry) {
+ const opStr = escapeHtml(entry.operator || getOperatorIndicator() || '-');
+ if (entry.type === 'note') {
+ const tName = escapeHtml(entry.targetName || 'Общая');
+ const noteRaw = entry.text || '';
+ const combined = (tName + ' ' + noteRaw).trim();
+ const durStr = (entry.duration && entry.duration !== '-') ? `<b>${entry.duration}</b>` : '-';
+ return `<tr class="note-row">
+ <td style="color:var(--muted); font-size:11px; font-weight:600;">${opStr}</td>
+ <td><span style="color:var(--accent); font-weight:700;"><i data-lucide="pen-tool" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>${tName}</span></td>
+ <td>
+ <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+ <span style="font-size:12.5px; font-weight:600; color:var(--text); word-break:break-word;">${escapeHtml(noteRaw)}</span>
+ <div style="display:flex; gap:4px; flex-shrink:0;">
+ <button class="icon-btn" style="padding:4px; height:24px; width:24px;" onclick="editNoteEntry(${entry.id}); closeModals();" title="Редактировать"><i data-lucide="pencil" style="width:12px;height:12px;"></i></button>
+ <button class="icon-btn" style="padding:4px; height:24px; width:24px; color:var(--danger); background:rgba(239, 68, 68, 0.1);" onclick="deleteNoteEntry(${entry.id})" title="Удалить"><i data-lucide="trash-2" style="width:12px;height:12px;"></i></button>
+ </div>
+ </div>
+ </td>
+ <td><span style="font-size:12px; font-weight:600; color:var(--text); word-break:break-word;">${escapeHtml(combined)}</span></td>
+ <td>${entry.onTime || entry.time || '-'}</td>
+ <td>${entry.offTime || '-'}</td>
+ <td>${durStr}</td>
+ </tr>`;
+ }
+ const noteText = entry.note && entry.note !== '-' ? entry.note : '';
+ const combined = noteText ? `${entry.name || ''} ${noteText}`.trim() : (entry.name || '');
+ return `<tr>
+ <td style="color:var(--muted); font-size:11px; font-weight:600;">${opStr}</td>
+ <td><b>${escapeHtml(entry.name || '')}</b></td>
+ <td style="color:var(--muted);">${escapeHtml(entry.note || '-')}</td>
+ <td><span style="font-size:12px; font-weight:600; color:var(--text);">${escapeHtml(combined)}</span></td>
+ <td>${entry.onTime || '-'}</td>
+ <td>${entry.offTime || '-'}</td>
+ <td><b>${entry.duration || '-'}</b></td>
+ </tr>`;
+}
+
+function prependTableRow(entry) { 
+ const tbody = document.getElementById('logBody'); 
+ tbody.insertAdjacentHTML('afterbegin', getTableRowHTML(entry)); 
+ updateIcons(tbody.firstElementChild); 
+ const feed = document.getElementById('logFeed'); 
+ feed.insertAdjacentHTML('beforeend', getFeedItemHTML(entry)); 
+ updateIcons(feed.lastElementChild);
+ while (feed.children.length > 3) feed.removeChild(feed.firstChild);
+ requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+}
+
+function rebuildTableFromLogs() { 
+ const tbody = document.getElementById('logBody'); 
+ tbody.innerHTML = ''; 
+ const feed = document.getElementById('logFeed'); 
+ feed.innerHTML = '';
+ for (let i = logs.length - 1; i >= 0; i--) { 
+ tbody.insertAdjacentHTML('beforeend', getTableRowHTML(logs[i])); 
+ }
+ const feedLogs = logs.slice(-3);
+ for (let i = 0; i < feedLogs.length; i++) { 
+ feed.insertAdjacentHTML('beforeend', getFeedItemHTML(feedLogs[i])); 
+ }
+ updateIcons(tbody); 
+ updateIcons(feed);
+ requestAnimationFrame(() => { feed.parentElement.scrollTop = feed.parentElement.scrollHeight; });
+}
+
+/* Экспорт CSV */
+function buildCSV() {
+ const delimiter = ';';
+ const header = "\uFEFF" + ['Оператор', 'Событие / Элемент', 'Текст заметки', 'Элемент Примечание', 'Старт', 'Финиш', 'Время'].join(delimiter) + "\n";
+ let rows = [];
+ logs.forEach(r => {
+ const op = `"${(r.operator || getOperatorIndicator() || '').replace(/"/g, '""')}"`;
+ if (r.type === 'note') {
+ const target = (r.targetName || 'Общая').replace(/^№\d+\s+/, '');
+ const noteRaw = (r.text || '').replace(/"/g, '""');
+ const noteText = `"${noteRaw}"`;
+ const combined = `"${(target + ' ' + noteRaw).trim()}"`;
+ const onT = r.onTime || r.time || '-';
+ const offT = r.offTime || '-';
+ const dur = r.duration || '-';
+ rows.push([op, `"${target.replace(/"/g, '""')}"`, noteText, combined, onT, offT, dur].join(delimiter) + "\n");
+ } else {
+ const elemName = (r.name || '').replace(/"/g, '""');
+ const noteVal = (r.note && r.note !== '-') ? r.note.replace(/"/g, '""') : '';
+ const combined = noteVal ? `"${(elemName + ' ' + noteVal).trim()}"` : `"${elemName}"`;
+ const onT = r.onTime || '-';
+ const offT = r.offTime || '-';
+ const dur = r.duration || '-';
+ rows.push([op, `"${elemName}"`, `"${noteVal || '-'}"`, combined, onT, offT, dur].join(delimiter) + "\n");
+ }
+ });
+
+ let summary = "\n--- СВОДКА ПО ПАНЕЛЯМ ---\n" + ['Панель', 'Визитов', 'Общее время'].join(delimiter) + "\n";
+ let sumRows = [];
+ const now = Date.now();
+ zones.forEach(z => {
+ let total = z.totalMs;
+ if (z.mode === 'single' && z.active) total += now - z.startTime;
+ if (z.mode === 'multi' && z.occupants.length > 0) {
+ const groupStart = z.startTime || Math.min(...z.occupants.map(o => o.startTime));
+ total += now - groupStart;
+ }
+ sumRows.push([`"${z.name.replace(/"/g, '""')}"`, z.triggerCount, formatDuration(total)].join(delimiter) + "\n");
+ });
+
+ return header + rows.join("") + summary + sumRows.join("");
+}
+
+function exportCSV() {
+ if (logs.length === 0 && zones.every(z => z.totalMs === 0)) { showToast('Лог пустой', true); return; } 
+ const blob = new Blob([buildCSV()], {type:'text/csv;charset=utf-8;'});
+ const url = URL.createObjectURL(blob); 
+ const link = document.createElement('a'); 
+ link.href = url; 
+ link.download = `timers_log_${new Date().toISOString().slice(0,10)}.csv`; 
+ document.body.appendChild(link); 
+ link.click(); 
+ document.body.removeChild(link); 
+ URL.revokeObjectURL(url);
+}
+
+async function shareCSV() {
+ if (logs.length === 0 && zones.every(z => z.totalMs === 0)) { showToast('Лог пустой', true); return; } 
+ const csv = buildCSV(); 
+ const file = new File([csv], `timers_log_${new Date().toISOString().slice(0,10)}.csv`, {type:'text/csv'});
+ try { 
+ if (navigator.canShare && navigator.canShare({ files: [file] })) { 
+ await navigator.share({ files: [file], title: 'Журнал таймеров' }); 
+ } else { 
+ showToast('Общий доступ не поддерживается', true); 
+ } 
+ } catch(e) {}
+}
+
+function updateShareButtonVisibility() { 
+ const btn = document.getElementById('shareBtnMenu'); 
+ if (btn) btn.style.display = !!(navigator.share) ? 'flex' : 'none'; 
+}
+
+/* Управление сессией */
+async function actionStopAll() {
+ closeModals(); 
+ const anyActive = zones.some(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants.length > 0)); 
+ if (!anyActive) { showToast('Все элементы уже свободны'); return; }
+ if (!(await customConfirm('Остановить отсчёт во всех элементах?', 'Остановить всех', true))) return;
+ saveStateForUndo(); 
+ const now = Date.now();
+ zones.forEach(z => { 
+ if (z.mode === 'single' && z.active) forceOffSingle(z, now); 
+ if (z.mode === 'multi') [...z.occupants].forEach(o => multiDepart(z.id, o.localNum, {skipConfirm:true})); 
+ });
+ renderMainPanel(); 
+ renderSummaryBar(); 
+ persistSession(); 
+ refreshWakeLock(); 
+ showToast('Все элементы остановлены');
+}
+
+async function actionReset() {
+ closeModals(); 
+ if (logs.length > 0 && await customConfirm('Скачать логи перед сбросом данных?', 'Скачать')) exportCSV();
+ if (!(await customConfirm('Сбросить все счётчики?', 'Сбросить', true))) return;
+ saveStateForUndo();
+ zones.forEach(z => { 
+ if (z.mode === 'single' && z.active) forceOffSingle(z); 
+ if (z.mode === 'multi') [...z.occupants].forEach(o => { 
+ const idx = z.occupants.findIndex(x => x.localNum === o.localNum); 
+ if (idx !== -1) z.occupants.splice(idx, 1); 
+ }); 
+ });
+ logs = []; 
+ systemActiveMs = 0;
+ systemActiveStartTime = null;
+ document.getElementById('logBody').innerHTML = ''; 
+ document.getElementById('logFeed').innerHTML = ''; 
+ zones.forEach(z => { z.triggerCount = 0; z.totalMs = 0; z.startTime = null; z.nextLocalNum = 1; });
+ renderMainPanel(); 
+ persistSession();
+}
+
+async function actionNewTimer() {
+ closeModals(); 
+ if (logs.length > 0 && await customConfirm('Скачать логи перед созданием новой панели?', 'Скачать')) exportCSV();
+ if (!(await customConfirm('Создать новую панель?', 'Создать', true))) return;
+ clearSession(); 
+ historyStack = []; 
+ redoStack = []; 
+ updateUndoRedoButtons();
+ zones = []; 
+ logs = []; 
+ zoneIdCounter = 0; 
+ logIdCounter = 0;
+ document.getElementById('step3').classList.add('hidden'); 
+ enterEditMode();
+}
+
+async function actionExit() {
+ closeModals(); 
+ if (!(await customConfirm('Завершить работу приложения?', 'Завершить', true))) return;
+ if (logs.length > 0 && await customConfirm('Скачать логи напоследок?', 'Скачать')) exportCSV();
+ bgMusic.pause();
+ if (tickHandle) clearInterval(tickHandle); 
+ document.body.innerHTML = '<div style="text-align:center; padding-top:40vh; color:var(--muted);"><i data-lucide="check-circle" style="width:56px;height:56px;margin-bottom:16px;color:var(--accent);"></i><h2>Работа завершена</h2><p>Данные сохранены локально.</p></div>'; 
+ updateIcons();
+}
+
+/* Пресеты */
+function openPresetsOverlay() { 
+ closeModals(); 
+ renderPresetsList(); 
+ showModal('presetsOverlay'); 
+}
+
+function renderPresetsList() {
+ const presets = getPresets(); 
+ const list = document.getElementById('presetsList'); 
+ const names = Object.keys(presets);
+ list.innerHTML = names.length ? '' : '<div style="text-align:center; padding:20px 10px; color:var(--muted); font-size:12px;">Сохранённых панелей пока нет.<br>Введите название выше и нажмите сохранить.</div>';
+ names.forEach(name => {
+ const p = presets[name]; 
+ const row = document.createElement('div'); 
+ row.className = 'menu-card-btn';
+ row.innerHTML = `
+ <div class="menu-card-left">
+ <div class="menu-card-icon" style="background:rgba(59, 130, 246, 0.15); border-color:rgba(59, 130, 246, 0.3); color:#60a5fa;">
+ <i data-lucide="layers" style="width:18px;height:18px;"></i>
+ </div>
+ <div class="menu-card-text">
+ <b>${escapeHtml(name)}</b>
+ <span>${p.zones.length} элементов</span>
+ </div>
+ </div>
+ <div style="display:flex; gap:6px; flex-shrink:0;">
+ <button class="action-btn small" style="width:auto; padding:6px 12px; height:34px; font-size:11px;" onclick="loadPreset('${escapeHtml(name.replace(/'/g,"\'"))}')"><i data-lucide="download-cloud" style="width:13px;height:13px;"></i> Загрузить</button>
+ <button class="icon-btn danger-btn" style="padding:6px; width:34px; height:34px; border-color:transparent; box-shadow:none;" onclick="deletePreset('${escapeHtml(name.replace(/'/g,"\'"))}')"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+ </div>`;
+ list.appendChild(row);
+ });
+ updateIcons(list);
+}
+
+function saveCurrentAsPreset() {
+ if (zones.length === 0) { showToast('Нет элементов для сохранения', true); return; } 
+ const name = document.getElementById('presetNameInput').value.trim(); 
+ if (!name) { showToast('Введи название', true); return; }
+ const presets = getPresets(); 
+ presets[name] = { 
+ zones: zones.map(z => ({
+ name: z.name, 
+ mode: z.mode, 
+ color: z.color, 
+ countdown: z.countdown, 
+ limitMs: z.limitMs, 
+ limitAction: z.limitAction, 
+ multiLimitType: z.multiLimitType, 
+ size: z.size || 'compact'
+ })), 
+ savedAt: Date.now() 
+ };
+ savePresetsObj(presets); 
+ document.getElementById('presetNameInput').value = ''; 
+ renderPresetsList(); 
+ showToast('Сохранено');
+}
+
+function applyZonesConfig(zConf) {
+ saveStateForUndo(); 
+ zoneIdCounter = 0; 
+ logIdCounter = 0;
+ zones = zConf.map(zc => { 
+ const id = zoneIdCounter++; 
+ return { 
+ id, 
+ name: zc.name, 
+ mode: zc.mode, 
+ color: zc.color || colorFor(id), 
+ active: false, 
+ startTime: null, 
+ occupants: [], 
+ nextLocalNum: 1, 
+ triggerCount: 0, 
+ totalMs: 0, 
+ countdown: zc.countdown || false, 
+ limitMs: zc.limitMs || 0, 
+ limitAction: zc.limitAction || 'alert', 
+ multiLimitType: zc.multiLimitType || 'individual', 
+ size: zc.size || 'compact' 
+ }; 
+ });
+ logs = []; 
+ document.getElementById('logBody').innerHTML = ''; 
+ document.getElementById('logFeed').innerHTML = ''; 
+ closeModals();
+ document.getElementById('editStep').classList.add('hidden'); 
+ document.getElementById('stepResume').classList.add('hidden');
+ document.getElementById('step3').classList.add('fade-in'); 
+ document.getElementById('step3').classList.remove('hidden');
+ renderMainPanel(); 
+ startTicker();
+ syncAppVersion(); 
+ persistSession(); 
+ refreshWakeLock(); 
+}
+
+async function loadPreset(name) {
+ const p = getPresets()[name]; 
+ if (!p) return; 
+ const hasLive = logs.length > 0 || zones.some(z => z.active || z.occupants.length);
+ if (hasLive && !(await customConfirm('Текущая панель будет заменена. Логи удалятся. Продолжить?', 'Заменить', true))) return;
+ applyZonesConfig(p.zones); 
+ showToast(`Загружено: ${name}`);
+}
+
+async function deletePreset(name) { 
+ if (!(await customConfirm(`Удалить панель «${escapeHtml(name)}»?`, 'Удалить', true))) return; 
+ const p = getPresets(); 
+ delete p[name]; 
+ savePresetsObj(p); 
+ renderPresetsList(); 
+}
+
+function exportPresetJSON() {
+ if (zones.length === 0) return; 
+ const blob = new Blob([JSON.stringify({
+ zones: zones.map(z => ({
+ name: z.name, 
+ mode: z.mode, 
+ color: z.color, 
+ countdown: z.countdown, 
+ limitMs: z.limitMs, 
+ limitAction: z.limitAction, 
+ multiLimitType: z.multiLimitType, 
+ size: z.size || 'compact'
+ }))
+ }, null, 2)], {type:'application/json'});
+ const url = URL.createObjectURL(blob); 
+ const link = document.createElement('a'); 
+ link.href = url; 
+ link.download = `preset_${new Date().toISOString().slice(0,10)}.json`; 
+ document.body.appendChild(link); 
+ link.click(); 
+ document.body.removeChild(link); 
+ URL.revokeObjectURL(url);
+}
+
+function importPresetJSON(file) {
+ if (!file) return; 
+ const reader = new FileReader();
+ reader.onload = async () => {
+ try {
+ const data = JSON.parse(reader.result); 
+ if (!data.zones || !Array.isArray(data.zones)) throw new Error('bad fmt');
+ const hasLive = logs.length > 0 || zones.some(z => z.active || z.occupants.length);
+ if (hasLive && !(await customConfirm('Текущая панель будет заменена. Продолжить?', 'Заменить', true))) return;
+ applyZonesConfig(data.zones); 
+ showToast('Импортировано');
+ } catch(e) { 
+ showToast('Ошибка файла', true); 
+ }
+ };
+ reader.readAsText(file);
+}
+
+/* Справка и руководство */
+function openHelpModal() {
+ closeModals();
+ switchHelpTab('start');
+ showModal('helpModal');
+}
+
+function switchHelpTab(tabKey) {
+ document.querySelectorAll('.help-tab-btn').forEach(btn => btn.classList.remove('active'));
+ document.querySelectorAll('.help-tab-pane').forEach(pane => pane.classList.add('hidden'));
+ 
+ const targetBtn = document.querySelector(`.help-tab-btn[onclick*="${tabKey}"]`);
+ const targetPane = document.getElementById(`helpSection_${tabKey}`);
+ 
+ if (targetBtn) targetBtn.classList.add('active');
+ if (targetPane) targetPane.classList.remove('hidden');
+ 
+ const scrollArea = document.getElementById('helpContentScroll');
+ if (scrollArea) scrollArea.scrollTop = 0;
+ updateIcons(document.getElementById('helpModal'));
+}
+
+/* PWA Установка */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+ e.preventDefault();
+ deferredPrompt = e;
+ const installBtn = document.getElementById('installAppBtn');
+ if (installBtn) {
+ installBtn.classList.remove('hidden');
+ updateIcons(installBtn);
+ }
+});
+
+async function installPWA() {
+ if (!deferredPrompt) return;
+ deferredPrompt.prompt();
+ const { outcome } = await deferredPrompt.userChoice;
+ if (outcome === 'accepted') showToast('Установка пошла');
+ deferredPrompt = null;
+ document.getElementById('installAppBtn').classList.add('hidden');
+ closeModals();
+}
+
+if ('serviceWorker' in navigator) { 
+ window.addEventListener('load', () => { 
+ navigator.serviceWorker.register('./sw.js', { scope: './' }).then((reg) => {
+ reg.update();
+ }).catch(() => { }); 
+ }); 
+}
+
+/* Инициализация при старте */
+updateShareButtonVisibility(); 
+updateUndoRedoButtons();
+initBottomButton();
+
+const pending = loadSessionRaw();
+if (pending && pending.zones && pending.zones.length) {
+ window.__pendingSession = pending;
+ const resumeInfo = document.getElementById('resumeInfo');
+ if (resumeInfo) {
+ const activeCount = pending.zones.filter(z => (z.mode === 'single' && z.active) || (z.mode === 'multi' && z.occupants && z.occupants.length > 0)).length;
+ resumeInfo.textContent = `Сохранено элементов: ${pending.zones.length}${activeCount > 0 ? ` (активных: ${activeCount})` : ''}. Вы можете восстановить работу или создать новую панель.`;
+ }
+ document.getElementById('stepResume').classList.remove('hidden'); 
+ document.getElementById('stepResume').classList.add('fade-in'); 
+} else {
+ enterEditMode(); 
+ document.getElementById('editStep').classList.add('fade-in');
+}
+</script>
+</body>
+</html>

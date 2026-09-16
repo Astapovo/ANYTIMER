@@ -1,0 +1,64 @@
+{
+  "zones": [
+    {
+      "name": "Конвейер 1",
+      "mode": "note",
+      "color": "#eab308",
+      "countdown": false,
+      "limitMs": 0,
+      "limitAction": "alert",
+      "multiLimitType": "individual",
+      "size": "compact"
+    },
+    {
+      "name": "Конвейер 2",
+      "mode": "note",
+      "color": "#eab308",
+      "countdown": false,
+      "limitMs": 0,
+      "limitAction": "alert",
+      "multiLimitType": "individual",
+      "size": "compact"
+    },
+    {
+      "name": "Конвейер 3",
+      "mode": "note",
+      "color": "#eab308",
+      "countdown": false,
+      "limitMs": 0,
+      "limitAction": "alert",
+      "multiLimitType": "individual",
+      "size": "compact"
+    },
+    {
+      "name": "Лифт N",
+      "mode": "note",
+      "color": "#10b981",
+      "countdown": false,
+      "limitMs": 0,
+      "limitAction": "alert",
+      "multiLimitType": "individual",
+      "size": "compact"
+    },
+    {
+      "name": "Робот N",
+      "mode": "note",
+      "color": "#f43f5e",
+      "countdown": false,
+      "limitMs": 0,
+      "limitAction": "alert",
+      "multiLimitType": "individual",
+      "size": "wide"
+    },
+    {
+      "name": "3D Шаттл №",
+      "mode": "note",
+      "color": "#06b6d4",
+      "countdown": false,
+      "limitMs": 0,
+      "limitAction": "alert",
+      "multiLimitType": "individual",
+      "size": "wide"
+    }
+  ]
+}
