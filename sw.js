@@ -1,83 +1,106 @@
-const CACHE_NAME = 'anytimer-v8.02';
-
-const ASSETS = [
+// Service Worker — SmenaSps v1.1.0 (Offline-First PWA + Auto-Update Support)
+const APP_VERSION = '1.1.0';
+const CACHE_NAME = 'smenasps-v1.1.0-cache';
+const STATIC_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon.svg',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-512-maskable.png',
-  './bg-music.mp3'
+  './version.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-maskable-512.png',
+  './icons/apple-touch-icon.png',
+  './icons/icon.svg',
+  './icons/favicon.svg',
+  './icons/favicon.ico',
+  './SmenaSps_Master_Database.json'
 ];
 
-const EXTERNAL_ASSETS = [
-  'https://unpkg.com/lucide@latest',
-  'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&display=swap'
-];
-
-// Установка: кэшируем локальные и внешние ресурсы
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then(async (cache) => {
-      await cache.addAll(ASSETS);
-      for (const url of EXTERNAL_ASSETS) {
-        try {
-          const res = await fetch(url, { mode: 'cors' });
-          if (res && res.ok) {
-            await cache.put(url, res);
-          }
-        } catch (e) {
-          // Игнорируем сетевые сбои для опциональных внешних ресурсов при оффлайн-сборке
-        }
-      }
-    })
+    caches.open(CACHE_NAME)
+      .then((cache) => Promise.allSettled(STATIC_ASSETS.map((u) => cache.add(new Request(u, { cache: 'reload' })).catch(() => {}))))
+      .then(() => self.skipWaiting())
   );
 });
 
-// Активация: удаляем устаревшие версии кэша и захватываем клиенты
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys()
+      .then((keys) => Promise.all(keys.map((k) => (k !== CACHE_NAME ? caches.delete(k) : null))))
+      .then(() => self.clients.claim())
   );
 });
 
-// Запросы: Cache-first с динамическим сохранением сети и оффлайн-навигацией
+// Обработка команды мгновенного обновления из окна Справки (?)
+self.addEventListener('message', (event) => {
+  const data = event.data || {};
+  if (data.action === 'skipWaiting' || data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  if (!event.request.url.startsWith('http')) return;
+  const req = event.request;
+  const url = new URL(req.url);
+  if (req.method !== 'GET') return;
 
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+  // Запросы к Google Apps Script и GitHub API всегда идут напрямую в сеть без кэширования
+  if (
+    url.hostname.includes('script.google.com') ||
+    url.hostname.includes('google.com') ||
+    url.hostname.includes('googleusercontent.com') ||
+    url.hostname.includes('api.github.com') ||
+    url.hostname.includes('raw.githubusercontent.com') ||
+    url.protocol === 'chrome-extension:'
+  ) {
+    event.respondWith(fetch(req));
+    return;
+  }
 
-      return fetch(event.request)
-        .then((networkResponse) => {
-          if (networkResponse && (networkResponse.status === 200 || networkResponse.type === 'opaque')) {
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          }
-          return networkResponse;
+  // Для version.json всегда используем стратегию Network-First (чтобы сразу видеть выход новой версии)
+  if (url.pathname.endsWith('/version.json') || url.pathname === 'version.json') {
+    event.respondWith(
+      fetch(req, { cache: 'no-store' })
+        .then((res) => {
+          const clone = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put('./version.json', clone)).catch(() => {});
+          return res;
         })
-        .catch(() => {
-          // Оффлайн fallback для навигации PWA на Android / Windows
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html') || caches.match('./');
+        .catch(() => caches.match('./version.json'))
+    );
+    return;
+  }
+
+  // Для навигации по странице (index.html) используем Network-First с быстрым откатом к офлайн-кэшу
+  if (req.mode === 'navigate') {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          if (res && res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put('./index.html', clone)).catch(() => {});
           }
-        });
+          return res;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // Для остальных статических ресурсов — Cache-First с фоновым обновлением (Stale-While-Revalidate)
+  event.respondWith(
+    caches.match(req).then((cached) => {
+      const netFetch = fetch(req)
+        .then((res) => {
+          if (res && res.ok && url.origin === self.location.origin) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(req, clone)).catch(() => {});
+          }
+          return res;
+        })
+        .catch(() => cached);
+      return cached || netFetch;
     })
   );
 });
